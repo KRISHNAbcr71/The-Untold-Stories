@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose')
-const {Schema} = mongoose
+const { Schema } = mongoose
 
 const userSchema = new Schema({
     name: {
@@ -64,20 +64,22 @@ const userSchema = new Schema({
         type: String
     },
     redeemed: {
-        type: Boolean
+        type: Boolean,
+        default: false,
+        required: true
     },
-    redeemedUsers: {
+    redeemedUsers: [{
         type: Schema.Types.ObjectId,
         ref: "User"
-    },
+    }],
     searchHistory: [{
         category: {
             type: Schema.Types.ObjectId,
             ref: "Category"
         },
         priceRange: {
-            min: {type: Number, default: null },
-            max: {type: Number, default: 9007199254740991 }
+            min: { type: Number, default: null },
+            max: { type: Number, default: 9007199254740991 }
         },
         sortBy: {
             type: String,
@@ -92,5 +94,5 @@ const userSchema = new Schema({
 })
 
 
-const User = mongoose.model("User",userSchema)
+const User = mongoose.model("User", userSchema)
 module.exports = User

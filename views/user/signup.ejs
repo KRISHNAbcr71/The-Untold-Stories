@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+
+  <title>Sign Up</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .signup-box {
+      background-color: white;
+      padding: 30px 35px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .signup-box h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .eye-toggle {
+      position: absolute;
+      right: 10px;
+      top: 36px;
+      cursor: pointer;
+      font-size: 16px;
+      user-select: none;
+    }
+
+    .error {
+      font-size: 13px;
+      color: red;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background-color: #fca311;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background-color: #e18e0e;
+    }
+
+    .or-divider {
+      text-align: center;
+      margin: 15px 0;
+      color: #888;
+    }
+
+    /* .btn-google {
+      background-color: #db4437;
+      color: white;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-google:hover {
+      background-color: #c23321;
+    } */
+
+
+    .google-signin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #db4437;
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .google-signin:hover {
+      background-color: #c23321;
+    }
+
+    .google-signin img {
+      vertical-align: middle;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #fca311;
+      text-decoration: none;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      /* light red */
+      color: #721c24;
+      /* dark red text */
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="signup-box">
+    <h2>Create Your Account</h2>
+
+    <form action="/signup" method="POST" id="signform">
+      <%if(message){%>
+        <div class="alert alert-danger">
+          <%= message%>
+        </div>
+        <%}%>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name">
+            <div id="error1" class="error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="text" id="email" name="email">
+            <div id="error2" class="error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone">
+            <div id="error3" class="error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+            <span class="eye-toggle" onclick="togglePassword('password', this)">👁️</span>
+            <div id="error4" class="error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+            <!-- <span class="eye-toggle" onclick="togglePassword('confirmPassword', this)">👁️</span> -->
+            <div id="error5" class="error"></div>
+          </div>
+
+          <button type="submit" class="btn-submit">Sign Up</button>
+    </form>
+
+    <div class="or-divider">OR</div>
+    <!-- <button class="btn-google">Sign Up with Google</button> -->
+    <a href="/auth/google" id="g_id_onload" class="google-signin">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20" class="me-2">
+      Sign Up with Google
+    </a>
+
+    <div class="login-link">
+      Already have an account? <a href="/login">Log in</a>
+    </div>
+  </div>
+
+  <script>
+
+    // Input field references (used to get user-entered values)
+    const nameid = document.getElementById('name');
+    const emailid = document.getElementById('email');
+    const phoneid = document.getElementById('phone');
+    const passid = document.getElementById('password');
+    const cpassid = document.getElementById('confirmPassword');
+
+    // Error message div references (used to show validation errors)
+    const error1 = document.getElementById('error1');     // Error for  name
+    const error2 = document.getElementById('error2');     // Error for  email
+    const error3 = document.getElementById('error3');     // Error for  phone
+    const error4 = document.getElementById('error4');     // Error for  password
+    const error5 = document.getElementById('error5');     // Error for  confirm password
+
+    // Form reference (used to add event listener for validation on submit)
+    const signform = document.getElementById('signform');    // Signup form element
+
+    // Toggle password visibility
+    function togglePassword(id, icon) {
+      const field = document.getElementById(id);
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.textContent = '🙈';
+      } else {
+        field.type = 'password';
+        icon.textContent = '👁️';
+      }
+    }
+
+    // Validate Full Name field
+    function nameValidateChecking() {
+      const val = nameid.value.trim();
+      const pattern = /^[A-Za-z\s]+$/;
+      if (val === '') {
+        error1.textContent = 'Please enter a name';
+        error1.style.display = 'block';
+        return false;
+      } else if (!pattern.test(val)) {
+        error1.textContent = 'Name can only have letters and spaces';
+        error1.style.display = 'block';
+        return false;
+      } else {
+        error1.style.display = 'none';
+        return true;
+      }
+    }
+
+    // Validate Email format
+    function emailValidateChecking() {
+      const val = emailid.value.trim();
+      const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      if (!pattern.test(val)) {
+        error2.textContent = 'Invalid email address';
+        error2.style.display = 'block';
+        return false;
+      } else {
+        error2.style.display = 'none';
+        return true;
+      }
+    }
+
+    // Validate Phone number
+    function phoneValidateChecking() {
+      const val = phoneid.value.trim();
+      if (val.length !== 10 || isNaN(val)) {
+        error3.textContent = 'Phone number must be 10 digits';
+        error3.style.display = 'block';
+        return false;
+      } else {
+        error3.style.display = 'none';
+        return true;
+      }
+    }
+
+    // Validate Password and Confirm Password
+    function passValidateChecking() {
+      const pass = passid.value.trim();
+      const cpass = cpassid.value.trim();
+
+      const hasLetter = /[a-zA-Z]/.test(pass);
+      const hasNumber = /\d/.test(pass);
+
+      let valid = true;
+
+      // Password length check
+      if (pass.length < 8) {
+        error4.textContent = 'Password must be at least 8 characters';
+        error4.style.display = 'block';
+        valid = false;
+      }
+      // Password content check
+      else if (!hasLetter || !hasNumber) {
+        error4.textContent = 'Password must have letters and numbers';
+        error4.style.display = 'block';
+        valid = false;
+      }
+      else {
+        error4.style.display = 'none';
+      }
+
+      // Confirm password check
+      if (cpass === '') {
+        error5.textContent = '';
+        error5.style.display = 'none';
+        valid = false; // optional: you can set this to true if empty is acceptable at this point
+      } else if (pass !== cpass) {
+        error5.textContent = 'Passwords do not match';
+        error5.style.display = 'block';
+        valid = false;
+      } else {
+        error5.style.display = 'none';
+      }
+
+      return valid;
+    }
+
+    // Add form validation on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      // On form submit, validate all fields
+      signform.addEventListener('submit', e => {
+        const isNameValid = nameValidateChecking();
+        const isEmailValid = emailValidateChecking();
+        const isPhoneValid = phoneValidateChecking();
+        const isPassValid = passValidateChecking();
+
+        if (!isNameValid || !isEmailValid || !isPhoneValid || !isPassValid) {
+          console.log("Validation failed. Preventing form submission.");
+          e.preventDefault(); // Stop default form submission
+        }
+      });
+
+      // Run validation when each input field loses focus (blur)
+      nameid.addEventListener('blur', nameValidateChecking);
+      emailid.addEventListener('blur', emailValidateChecking);
+      phoneid.addEventListener('blur', phoneValidateChecking);
+      passid.addEventListener('blur', passValidateChecking);
+      cpassid.addEventListener('blur', passValidateChecking);
+    });
+
+
+  </script>
+
+
+
+<script>
+  if (performance.navigation.type === 2) {
+    // Browser back detected
+    window.location.href = "/signup"; // Or "/signup" depending on page
+  }
+
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = function () {
+    window.location.href = "/signup"; // Or "/signup"
+  };
+</script>
+
+
+
+
+</body>
+
+</html>

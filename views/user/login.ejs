@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+
+
+    <title>Login | The Untold Stories</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -12px;
+            margin-bottom: 18px;
+        }
+
+        .forgot-password a {
+            font-size: 14px;
+            color: #fca311;
+            text-decoration: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #fca311;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #e89b0d;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 14px;
+            color: #888;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .google-btn {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            color: #444;
+            background-color: #fff;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .google-btn img {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #fca311;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+
+        .error-message {
+            color: red;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-title">Login</div>
+
+        <form id="loginform" action="/login" method="POST">
+
+            <%if(message){%>
+                <div class="alert alert-danger">
+                    <%=message%>
+                </div>
+                <%}%>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="you@example.com">
+                        <div id="error1" class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password">
+                        <div id="error2" class="error-message"></div>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="/forgot-password">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <div class="divider">OR</div>
+
+        <a href="/google" class="google-btn">
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
+            Login with Google
+        </a>
+
+        <div class="signup-link">
+            Don't have an account? <a href="/signup">Sign Up</a>
+        </div>
+    </div>
+
+
+    <script>
+
+        // Get input elements and error display areas
+        const emailid = document.getElementById("email");
+        const passid = document.getElementById("password");
+        const error1 = document.getElementById("error1");
+        const error2 = document.getElementById("error2");
+        const loginform = document.getElementById("loginform");
+
+        // Validate email format
+        function emailValidateChecking() {
+            const emailval = emailid.value.trim();
+            const emailpattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+
+            if (!emailpattern.test(emailval)) {
+                error1.style.display = "block";
+                error1.innerHTML = "Invalid Format";
+            } else {
+                error1.style.display = "none";
+                error1.innerHTML = "";
+            }
+        }
+
+        // Validate password length
+        function passValidateChecking() {
+            const passval = passid.value.trim();
+            if (passval.length < 8) {
+                error2.style.display = "block";
+                error2.innerHTML = "Should contain at least 8 characters";
+            } else {
+                error2.style.display = "none";
+                error2.innerHTML = "";
+            }
+        }
+
+        // On form submit, validate fields
+        document.addEventListener("DOMContentLoaded", function () {
+            loginform.addEventListener("submit", function (e) {
+                emailValidateChecking();
+                passValidateChecking();
+
+                // if (!emailid || !passid || !error1 || !error2 || !loginform) {
+                //   console.error("One or more elements not found");
+                // }
+
+                // If any error message is shown, stop form from submitting
+                if (error1.innerHTML || error2.innerHTML) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+
+
+
+<script>
+  if (performance.navigation.type === 2) {
+    // Browser back detected
+    window.location.href = "/login"; // Or "/signup" depending on page
+  }
+
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = function () {
+    window.location.href = "/login"; // Or "/signup"
+  };
+</script>
+
+
+
+
+
+</body>
+
+</html>

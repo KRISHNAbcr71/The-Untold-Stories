@@ -1,0 +1,141 @@
+
+<%-include("../../views/partials/user/header")%>
+
+    <link rel="stylesheet" href="/css/shop.css">
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section py-4">
+        <div class="container">
+            <div
+                class="breadcrumb-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <nav class="breadcrumb-nav">
+                    <a href="/">Home</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="current">Shop</span>
+                </nav>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+
+
+    <!-- Shop Section Begin -->
+    <section class="shop-layout">
+        <div class="container">
+            <div class="shop-topbar">
+                <div class="results-count">Showing 1–12 of 126 results</div>
+                <div class="sort-box">
+                    Sort by Price:
+                    <select>
+                        <option selected>Low To High</option>
+                        <option>High To Low</option>
+                        <option>A - Z</option>
+                        <option>Z - A</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="shop-content">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <!-- Search -->
+                    <form class="d-flex align-items-center ms-2">
+                        <input class="search-input" type="search" placeholder="Search" />
+                    </form>
+                    <!-- Filter by category -->
+                    <details class="filter-section" open>
+                        <summary>Categories </summary>
+                        <ul class="filter-list">
+                            <li><a href="#">Fiction</a></li>
+                            <li><a href="#">Non-fiction</a></li>
+                            <li><a href="#">Adventures</a></li>
+                            <li><a href="#">Romantic</a></li>
+                            <li><a href="#">Horror</a></li>
+                        </ul>
+                    </details>
+
+                    <!-- Filter by price -->
+                    <details class="filter-section">
+                        <summary>Filter by Price </summary>
+                        <ul class="filter-list">
+                            <li><a href="#">Under ₹500</a></li>
+                            <li><a href="#">₹500 - ₹1000</a></li>
+                            <li><a href="#">₹1000 - ₹2000</a></li>
+                            <li><a href="#">Above ₹2000</a></li>
+                        </ul>
+                    </details>
+                </aside>
+
+                <!-- Products -->
+                <main class="product-grid">
+
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            <img src="images/product-item1.jpg" alt="Product">
+                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
+                            <button class="btn-buy">Add to Cart</button>
+                        </div>
+                        <h5>Piqué Biker Jacket</h5>
+                        <p class="price">$67.24</p>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            <img src="images/product-item1.jpg" alt="Product">
+                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
+                            <button class="btn-buy">Add to Cart</button>
+                        </div>
+                        <h5>Piqué Biker Jacket</h5>
+                        <p class="price">$67.24</p>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            <img src="images/product-item2.jpg" alt="Product">
+                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
+                            <button class="btn-buy">Add to Cart</button>
+                        </div>
+                        <h5>Piqué Biker Jacket</h5>
+                        <p class="price">$67.24</p>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            <img src="images/product-item3.jpg" alt="Product">
+                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
+                            <button class="btn-buy">Add to Cart</button>
+                        </div>
+                        <h5>Piqué Biker Jacket</h5>
+                        <p class="price">$67.24</p>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            <img src="images/product-item4.jpg" alt="Product">
+                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
+                            <button class="btn-buy">Add to Cart</button>
+                        </div>
+                        <h5>Piqué Biker Jacket</h5>
+                        <p class="price">$67.24</p>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+
+
+
+        <div class="pagination-container">
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">3</a>
+        </div>
+
+    </section>
+
+    <!-- jQuery + Slick JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+    <%-include("../../views/partials/user/footer")%>
