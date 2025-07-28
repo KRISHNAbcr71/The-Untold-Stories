@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #fca311;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff9900;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      font-size: 1.2rem;
+      padding: 15px 15px;
+      border-radius: 5px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 20px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <form id="adminLoginForm" action="/admin/login" method="POST" autocomplete="off" novalidate>
+      <%if(message){%>
+        <div class="alert alert-danger">
+          <%=message%>
+        </div>
+        <%}%>
+          <div class="form-group">
+            <label for="adminEmail">Email Address</label>
+            <input type="email" id="adminEmail" name="email" autocomplete="off">
+            <div class="error" id="emailError"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <input type="password" id="adminPassword" name="password" autocomplete="off">
+            <div class="error" id="passwordError"></div>
+          </div>
+
+          <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("adminLoginForm");
+      const email = document.getElementById("adminEmail");
+      const password = document.getElementById("adminPassword");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+
+      form.addEventListener("submit", function (e) {
+        let valid = true;
+
+        const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+        if (!emailPattern.test(email.value.trim())) {
+          emailError.textContent = "Please enter a valid email address";
+          valid = false;
+        } else {
+          emailError.textContent = "";
+        }
+
+        if (password.value.trim().length < 8) {
+          passwordError.textContent = "Password must be at least 8 characters";
+          valid = false;
+        } else {
+          passwordError.textContent = "";
+        }
+
+        if (!valid) {
+          e.preventDefault(); // Stop form submission
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

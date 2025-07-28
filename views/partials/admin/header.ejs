@@ -1,0 +1,193 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background-color: #343a40;
+      padding: 0.5rem 1rem;
+    }
+
+    .navbar-brand {
+      color: white;
+      font-weight: bold;
+      font-size: 1.4rem;
+    }
+
+    .nav-link {
+      color: white !important;
+      margin: 0 10px;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      color: #ffc107 !important;
+    }
+
+    .profile-img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      right: 0;
+      left: auto;
+    }
+
+    @media (max-width: 991px) {
+      .center-links {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+
+
+    footer {
+      background-color: #343a40;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: auto;
+    }
+
+
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+
+  <div class="flex-grow-1">
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+
+  
+    <a class="navbar-brand" href="#">The Untold Stories</a>
+
+   
+    <div class="d-flex mx-auto center-links">
+      <a class="nav-link" href="#">Dashboard</a>
+      <a class="nav-link" href="#">Customers</a>
+      <a class="nav-link" href="#">Category</a>
+      <a class="nav-link" href="#">Add Product</a>
+      <a class="nav-link" href="#">Products</a>
+      <a class="nav-link" href="#">Coupon</a>
+      <a class="nav-link" href="#">Banner</a>
+      <a class="nav-link" href="#">Orders</a>
+    </div>
+
+    
+    <div class="dropdown">
+      <img src="/images/admin-icon.jpg" class="profile-img dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" />
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+</div>
+
+
+
+
+
+ -->
+
+
+
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .admin-image {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .nav-link {
+      margin: 0 10px;
+    }
+    footer {
+      background-color: #f8f9fa;
+      padding: 10px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    .navbar {
+      background-color: #343a40;
+    }
+    .navbar .nav-link, .navbar-brand, .dropdown-toggle {
+      color: white;
+    }
+    .navbar .nav-link:hover, .navbar-brand:hover, .dropdown-item:hover {
+      color: #ffc107;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .content {
+      flex: 1;
+    }
+
+    main {
+  padding-top: 20px;
+}
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-3">
+    <a class="navbar-brand" href="#">The Untold Stories</a>
+
+    <div class="collapse navbar-collapse justify-content-center">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/admin/users">Customers</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Category</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Add Product</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Coupon</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Banner</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Orders</a></li>
+      </ul>
+    </div>
+
+    <!-- Admin Dropdown -->
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="/images/admin-icon.jpg" alt="Admin" class="admin-image">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </div>
+  </nav>

@@ -5,6 +5,7 @@ const nocache = require('nocache')
 const session = require('express-session');
 const passport = require('./config/passport')
 const userRouter = require('./routes/userRouter');
+const adminRouter = require('./routes/adminRouter')
 const env = require('dotenv').config();
 const db = require('./config/db');
 db();
@@ -40,6 +41,7 @@ app.use(express.static(path.join(__dirname,'public')));   //set public directory
 
 //user route
 app.use('/',userRouter);
+app.use('/admin',adminRouter)
 
 const PORT = process.env.PORT  || 7000;
 app.listen(PORT,()=>{

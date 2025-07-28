@@ -32,15 +32,6 @@
       padding: 0;
     }
 
-    /* .top-link {
-      text-decoration: none;
-      color: #ccc;
-      font-weight: 500;
-    }
-
-    .top-link:hover {
-      color: #fca311;
-    } */
     .top-link {
       color: white;
       text-decoration: none;
@@ -62,10 +53,6 @@
     }
 
     /* Top bar */
-    /* .top-bar {
-      background-color: #111;
-      font-size: 0.95rem;
-    } */
     .top-bar {
       background-color: #111;
       padding: 10px 20px;
@@ -104,35 +91,6 @@
     }
 
     /* Dropdown wrapper */
-    /* .dropdown {
-      position: relative;
-    } */
-
-    /* Dropdown content */
-    /* .dropdown-content {
-      /* display: none;
-      position: absolute;
-      right: 0;
-      top: 100%;
-      margin-top: 6px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      min-width: 140px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 1000; 
-      position: absolute;
-      right: 0;
-      top: 100%;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      min-width: 140px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 9999;
-       Very high so it appears above everything 
-      display: none;
-    } */
     .dropdown {
       position: relative;
     }
@@ -192,7 +150,6 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      /* stay above other elements */
     }
 
     .site-title {
@@ -262,7 +219,6 @@
     .cart-icon {
       position: relative;
       font-size: 24px;
-      /* color: #fca311; */
       color: white;
       text-decoration: none;
     }
@@ -310,28 +266,6 @@
 
 <body>
 
-  <!-- Header -->
-  <!-- 🔝 Top Bar -->
-  <!-- <div class="top-bar d-flex justify-content-end align-items-center py-2 px-3">
-    <%if(user){%>
-      <div class="dropdown">
-        <a href="#" class="sign-in-link">
-          <%=user.name%>
-        </a>
-        <div class="dropdown-content">
-          <a href="/userProfile">Profile</a>
-          <a href="/logout">Logout</a>
-
-        </div>
-
-      </div>
-      <%}else {%>
-        <a href="/login" class="top-link me-2">Login</a>
-        <a href="/signup" class="btn btn-sm" style="background-color: #fca311; color: white; border: none;">Create
-          Account</a>
-        <%}%>
-  </div> -->
-
   <!-- 🧭 Main Header -->
   <div id="main-header">
     <div class="container position-relative main-nav-container">
@@ -367,6 +301,7 @@
         <form class="d-flex align-items-center ms-2">
           <input class="search-input" type="search" placeholder="Search" />
         </form>
+
         <!-- 🔐 Auth Options -->
         <% if (user) { %>
           <div class="dropdown ms-3">
@@ -381,19 +316,24 @@
           <% } else { %>
             <a href="/login" class="top-link me-2 ms-3">Login</a>
             <a href="/signup" class="btn btn-sm" style="background-color: #fca311; color: white;">Create Account</a>
-            <% } %>
-
-
-
+            <% } %> 
       </div>
     </div>
   </div>
 
+
+
+
+
+
+  
   <script>
+
     function scrollToTop() {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth' // for smooth scrolling
+        behavior: 'smooth' 
       });
     }
+
   </script>
