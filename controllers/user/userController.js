@@ -1,14 +1,17 @@
 const User = require('../../models/userSchema')
+const Category = require('../../models/categorySchema')
+const Product = require('../../models/productSchema')
 const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
 const bcrypt = require('bcrypt')
+const {Types} = require('mongoose')
 
 
 
 
 
 // Controller to handle 404 (Page Not Found) errors
-const pageNotFound = async (req, res) => {
+const pageNotFound = (req, res) => {
     try {
         res.status(404).render('page-404')
     } catch (error) {
@@ -16,33 +19,6 @@ const pageNotFound = async (req, res) => {
         res.status(500).send('Something went wrong. Please try again later.')
     }
 };
-
-
-
-
-
-// Controller to render the home page
-const loadHomepage = async (req, res) => {
-    try {
-        const userId = req.session.user;
-
-        if (userId) {
-            const userData = await User.findById(userId)
-
-            res.status(200).render('home', { user: userData })
-        } else {
-            res.status(200).render('home', { user: null })
-        }
-
-    } catch (error) {
-        console.error('[Home page load error]', error)
-        res.status(500).send('An unexpected error occurred. Please try again later.')
-    }
-};
-
-
-
-
 
 
 
@@ -58,12 +34,9 @@ const loadSignup = async (req, res) => {
 
     } catch (error) {
         console.error('[Signup Page Load Error]', error);
-        res.redirect('/pageNotFound');
+        res.status(500).render('page-404')
     }
 };
-
-
-
 
 
 
@@ -72,7 +45,6 @@ function generateOtp() {
     return Math.floor(100000 + Math.random() * 900000).toString()
 };
 
-// Sends a verification email containing a 6-digit OTP to the provided email address
 async function sendVerificationEmail(email, otp) {
     try {
         // Configure the email transport using Gmail SMTP
@@ -102,11 +74,10 @@ async function sendVerificationEmail(email, otp) {
 
         });
 
-        // Return true if email is accepted by any recipient
         return info.accepted.length > 0
 
     } catch (error) {
-        console.error('[Email sending failed.]', error)
+        console.error('[Error in sending email.]', error)
         return false
     }
 };
@@ -129,22 +100,22 @@ const signup = async (req, res) => {
         const emailSent = await sendVerificationEmail(email, otp)
 
         if (!emailSent) {
-            //console.error('Failed to send verification email');
+
             return res.status(500).json({ success: false, message: 'Failed to send verification email' });
         }
 
         req.session.userOtp = otp;
-        req.session.otpSentAt = new Date();  //current date and time
+        req.session.otpSentAt = new Date();
         req.session.userData = { name, phone, email, password }
 
-        // res.render('verify-otp')
         res.redirect('/verify-otp')
+        // throw new Error('Something went wrong')
 
         console.log('Otp sent: ', otp);
 
     } catch (error) {
         console.error('[Signup error]', error)
-        res.redirect('/pageNotFound')
+        res.status(500).render('page-404')
     }
 };
 
@@ -172,22 +143,20 @@ const securePassword = async (password) => {
 
 const loadOtpPage = async (req, res) => {
     try {
-        // If user is already logged in, redirect to home
+
         if (req.session.user) {
             return res.redirect('/');
         }
 
-        // If no userData in session (i.e., came without signing up), redirect to signup
         if (!req.session.userData || !req.session.userOtp) {
             return res.redirect('/signup');
         }
 
-        // Render the OTP verification page
         res.render('verify-otp', { otpSentAt: req.session.otpSentAt });
 
     } catch (error) {
         console.error('[Error loading OTP page]', error);
-        res.status(500).render('error-page', { message: 'Something went wrong while loading OTP page' });
+        res.status(500).render('page-404');
     }
 };
 
@@ -206,7 +175,6 @@ const verifyOtp = async (req, res) => {
 
             const passwordHash = await securePassword(user.password)
 
-            // Create a new user document
             const saveUserData = new User({
                 name: user.name,
                 email: user.email,
@@ -245,7 +213,6 @@ const resendOtp = async (req, res) => {
         const now = new Date();
         const lastSent = req.session.otpSentAt;
 
-        // Allow resend only after 60 seconds
         if (lastSent && now - new Date(lastSent) < 60000) {
             const secondsLeft = 60 - Math.floor((now - new Date(lastSent)) / 1000);
             return res.status(429).json({
@@ -265,7 +232,7 @@ const resendOtp = async (req, res) => {
             res.status(200).json({
                 success: true,
                 message: 'OTP resent successfully',
-                otpSentAt: now  // Send this to frontend
+                otpSentAt: now
             });
         } else {
             res.status(500).json({ success: false, message: 'Failed to resend the OTP. Please try again' });
@@ -357,7 +324,6 @@ const logout = async (req, res) => {
 
     } catch (error) {
         console.log("Logout error:", error);
-        // res.status(500).json({ message: "Server error during logout" });
         res.redirect('/pageError')
     }
 };
@@ -368,10 +334,165 @@ const logout = async (req, res) => {
 
 
 
+// Controller to render the home page
+const loadHomepage = async (req, res) => {
+    try {
+        const userId = req.session.user;
+
+        const categories = await Category.find({ isListed: true, isDeleted: false })
+        let productData = await Product.find(
+            {
+                isListed: true,
+                isDeleted: false,
+                category: { $in: categories.map(category => category._id) },
+                quantity: { $gt: 0 }
+            }
+        )
+
+        productData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        productData = productData.slice(0, 4)
+
+        console.log("Products fetched:", productData);
+
+
+        if (userId) {
+            const userData = await User.findById(userId)
+
+            res.status(200).render('home', { user: userData, products: productData })
+        } else {
+            res.status(200).render('home', { user: null, products: productData })
+        }
+
+    } catch (error) {
+        console.error('[Home page load error]', error)
+        res.status(500).send('An unexpected error occurred. Please try again later.')
+    }
+};
+
+
+
+
+
+
+
+
+const loadShoppingPage = async (req, res) => {
+    try {
+
+        let page = Math.max(1, parseInt(req.query.page) || 1)
+        let limit = 8
+        let skip = (page - 1) * limit
+
+        const search = req.query.search ? req.query.search.trim() : ""
+        const category = req.query.category || ""
+        const minPrice = parseFloat(req.query.minPrice)
+        const maxPrice = parseFloat(req.query.maxPrice)
+        const sort = req.query.sort || ""
+
+        const match = {
+            isListed: true,
+            isDeleted: false,
+            price: { $gt: 0 },
+            quantity: { $gt: 0 }
+        }
+
+        
+        if (minPrice) match.price = { $gte: minPrice };
+        if (maxPrice) match.price = { ...match.price, $lte: maxPrice };
+        if (search) match.productName = { $regex: search, $options: "i" }
+        // if (category) query.category = category
+        if (category && Types.ObjectId.isValid(category)) {
+            match.category = new Types.ObjectId(category);
+        }
+        
+
+        let sortOptions = {}
+        switch (sort) {
+            case "priceLowHigh":
+                sortOptions.price = 1
+                break
+            case "priceHighLow":
+                sortOptions.price = -1
+                break
+            case "a-z":
+                sortOptions.productName = 1
+                break
+            case "z-a":
+                sortOptions.productName = -1
+                break
+            default:
+                sortOptions.createdAt = -1
+        }
+
+
+        const agg = await Product.aggregate([
+
+            { $match: match },
+            {
+
+                $lookup: {
+                from: "categories",
+                localField: "category",
+                foreignField: "_id",
+                as: "category",
+                },
+            },
+            { $unwind: "$category" },
+            { $match: { "category.isListed": true, "category.isDeleted": false } },
+            { $sort: sortOptions },
+            {
+                $facet: {
+                    data: [
+                        { $skip: skip },
+                        { $limit: limit },
+                        {
+                            $project: {
+                                productName: 1,
+                                price: 1,
+                                productImage: 1,
+                                createdAt: 1,
+                                category: { _id: "$category._id", name: "$category.name" },
+                            },
+                        },
+                        ],
+                    total: [{ $count: "count" }],
+                },
+            },
+        ]);
+
+    const products = agg[0]?.data || [];
+    const totalProducts = agg[0]?.total?.[0]?.count || 0;
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const categories = await Category.find({ isListed: true, isDeleted: false }).lean();
+
+        res.render("shop", {
+            products,
+            totalPages,
+            categories,
+            currentPage: page,
+            search,
+            category,
+            minPrice,
+            maxPrice,
+            sort,
+            limit,
+            totalProducts
+        });
+
+
+    } catch (error) {
+        console.error('[Error loading shop page]', error)
+        res.status(500).render('page-404')
+    }
+}
+
+
+
+
 
 module.exports = {
     pageNotFound,
-    loadHomepage,
     loadSignup,
     signup,
     loadOtpPage,
@@ -379,6 +500,8 @@ module.exports = {
     resendOtp,
     loadLoginPage,
     login,
-    logout
+    logout,
+    loadHomepage,
+    loadShoppingPage
 
 };

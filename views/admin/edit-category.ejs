@@ -1,0 +1,138 @@
+<%-include("../../views/partials/admin/header")%>
+
+
+
+
+    <!-- Form to Add New Category -->
+    <div class="card p-4 border border-dark"
+        style="width: 100%; max-width: 1300px; margin-left: 200px;margin-top: 100px;">
+        <form id="categoryForm" method="POST" data-id="<%= category._id %>">
+
+            <!-- Name Field -->
+            <div class="mb-3">
+                <label for="categoryName" class="form-label fw-semibold">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" name="name" value="<%=category.name%>"
+                    placeholder="Enter category name">
+                <div id="name-error" class="error-message text-danger small mt-1"></div>
+            </div>
+
+            <!-- Description Field -->
+            <div class="mb-3">
+                <label for="descriptionId" class="form-label fw-semibold">Description</label>
+                <textarea class="form-control" id="descriptionId" name="description" rows="3"
+                    placeholder="Enter description"><%=category.description%></textarea>
+                <div id="description-error" class="error-message text-danger small mt-1"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Update Category</button>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+    <script>
+
+
+        document.getElementById('categoryForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // prevent page reload
+
+            if (!validateForm()) return;
+
+            const name = document.getElementById('categoryName').value.trim();
+            const description = document.getElementById('descriptionId').value.trim();
+            const form = document.getElementById('categoryForm');
+            const categoryId = "<%= category._id %>";
+
+            try {
+                const response = await fetch(`/admin/editCategory/${categoryId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, description })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated',
+                        text: 'Category updated successfully',
+                        confirmButtonColor: '#28a745'
+                    })
+                        .then(() => {
+                            window.location.href = '/admin/category'
+                        })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message || 'Updated failed',
+                        confirmButtonColor: '#dc3545'
+                    })
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while updating the category.',
+                    confirmButtonColor: '#dc3545'
+                })
+            }
+        });
+
+
+
+
+        function validateForm() {
+            clearErrorMessages();
+            const name = document.getElementById('categoryName').value.trim();
+            const description = document.getElementById('descriptionId').value.trim();
+            let isValid = true;
+
+            if (name === '') {
+                displayErrorMessage('name-error', 'Please enter a name')
+                isValid = false
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                displayErrorMessage('name-error', 'Category name only contain alphabetic characters')
+                isValid = false
+            }
+
+            if (description === '') {
+                displayErrorMessage('description-error', 'Please enter description')
+                isValid = false
+            }
+            return isValid;
+        }
+
+
+
+        function displayErrorMessage(elementId, message) {
+            var errorElement = document.getElementById(elementId);
+            errorElement.innerText = message
+            errorElement.style.display = 'block'
+        }
+
+        function clearErrorMessages() {
+            var errorElements = document.getElementsByClassName('error-message')
+            Array.from(errorElements).forEach((element) => {
+                element.innerText = ''
+                element.style.display = 'none'
+            });
+        }
+
+    </script>
+
+
+
+
+
+
+
+    <%-include("../../views/partials/admin/footer")%>

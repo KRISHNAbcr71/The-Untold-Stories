@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const {Schema} = mongoose
+const { Schema } = mongoose
 
 const categorySchema = new Schema({
     name: {
@@ -15,11 +15,20 @@ const categorySchema = new Schema({
         type: Boolean,
         default: true
     },
-    categoryOffer: {
-        type: Number,
-        default: 0
-    }
-},{timestamps:true})
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date,
+        default: null
+    },
+    status: {
+        type: String,
+        enum: ["Listed", "Unlisted"],
+        default: "Listed"
+    },
+}, { timestamps: true })
 
-const Category = mongoose.model("Category",categorySchema)
+const Category = mongoose.model("Category", categorySchema)
 module.exports = Category

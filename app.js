@@ -1,14 +1,15 @@
-const express = require('express');
+const express = require('express'); 
 const app = express();
 const path = require('path');
-const nocache = require('nocache')
+const nocache = require('nocache');
 const session = require('express-session');
-const passport = require('./config/passport')
+const passport = require('./config/passport');  //authentication middleware
 const userRouter = require('./routes/userRouter');
-const adminRouter = require('./routes/adminRouter')
+const adminRouter = require('./routes/adminRouter');
 const env = require('dotenv').config();
 const db = require('./config/db');
 db();
+const methodOverride = require('method-override')
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
@@ -16,8 +17,8 @@ app.use(express.json());
 app.use(session({
     name: 'connect.sid',
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    resave: false,     // don’t save session if unmodified
+    saveUninitialized: false, // don’t create session until something stored. Don't create empty sessions until you store something in them.
     cookie: {
         httpOnly: true,
         secure: false,
@@ -30,10 +31,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(nocache())
-app.use((req,res,next)=>{
-    res.set('Cache-Control','no-store')
-    next();
-});
+// app.use((req,res,next)=>{
+//     res.set('Cache-Control','no-store')
+//     next();
+// });
+
+
+app.use(methodOverride('_method'));
 
 app.set('view engine','ejs'); // set Ejs as view engine
 app.set('views',[path.join(__dirname,'views/user'),path.join(__dirname,'views/admin')]);   // set views directory
@@ -42,6 +46,12 @@ app.use(express.static(path.join(__dirname,'public')));   //set public directory
 //user route
 app.use('/',userRouter);
 app.use('/admin',adminRouter)
+
+
+// app.use((req, res) => {
+//   res.status(404).render('page-404');
+// });
+
 
 const PORT = process.env.PORT  || 7000;
 app.listen(PORT,()=>{

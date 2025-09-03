@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Add Product</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  <style>
+    .crop-container img {
+      max-width: 100%;
+    }
+
+    .preview-image {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: cover;
+    }
+
+
+
+
+    /* .file-input-wrapper {
+      position: relative;
+      width: fit-content;
+    }
+
+    .cancel-icon {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: red;
+      display: none;
+    }
+
+    .file-input-wrapper input[type="file"]:not(:placeholder-shown)~.cancel-icon {
+      display: block;
+    } */
+
+    .file-input-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+      /* space between inputs */
+    }
+
+    .image-input {
+      width: 100%;
+      padding-right: 2.5rem;
+      /* space for the cancel icon */
+    }
+
+    .cancel-icon {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: red;
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h2>Add Product</h2>
+    <form id="addProductForm" action="/admin/add-product" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Product Name</label>
+        <input type="text" class="form-control" name="productName" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Author</label>
+        <input type="text" class="form-control" name="author" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select class="form-select" name="category" required>
+          <option value="">-- Select Category --</option>
+          <% categories.forEach(category=> { %>
+            <option value="<%= category._id %>">
+              <%= category.name %>
+            </option>
+            <% }) %>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input type="number" class="form-control" name="regularPrice" min="0" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input type="number" class="form-control" name="quantity" min="0" required>
+      </div>
+
+      <!-- Image Uploads  -->
+      <div class="mb-3">
+        <label class="form-label">Upload 3 Images</label>
+        <div id="imageInputs" class="position-relative file-input-wrapper">
+          <!-- <input type="file" accept="image/*" class="form-control image-input" required>
+                    <input type="file" accept="image/*" class="form-control image-input" required>
+                    <input type="file" accept="image/*" class="form-control image-input" required> -->
+          <div class="position-relative file-input-wrapper">
+            <input type="file" accept="image/*" class="form-control image-input pe-5" required>
+            <span class="cancel-icon" onclick="clearFile(this)">×</span>
+          </div>
+          <div class="position-relative file-input-wrapper">
+            <input type="file" accept="image/*" class="form-control image-input pe-5" required>
+            <span class="cancel-icon" onclick="clearFile(this)">×</span>
+          </div>
+          <div class="position-relative file-input-wrapper">
+            <input type="file" accept="image/*" class="form-control image-input pe-5" required>
+            <span class="cancel-icon" onclick="clearFile(this)">×</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- The cropperImage tag holds the image temporarily so Cropper.js can display and crop it. -->
+      <div id="cropModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Crop Image</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="crop-container">
+                <img id="cropperImage" src="">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="cropImageBtn" class="btn btn-primary">Crop & Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- After cropping, the resulting image is displayed here as a small preview. -->
+      <div id="previewImages" class="mb-3 d-flex gap-3 flex-wrap"></div>
+
+      <!-- This holds the cropped image data as hidden file inputs so they can be submitted with the form.
+            Cropped image blobs are converted into File objects, then attached to hidden inputs. -->
+      <!-- Cropped Images (Hidden)  -->
+      <div id="croppedImages"></div>
+
+      <button type="submit" class="btn btn-success">Add Product</button>
+    </form>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script>
+    const imageInputs = document.querySelectorAll('.image-input');
+    const previewContainer = document.getElementById('previewImages');
+    const croppedImages = document.getElementById('croppedImages');
+    const cropperImage = document.getElementById('cropperImage');
+    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+    const cropImageBtn = document.getElementById('cropImageBtn');
+    let currentInput = null;
+    let cropper = null;
+
+    imageInputs.forEach((input, index) => {
+      input.dataset.inputId = 'input' + index;
+      input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (file) {
+          currentInput = input;
+          const reader = new FileReader();
+          reader.onload = () => {
+            cropperImage.src = reader.result;
+            cropModal.show();
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(cropperImage, {
+              aspectRatio: 1,
+              viewMode: 1,
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+
+    cropImageBtn.addEventListener('click', () => {
+      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+      canvas.toBlob(blob => {
+        const inputId = currentInput.dataset.inputId;
+        // Remove existing preview and hidden input for this inputId
+        document.querySelectorAll(`#previewImages img[data-input-id="${inputId}"]`).forEach(el => el.remove());
+        document.querySelectorAll(`#croppedImages input[data-input-id="${inputId}"]`).forEach(el => el.remove());
+
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'hidden';
+        fileInput.name = 'croppedImages';
+        const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        fileInput.dataset.inputId = inputId;
+        croppedImages.appendChild(fileInput);
+
+
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(blob);
+        img.className = 'preview-image';
+
+
+        img.dataset.inputId = inputId;
+
+
+        previewContainer.appendChild(img);
+
+        cropModal.hide();
+      }, 'image/jpeg');
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+    function clearFile(icon) {
+      const wrapper = icon.closest('.file-input-wrapper');
+      const input = wrapper.querySelector('input[type="file"]');
+      input.value = '';
+      icon.style.display = 'none';
+
+      // Remove associated preview image from previewImages container
+      const allPreviews = document.querySelectorAll('#previewImages img');
+      allPreviews.forEach(preview => {
+        // Check if this preview image was created from this input
+        if (preview.dataset.inputId === input.dataset.inputId) {
+          preview.remove();
+        }
+      });
+
+      // Optional: also remove hidden input from croppedImages div
+      const hiddenInputs = croppedImages.querySelectorAll('input[type="hidden"]');
+      hiddenInputs.forEach(hiddenInput => {
+        if (hiddenInput.dataset.inputId === input.dataset.inputId) {
+          hiddenInput.remove();
+        }
+      });
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Product</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <style>
+    .image-preview {
+      position: relative;
+      display: inline-block;
+      margin: 10px;
+    }
+    .image-preview img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border: 1px solid #ccc;
+    }
+    .cancel-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #cropModal .modal-dialog {
+      max-width: 600px;
+    }
+    #croppedImages input[type="hidden"] {
+      display: none;
+    }
+  </style>
+</head>
+<body class="container mt-5">
+
+  <h2>Add Product</h2>
+  <form id="productForm" action="/admin/add-product" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label>Product Name</label>
+      <input type="text" name="productName" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Author</label>
+      <input type="text" name="author" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Category</label>
+      <select name="category" class="form-control" required>
+        <% categories.forEach(category => { %>
+          <option value="<%= category._id %>"><%= category.name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Price</label>
+      <input type="number" name="regularPrice" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Quantity</label>
+      <input type="number" name="quantity" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Upload Images (Max: 3)</label><br>
+      <input type="file" id="imageInput" accept="image/*">
+      <div id="croppedImages"></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+   Crop Modal 
+  <div class="modal fade" id="cropModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Crop Image</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div><img id="cropImage" style="width: 100%"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cropBtn" class="btn btn-success">Crop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+  <script>
+    const imageInput = document.getElementById("imageInput");
+    const croppedImages = document.getElementById("croppedImages");
+    const cropModal = new bootstrap.Modal(document.getElementById("cropModal"));
+    const cropImage = document.getElementById("cropImage");
+
+    let cropper;
+    let croppedCount = 0;
+
+    imageInput.addEventListener("change", (e) => {
+      if (croppedCount >= 3) {
+        alert("You can only upload 3 images.");
+        return;
+      }
+
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        cropImage.src = e.target.result;
+        cropModal.show();
+
+        cropper = new Cropper(cropImage, {
+          aspectRatio: 1,
+          viewMode: 1,
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("cropBtn").addEventListener("click", () => {
+      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+
+        // Create image preview box
+        const previewDiv = document.createElement("div");
+        previewDiv.className = "image-preview";
+
+        const img = document.createElement("img");
+        img.src = url;
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = "×";
+        cancelBtn.className = "cancel-btn";
+        cancelBtn.addEventListener("click", () => {
+          previewDiv.remove();
+          croppedCount--;
+        });
+
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "productImage";
+        hiddenInput.value = canvas.toDataURL("image/jpeg");
+
+        previewDiv.appendChild(cancelBtn);
+        previewDiv.appendChild(img);
+        previewDiv.appendChild(hiddenInput);
+        croppedImages.appendChild(previewDiv);
+
+        croppedCount++;
+        cropper.destroy();
+        cropModal.hide();
+        imageInput.value = "";
+      });
+    });
+  </script>
+
+</body>
+</html> -->

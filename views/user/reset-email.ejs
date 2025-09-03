@@ -1,0 +1,98 @@
+<%- include("../partials/user/header") %>
+<link rel="stylesheet" href="/css/change-name.css">
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
+    <div class="card-body">
+      <h3 class="card-title text-center mb-4">Reset Email</h3>
+      
+      <form id="emailForm">
+        <div class="mb-3">
+          <!-- <label class="form-label">New Email</label> -->
+          <input type="email" id="email" name="email" class="form-control" placeholder="Enter new email">
+          <div class="text-danger" id="email-error"></div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-save flex-fill">Save</button>
+          <a href="/userProfile" class="btn btn-cancel flex-fill">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('emailForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  if(!validateForm()) return;
+
+  const email = document.getElementById('email').value.trim();
+
+  try {
+    const response = await fetch('/reset-email', {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email })
+    });
+
+    const data = await response.json();
+
+    if(response.ok){
+      Swal.fire({
+        icon: 'success',
+        title: 'Email Updated',
+        text: data.message || 'Your email has been updated successfully',
+        confirmButtonColor: '#28a745'
+      }).then(() => {
+        window.location.href = '/userProfile';
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: data.error || 'Something went wrong',
+        confirmButtonColor: '#dc3545'
+      });
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'An unexpected error occurred',
+      confirmButtonColor: '#dc3545'
+    });
+  }
+});
+
+
+const emailInput = document.getElementById('email')
+const emailError = document.getElementById('email-error');
+emailInput.addEventListener('input', () => { emailError.textContent = ''})
+
+function validateForm(){
+  
+  const email = emailInput.value.trim();
+  
+  emailError.textContent = '';
+
+  
+
+  if(email === ''){
+    emailError.textContent = 'Please enter an email';
+    return false;
+  }
+
+  // Basic email format check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!emailRegex.test(email)){
+    emailError.textContent = 'Please enter a valid email address';
+    return false;
+  }
+
+  return true;
+}
+</script>

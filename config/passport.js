@@ -37,23 +37,14 @@ async (accessToken, refreshToken, profile, done)=>{
 //serialize
 //storing user details in session
 passport.serializeUser((user,done)=>{
-    // console.log('Serializing user:', user._id);
     done(null,user._id)
 });
 
-// passport.deserializeUser(async(id,done)=>{
-//     try {
-//         const user = await User.findById(id)
-//         // console.log('Deserialized user:', user);
-//         done(null, user);
-//     } catch (err) {
-//         done(err,null)
-//     }
-// })
+//deserialize
+//fetch user from DB using id
 passport.deserializeUser((id, done) => {
     User.findById(id)
         .then(user => {
-            // console.log('Deserialized user:', user);
             done(null, user);
         })
         .catch(err => done(err));

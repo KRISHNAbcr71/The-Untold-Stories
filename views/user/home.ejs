@@ -3,8 +3,8 @@
   <link rel="stylesheet" href="/css/home.css">
 
   <!-- Banner -->
-  <div class="main-slider">
-    <!-- Slide 1 -->
+  <!-- <div class="main-slider">
+     Slide 1 
     <div class="slider-item">
       <div class="banner-content">
         <h2 class="banner-title">Life of the Wild</h2>
@@ -16,7 +16,7 @@
       </div>
       <img src="images/main-banner1.jpg" alt="banner" class="banner-image" />
     </div>
-    <!-- Slide 2 -->
+     Slide 2 
     <div class="slider-item">
       <div class="banner-content">
         <h2 class="banner-title">Birds gonna be Happy</h2>
@@ -27,78 +27,51 @@
       </div>
       <img src="images/main-banner2.jpg" alt="banner" class="banner-image" />
     </div>
-  </div>
+  </div> -->
+
+
+
+
+
+
+
+
+
+
+
 
   <!-- Featured Books -->
   <section id="featured-books" class="py-5 my-5">
     <div class="container">
       <div class="text-center mb-5">
-        <span class="subtitle">Editor's Picks</span>
-        <h2 class="section-heading">Top Featured Books</h2>
+        <h2 class="section-heading">New Arrivals</h2>
       </div>
 
       <div class="row g-4">
         <!-- Book Card -->
-        <div class="col-md-3 col-sm-6">
-
-          <div class="book-card">
-            <div class="image-wrapper">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item1.jpg" alt="Book 1" class="book-image">
-            </div>
-            <div class="book-info">
-              <h5 class="book-title">Simple Way of Peace Life</h5>
-              <p class="book-author">by Armor Ramsey</p>
-              <p class="book-price">$40.00</p>
-              <button class="btn btn-buy">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
+         <%if(products.length>0){%>
+         <%for(let i=0; i<products.length; i++){%>
         <div class="col-md-3 col-sm-6">
           <div class="book-card">
             <div class="image-wrapper">
               <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item2.jpg" alt="Book 2" class="book-image">
+              
+              <a href="/productDetails?id=<%=products[i]._id%>">
+              <img src="/<%=products[i].productImage[0]%>" alt="<%=products[i].productName%>" class="book-image">
+              </a>
             </div>
             <div class="book-info">
-              <h5 class="book-title">Great Travel at Desert</h5>
-              <p class="book-author">by Sanchit Howdy</p>
-              <p class="book-price">$38.00</p>
+              <h5 class="book-title"><%=products[i].productName%></h5>
+              <p class="book-author"><%=products[i].author%></p>
+              <p class="book-price"><%=products[i].price%></p>
               <button class="btn btn-buy">Add to Cart</button>
             </div>
           </div>
         </div>
-
-        <div class="col-md-3 col-sm-6">
-          <div class="book-card">
-            <div class="image-wrapper">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item3.jpg" alt="Book 2" class="book-image">
-            </div>
-            <div class="book-info">
-              <h5 class="book-title">The Lady Beauty Scarlett</h5>
-              <p class="book-author">by Arthur Doyle</p>
-              <p class="book-price">$45.00</p>
-              <button class="btn btn-buy">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-          <div class="book-card">
-            <div class="image-wrapper">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item4.jpg" alt="Book 2" class="book-image">
-            </div>
-            <div class="book-info">
-              <h5 class="book-title">Once Upon a Time</h5>
-              <p class="book-author">by Klien Marry</p>
-              <p class="book-price">$35.00</p>
-              <button class="btn btn-buy">Add to Cart</button>
-            </div>
-          </div>
-        </div>
+        <%}%>
+        <%}else{%>
+          <p class="text-center">No new arrivals right now. Check back later!</p>
+        <%}%>
       </div>
 
       <div class="row">
@@ -112,6 +85,19 @@
       </div>
     </div>
   </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   <!-- Best selling book -->

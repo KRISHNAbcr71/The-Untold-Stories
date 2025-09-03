@@ -1,161 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Customers</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Add Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.15/dist/sweetalert2.min.css">
 
-  <style>
-    .admin-image {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-    .nav-link {
-      margin: 0 10px;
-    }
-    footer {
-      background-color: #f8f9fa;
-      padding: 10px 0;
-      text-align: center;
-      margin-top: auto;
-    }
-    .navbar {
-      background-color: #343a40;
-    }
-    .navbar .nav-link, .navbar-brand, .dropdown-toggle {
-      color: white;
-    }
-    .navbar .nav-link:hover, .navbar-brand:hover, .dropdown-item:hover {
-      color: #ffc107;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .content {
-      flex: 1;
-    }
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.15/dist/sweetalert2.min.js"></script>
 
 
+    <style>
+        body {
+            background-color: #ffffff;
+            display: flex;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        html, body {
+    overflow-y: auto;
+    height: 100%;
+}
 
-    .search-clear-btn {
-      cursor: pointer;
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      color: #aaa;
-    }
-    .search-container {
-      position: relative;
-    }
-    .search-input {
-      padding-right: 30px;
-    }
-    .action-buttons button {
-      margin-right: 5px;
-    }
-    th, td {
-      vertical-align: middle;
-    }
+        .sidebar {
+            width: 250px;
+            background: #828282;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            text-align: center;
+        }
+        .profile-section {
+            padding: 20px;
+        }
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+        }
+        .sidebar ul li:hover {
+            background: #150107;
+        }
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar ul li a i {
+            margin-right: 15px;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+        .content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    overflow-y: auto;  
+    max-height: 100vh;  
+}
 
-  </style>
+.header {
+    position: relative;  
+    width: 100%;
+}
+
+        .header {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            width: calc(100% - 250px);
+            
+            top: 0;
+            left: 40px;
+            z-index: 1000;
+        }
+        .header h1 {
+            color: #000000;
+            margin: 0;
+        }
+        .form-container {
+            margin-top: 80px;
+            background: rgb(81, 81, 81);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin-left: 30px;
+            margin-right: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-container input, .form-container select, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .image-upload {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .image-upload input {
+            width: 70%;
+        }
+        .save-button {
+            background: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .save-button:hover {
+            background: #218838;
+        }
+        .form-container button.publish {
+            background: #007bff;
+            margin-top: 10px;
+        }
+        .form-container button.publish:hover {
+            background: #0056b3;
+        }
+        .image-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 90%;
+        }
+        .modal img {
+            max-width: 100%;
+        }
+        table {
+            width: 100%;
+        }
+        table td {
+            padding: 10px;
+        }
+        .image-upload {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}.image-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; 
+    padding: 10px;
+    background: #2c2c2c; 
+    border-radius: 10px; 
+}
+
+.custom-file-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.image-preview {
+    width: 120px;
+    height: 120px; 
+    object-fit: cover;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+    </style>
 </head>
-
 <body>
-
-  <!-- Header -->
-  <nav class="navbar navbar-expand-lg navbar-dark px-3">
-    <a class="navbar-brand" href="#">The Untold Stories</a>
-
-    <div class="collapse navbar-collapse justify-content-center">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Customers</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Category</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Add Product</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Coupon</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Banner</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Orders</a></li>
-      </ul>
+    <div class="sidebar">
+        <div class="profile-section">
+            <img src="/images/WhatsApp Image 2025-03-04 at 21.15.51_2d23995d.jpg" alt="Profile Picture" class="profile-pic">
+            <h3>Aifa Sana</h3>
+        </div>
+        <ul>
+            <li><a href="/admin/dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+            <li><a href="/admin/customers"><i class="fa-solid fa-users"></i> Customers</a></li>
+            <li><a href="/admin/category"><i class="fa-solid fa-layer-group"></i> Genre</a></li>
+            <li><a href="/admin/addProducts/"><i class="fa-solid fa-plus-circle"></i> Add Products</a></li>
+            <li><a href="/admin/products"><i class="fa-solid fa-box"></i> Products</a></li>
+            <li><a href="/admin/referral-offers"><i class="fas fa-chart-bar"></i> Refferal</a></li>
+            <li><a href="/admin/coupon"><i class="fa-solid fa-tag"></i> Coupons</a></li>
+            <li><a href="/admin/banner"><i class="fa-solid fa-image"></i> Banner</a></li>
+            <li><a href="/admin/orders"><i class="fa-solid fa-cart-shopping"></i> Orders</a></li>
+            <li><a href="/admin/stock-management"><i class="fa-solid fa-boxes-stacked"></i> Stock Management</a></li>
+            <li><a href="/admin/sales-report"><i class="fas fa-chart-bar"></i> Sales Report</a></li>
+            <li><a href="/admin/wallet-transactions"><i class="fa-solid fa-wallet"></i> Wallet Management</a></li>
+        </ul>
+        <form action="/admin/logout" method="GET">
+            <button type="submit" style="margin-top: 20px; padding: 10px 20px; border-radius: 30px; background: #333; color: white; border: none;">Logout</button>
+        </form>
     </div>
-
-    <!-- Admin Dropdown -->
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://via.placeholder.com/40" alt="Admin" class="admin-image">
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-        <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
-      </ul>
+    <div class="content">
+        <div class="header">
+            <h1>Edit Product</h1>
+            <div class="form-container">
+                <form action="/admin/editProduct/<%= product._id %>" method="POST" enctype="multipart/form-data" id="productForm">
+                    <table>
+                        <tr>
+                            <td><label>Product Name</label></td>
+                            <td><input type="text" name="product_name" id="product_name" value="<%= product.productName %>" required></td>
+                        </tr>
+                        <tr>
+                            <td><label>Full Description</label></td>
+                            <td><textarea name="description" id="dec" rows="4" required><%= product.description %></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label>Regular Price ($)</label></td>
+                            <td><input type="number" name="regular_price" id="regular_price" value="<%= product.regularPrice %>" required></td>
+                        </tr>
+                        <tr>
+                            <td><label>Sale Price ($)</label></td>
+                            <td><input type="number" name="sale_price" id="sale_price" value="<%= product.salePrice %>"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Quantity</label></td>
+                            <td><input type="number" name="quantity" id="quantity" value="<%= product.quantity %>" required></td>
+                        </tr>
+                        <tr>
+                            <td><label>Category</label></td>
+                            <td>
+                                <select name="category" id="category" required>
+                                    <% if (cat && cat.length > 0) { %>
+                                        <% cat.forEach(function(catItem) { %>
+                                            <option value="<%= catItem._id %>" <%= product.category === catItem.name ? 'selected' : '' %>><%= catItem.name %></option>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <option value="" disabled>No categories available</option>
+                                    <% } %>
+                                </select>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <tr>
+                                <td><label>Choose Images</label></td>
+<td>
+    <div class="image-upload">
+        <label for="image1" class="custom-file-label">Replace Image</label>
+        <input type="file" name="image1" id="image1" accept="image/*" onchange="previewImage(event, 1)">
+        
+        <div class="image-container">
+            <img src="/<%= product.productImage && product.productImage[0] ? product.productImage[0] : 'default.jpg' %>" 
+                 alt="Product Image" class="image-preview" id="preview1">
+            <!-- <% if (product.productImage && product.productImage[0]) { %>
+                <button type="button" class="delete-btn" onclick="deleteSingleImage('<%= product.productImage[0] %>', '<%= product._id %>', 1)">Delete</button>
+            <% } %> -->
+        </div>
     </div>
-  </nav>
-
-  <!-- Content Area -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="mb-0">Customers</h3>
-
-    <!-- Search Bar -->
-    <div class="search-container">
-      <input type="text" class="form-control search-input" id="searchInput" placeholder="Search customers...">
-      <span class="search-clear-btn" id="clearSearch" style="display: none;">&times;</span>
+    
+    <div class="image-upload">
+        <label for="image2" class="custom-file-label">Replace Image</label>
+        <input type="file" name="image2" id="image2" accept="image/*" onchange="previewImage(event, 2)">
+        
+        <div class="image-container">
+            <img src="/<%= product.productImage && product.productImage[1] ? product.productImage[1] : 'default.jpg' %>" 
+                 alt="Product Image" class="image-preview" id="preview2">
+            <!-- <% if (product.productImage && product.productImage[1]) { %>
+                <button type="button" class="delete-btn" onclick="deleteSingleImage('<%= product.productImage[1] %>', '<%= product._id %>', 2)">Delete</button>
+            <% } %> -->
+        </div>
     </div>
-  </div>
+    
+    <div class="image-upload">
+        <label for="image3" class="custom-file-label">Replace Image</label>
+        <input type="file" name="image3" id="image3" accept="image/*" onchange="previewImage(event, 3)">
+        
+        <div class="image-container">
+            <img src="/<%= product.productImage && product.productImage[2] ? product.productImage[2] : 'default.jpg' %>" 
+                 alt="Product Image" class="image-preview" id="preview3">
+            <!-- <% if (product.productImage && product.productImage[2]) { %>
+                <button type="button" class="delete-btn" onclick="deleteSingleImage('<%= product.productImage[2] %>', '<%= product._id %>', 3)">Delete</button>
+            <% } %> -->
+        </div>
+    </div>
+    
 
-  <!-- Customer Table -->
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped text-center align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="customerTable">
-        <!-- Example row -->
-        <tr>
-          <td>John Doe</td>
-          <td>john@example.com</td>
-          <td>1234567890</td>
-          <td class="action-buttons">
-            <button class="btn btn-sm btn-danger">Block</button>
-            <button class="btn btn-sm btn-success">Unblock</button>
-          </td>
-        </tr>
-        <!-- You can use loop for more rows if rendering with a backend -->
-      </tbody>
-    </table>
-  </div>
- 
-
-  <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-3 mt-auto">
-    <p class="mb-0">© 2025 The Untold Stories Admin. All rights reserved.</p>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    const searchInput = document.getElementById("searchInput");
-    const clearBtn = document.getElementById("clearSearch");
-
-    searchInput.addEventListener("input", () => {
-      clearBtn.style.display = searchInput.value ? "block" : "none";
-    });
-
-    clearBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      clearBtn.style.display = "none";
-      searchInput.focus();
-    });
-  </script>
+                            </tr>
+                        </tr>
+                    </table>
+                    <button type="submit" class="publish">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+            <script>
+                // --------------------------------------------------------------------
+       let cropper;  
+function validateForm() {
+    const productName = document.getElementById("product_name").value.trim();
+    const description = document.getElementById("dec").value.trim();
+    const regularPrice = document.getElementById('regular_price').value.trim();
+    const salePrice = document.getElementById('sale_price').value.trim();
+    const quantity = document.getElementById('quantity').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const image1 = document.getElementById('image1').files.length;
+    const image2 = document.getElementById('image2').files.length;
+    const image3 = document.getElementById('image3').files.length;
+
+    const nameRegex = /^[A-Za-z\s]{4,}$/;
+
+    if (!nameRegex.test(productName)) {
+        Swal.fire("Invalid Name", "Product name must be at least 4 letters and contain only alphabets.", "error");
+        return false;
+    }
+
+    if (description.length < 10) {
+        Swal.fire("Invalid Description", "Description must be at least 10 characters long.", "error");
+        return false;
+    }
+
+    if (regularPrice === "" || isNaN(regularPrice) || parseFloat(regularPrice) <= 0) {
+        Swal.fire("Invalid Regular Price", "Regular price must be a valid number greater than 0.", "error");
+        return false;
+    }
+
+    if (salePrice !== "" && parseFloat(salePrice) > parseFloat(regularPrice)) {
+        Swal.fire("Invalid Sale Price", "Sale price cannot be greater than regular price.", "error");
+        return false;
+    }
+
+    if (quantity === "" || isNaN(quantity) || parseInt(quantity) <= 0) {
+        Swal.fire("Invalid Quantity", "Quantity must be a valid number greater than 0.", "error");
+        return false;
+    }
+
+    if (!category) {
+        Swal.fire("Category Required", "Please select a category.", "error");
+        return false;
+    }
+    return true;
+}
+
+// ------------------------------------------------------------------------------
+document.getElementById("productForm").addEventListener("submit", function(event) {
+    if (!validateForm()) {
+        event.preventDefault();
+    }
+});
+function previewImage(event, index) {
+    const file = event.target.files[0];
+
+    if (file) {
+        const allowedTypes = ["image/jpeg", "image/png"];
+        
+        if (!allowedTypes.includes(file.type)) {
+            Swal.fire("Invalid File", "Only JPG and PNG formats are allowed.", "error");
+            event.target.value = ""; 
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            showCropperModal(e.target.result, index);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// ------------------------------------------------------------------------------
+function showCropperModal(imageSrc, index) {
+    Swal.fire({
+        title: 'Crop Image',
+        html: '<img id="cropperImage" src="' + imageSrc + '" style="max-width:100%;">',
+        showCancelButton: true,
+        confirmButtonText: 'Crop',
+        willOpen: () => {
+            const image = document.getElementById('cropperImage');
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 2,
+            });
+        },
+        preConfirm: () => {
+            return new Promise((resolve) => {
+                if (cropper) {
+                    resolve(cropper.getCroppedCanvas().toDataURL());
+                } else {
+                    resolve(imageSrc); 
+                }
+            });
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`preview${index}`).src = result.value;
+        }
+    });
+}
+// -------------------------------------------------------------------------------------------
+async function deleteSingleImage(imageName, productId) {
+    console.log("Deleting Image:", imageName); 
+    console.log("Product ID:", productId); 
+
+    const confirmDelete = await Swal.fire({
+        title: "Are you sure?",
+        text: "This image will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel"
+    });
+
+    if (confirmDelete.isConfirmed) {
+        try {
+            const response = await fetch(`/admin/deleteImage/${productId}/${encodeURIComponent(imageName)}`, {
+                method: "DELETE",
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Swal.fire("Deleted!", data.message, "success");
+                document.querySelectorAll(".image-preview").forEach((img) => {
+                    if (img.src.includes(imageName)) {
+                        img.src = "/uploads/productImages/default.jpg";
+                    }
+                });
+            } else {
+                Swal.fire("Error", data.message, "error");
+            }
+        } catch (error) {
+            Swal.fire("Error", "Something went wrong!", "error");
+            console.error("Delete Error:", error);
+        }
+    }
+}
+</script>
 </html>

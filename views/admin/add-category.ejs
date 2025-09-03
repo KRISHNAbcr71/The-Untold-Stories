@@ -1,0 +1,133 @@
+<%-include("../../views/partials/admin/header")%>
+
+    <!-- Form to Add New Category -->
+    <div class="card p-4 border border-dark"
+        style="width: 100%; max-width: 1300px; margin-left: 200px;margin-top: 100px;">
+        <form method="POST" id="categoryForm" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
+
+            <!-- Name Field -->
+            <div class="mb-3">
+                <label for="categoryName" class="form-label fw-semibold">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" name="name" placeholder="Enter category name">
+                <div id="name-error" class="error-message text-danger small mt-1"></div>
+            </div>
+
+            <!-- Description Field -->
+            <div class="mb-3">
+                <label for="descriptionId" class="form-label fw-semibold">Description</label>
+                <textarea class="form-control" id="descriptionId" name="description" rows="3"
+                    placeholder="Enter description"></textarea>
+                <div id="description-error" class="error-message text-danger small mt-1"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Create Category</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        // Handles form submission for adding a new category
+        function handleFormSubmit(event) {
+            event.preventDefault()
+            if (!validateForm()) {
+                return false
+            }
+
+            const name = document.getElementById('categoryName').value
+            const description = document.getElementById('descriptionId').value
+
+            fetch('/admin/addCategory', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ name, description })
+            })
+                .then(response => {
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            throw new Error(data.error || 'An error occurred.')
+                        }
+                        return data
+                    });
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Category added',
+                        text: 'The Category has been successfully added.'
+                    })
+                        .then(() => {
+                            window.location.href = '/admin/category';
+                            //window.location.href = '/admin/category?page=1';
+                        });
+                })
+
+                .catch((error) => {
+                    if (error.message === 'Category already exists.') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops',
+                            text: 'Category already exists.'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops',
+                            text: 'An error occurred while adding the category.'
+                        });
+                    }
+                });
+        }
+
+
+
+        // Validates the form inputs for category name and description
+        function validateForm() {
+            clearErrorMessages()
+            const name = document.getElementById('categoryName').value.trim()
+            const description = document.getElementById('descriptionId').value.trim()
+            isValid = true
+
+            if (name === '') {
+                displayErrorMessage('name-error', 'Please enter a name.')
+                isValid = false
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                displayErrorMessage('name-error', 'Category name only contain alphabetic characters.')
+                isValid = false
+            }
+
+            if (description === '') {
+                displayErrorMessage('description-error', 'Please enter description')
+                isValid = false
+            }
+
+            return isValid
+        }
+
+
+        // Displays error message in the specified element
+        function displayErrorMessage(elementId, message) {
+            let errorElement = document.getElementById(elementId)
+            errorElement.innerText = message
+            errorElement.style.display = 'block'
+        }
+
+
+        // Clears all error messages displayed in the form
+        function clearErrorMessages() {
+            let errorElements = document.getElementsByClassName('error-message')
+            Array.from(errorElements).forEach((element) => {
+                element.innerText = ''
+                element.style.display = 'none'
+            })
+        }
+
+    </script>
+    <%-include("../../views/partials/admin/footer")%>

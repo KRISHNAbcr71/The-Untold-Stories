@@ -17,7 +17,7 @@ const addressSchema = new Schema({
             type: String,
             required: true
         },
-        city: {
+        landmark: {
             type: String,
             required: true
         },
@@ -25,12 +25,12 @@ const addressSchema = new Schema({
             type: String,
             required: true
         },
-        landmark: {
-            type: String,
-            required: true
-        },
         pincode: {
             type: Number,
+            required: true
+        },
+        fullAddress: {
+            type: String,
             required: true
         },
         phone: {
@@ -39,7 +39,7 @@ const addressSchema = new Schema({
         },
         altPhone: {
             type: String,
-            required: true
+            // required: true
         }
     }]
 })

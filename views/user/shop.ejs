@@ -1,4 +1,3 @@
-
 <%-include("../../views/partials/user/header")%>
 
     <link rel="stylesheet" href="/css/shop.css">
@@ -24,112 +23,176 @@
     <section class="shop-layout">
         <div class="container">
             <div class="shop-topbar">
-                <div class="results-count">Showing 1–12 of 126 results</div>
+                <div class="results-count">
+                    Showing
+                    <%if(products.length> 0) {%>
+                        <%= (currentPage - 1) * limit + 1 %> - <%= (currentPage - 1) * limit + products.length %>
+                                <%}else{%>
+                                    0
+                                    <%}%>
+                                        of <%= totalProducts %> results
+                                            <!-- 1–12 of 126 results -->
+                </div>
                 <div class="sort-box">
-                    Sort by Price:
-                    <select>
-                        <option selected>Low To High</option>
-                        <option>High To Low</option>
-                        <option>A - Z</option>
-                        <option>Z - A</option>
-                    </select>
+                    <!-- Sort by Price: -->
+                    <form action="/shop" method="get">
+                        <% if (search) { %>
+                            <input type="hidden" name="search" value="<%= search %>">
+                            <% } %>
+                                <% if(category) { %>
+                                    <input type="hidden" name="category" value="<%= category %>">
+                                    <% } %>
+                                        <% if (minPrice) { %>
+                                            <input type="hidden" name="minPrice" value="<%= minPrice %>">
+                                            <% } %>
+
+                                                <% if (maxPrice) { %>
+                                                    <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
+                                                    <% } %>
+                                                        <select name="sort" onchange="this.form.submit()">
+                                                            <option value="" disabled <%=!sort ? 'selected' :'' %>>Sort
+                                                            </option>
+                                                            <option value="priceLowHigh" <%=sort=="priceLowHigh"
+                                                                ? 'selected' : '' %>>Low To High
+                                                            </option>
+                                                            <option value="priceHighLow" <%=sort=="priceHighLow"
+                                                                ? 'selected' : '' %>>High To Low
+                                                            </option>
+                                                            <option value="a-z" <%=sort=="a-z" ? 'selected' : '' %>>A -
+                                                                Z
+                                                            </option>
+                                                            <option value="z-a" <%=sort=="z-a" ? 'selected' : '' %>>Z -
+                                                                A
+                                                            </option>
+                                                        </select>
+                    </form>
                 </div>
             </div>
 
             <div class="shop-content">
                 <!-- Sidebar -->
                 <aside class="sidebar">
+
                     <!-- Search -->
-                    <form class="d-flex align-items-center ms-2">
-                        <input class="search-input" type="search" placeholder="Search" />
-                    </form>
+                    <!-- <form class="d-flex align-items-center ms-0 mb-4 searchForm" method="get" action="/shop">
+                        <input class="search-form" type="search" placeholder="Search books here..." value="<%= search || '' %>"/>
+                    </form> -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                        <h2 class="mb-0">Category</h2>
+                        <div class="search-container position-relative">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search books..."
+                                value="<%= search || '' %>">
+                            <span class="search-clear" id="clearSearch" style="display:none;">&times;</span>
+                        </div>
+                    </div>
+
                     <!-- Filter by category -->
-                    <details class="filter-section" open>
-                        <summary>Categories </summary>
-                        <ul class="filter-list">
-                            <li><a href="#">Fiction</a></li>
-                            <li><a href="#">Non-fiction</a></li>
-                            <li><a href="#">Adventures</a></li>
-                            <li><a href="#">Romantic</a></li>
-                            <li><a href="#">Horror</a></li>
-                        </ul>
-                    </details>
+
+                    <div class="card p-3 shadow-sm">
+  <h5 class="mb-3">Categories</h5>
+  <div class="list-group">
+    <a href="/shop" class="list-group-item list-group-item-action <%= !category ? 'active' : '' %>">
+      All
+    </a>
+    <% categories.forEach(cat => { %>
+      <a href="/shop?category=<%= cat._id %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort ? '&sort=' + sort : '' %><%= !isNaN(minPrice) ? '&minPrice=' + minPrice : '' %><%= !isNaN(maxPrice) ? '&maxPrice=' + maxPrice : '' %>"
+         class="list-group-item list-group-item-action <%= category == cat._id ? 'active' : '' %>">
+        <%= cat.name %>
+      </a>
+    <% }) %>
+  </div>
+</div>
+
+
+
+                    
 
                     <!-- Filter by price -->
-                    <details class="filter-section">
-                        <summary>Filter by Price </summary>
-                        <ul class="filter-list">
-                            <li><a href="#">Under ₹500</a></li>
-                            <li><a href="#">₹500 - ₹1000</a></li>
-                            <li><a href="#">₹1000 - ₹2000</a></li>
-                            <li><a href="#">Above ₹2000</a></li>
-                        </ul>
-                    </details>
+
+                    <div class="card p-3 shadow-sm mt-4">
+  <h5 class="mb-3">Filter by Price</h5>
+  <div class="list-group">
+    <a href="/shop?minPrice=0&maxPrice=500<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+       class="list-group-item list-group-item-action <%= minPrice == 0 && maxPrice == 500 ? 'active' : '' %>">
+      Under ₹500
+    </a>
+
+    <a href="/shop?minPrice=500&maxPrice=1000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+       class="list-group-item list-group-item-action <%= minPrice == 500 && maxPrice == 1000 ? 'active' : '' %>">
+      ₹500 - ₹1000
+    </a>
+
+    <a href="/shop?minPrice=1000&maxPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+       class="list-group-item list-group-item-action <%= minPrice == 1000 && maxPrice == 2000 ? 'active' : '' %>">
+      ₹1000 - ₹2000
+    </a>
+
+    <a href="/shop?minPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+       class="list-group-item list-group-item-action <%= minPrice == 2000 ? 'active' : '' %>">
+      Above ₹2000
+    </a>
+  </div>
+</div>
+
+
+                    
+
+
+
+
+                   
                 </aside>
+
+
 
                 <!-- Products -->
                 <main class="product-grid">
+                    <%if(products.length> 0){%>
+                        <% products.forEach(product=> {%>
 
-                    <div class="product-card">
-                        <div class="product-img-wrapper">
-                            <img src="images/product-item1.jpg" alt="Product">
-                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
-                            <button class="btn-buy">Add to Cart</button>
-                        </div>
-                        <h5>Piqué Biker Jacket</h5>
-                        <p class="price">$67.24</p>
-                    </div>
+                            <div class="product-card">
+                                <div class="product-img-wrapper">
+                                    <a href="/productDetails?id=<%=product._id%>">
+                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                                    </a>
+                                    <a href="/wishlist/add/<%= product._id %>" class="wishlist-icon">❤️</a>
 
-                    <div class="product-card">
-                        <div class="product-img-wrapper">
-                            <img src="images/product-item1.jpg" alt="Product">
-                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
-                            <button class="btn-buy">Add to Cart</button>
-                        </div>
-                        <h5>Piqué Biker Jacket</h5>
-                        <p class="price">$67.24</p>
-                    </div>
 
-                    <div class="product-card">
-                        <div class="product-img-wrapper">
-                            <img src="images/product-item2.jpg" alt="Product">
-                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
-                            <button class="btn-buy">Add to Cart</button>
-                        </div>
-                        <h5>Piqué Biker Jacket</h5>
-                        <p class="price">$67.24</p>
-                    </div>
 
-                    <div class="product-card">
-                        <div class="product-img-wrapper">
-                            <img src="images/product-item3.jpg" alt="Product">
-                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
-                            <button class="btn-buy">Add to Cart</button>
-                        </div>
-                        <h5>Piqué Biker Jacket</h5>
-                        <p class="price">$67.24</p>
-                    </div>
+                                </div>
+                                <h5>
+                                    <%= product.productName %>
+                                </h5>
+                                <p class="price">₹<%= product.price %>
+                                </p>
+                                <form action="/cart/add/<%= product._id %>" method="post">
+                                    <button class="btn-buy">Add to Cart</button>
+                                </form>
+                            </div>
 
-                    <div class="product-card">
-                        <div class="product-img-wrapper">
-                            <img src="images/product-item4.jpg" alt="Product">
-                            <a href="/wishlist.html" class="wishlist-icon">❤️</a>
-                            <button class="btn-buy">Add to Cart</button>
-                        </div>
-                        <h5>Piqué Biker Jacket</h5>
-                        <p class="price">$67.24</p>
-                    </div>
+                            <%})%>
 
+                                <%}else{%>
+                                    <p>No products found.</p>
+                                    <%}%>
                 </main>
             </div>
         </div>
 
 
 
-        <div class="pagination-container">
-            <a href="#" class="page-link active">1</a>
-            <a href="#" class="page-link">2</a>
-            <a href="#" class="page-link">3</a>
+        <div class="container mt-3 pagination-container">
+            <nav aria-label="Page Navigation">
+                <ul class="pagination justify-content-center mb-20">
+                    <% for(let i=1; i <=totalPages; i++) { %>
+                        <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>">
+                                <%= i %>
+                            </a>
+                        </li>
+                        <% } %>
+                </ul>
+            </nav>
         </div>
 
     </section>
@@ -137,5 +200,36 @@
     <!-- jQuery + Slick JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearch');
+
+        // Show/hide clear button based on input
+        searchInput.addEventListener('input', () => {
+            clearBtn.style.display = searchInput.value ? 'block' : 'none';
+        });
+
+        // Trigger search on Enter
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                window.location.href = `/shop?search=${encodeURIComponent(query)}&page=1`;
+            }
+        });
+
+        // Clear search
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            window.location.href = '/shop'; // Reload full list
+        });
+
+        // Initialize clear button on page load
+        if (searchInput.value) {
+            clearBtn.style.display = 'block';
+        }
+
+    </script>
 
     <%-include("../../views/partials/user/footer")%>

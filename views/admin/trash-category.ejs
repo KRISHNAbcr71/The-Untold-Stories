@@ -1,0 +1,180 @@
+<%-include("../../views/partials/admin/header")%>
+<link rel="stylesheet" href="/css/category.css">
+
+
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h2 class="mb-0">Category</h2>
+        <div class="search-container position-relative">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search categories..."
+                value="<%= search || '' %>">
+            <span class="search-clear" id="clearSearch" style="display:none;">&times;</span>
+        </div>
+    </div>
+
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center mt-4">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Restore</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%if(noResults){%>
+                    <tr>
+                        <td colspan="3">No deleted categories found.</td>
+                    </tr>
+                <%}else{%>    
+               <%cat.forEach((category,index)=>{%>
+                    <tr>
+                        <td><%=category.name%></td>
+                        <td><%=category.description%></td>
+                        <td>
+                            <!-- <a href="/admin/restore-category/<%= category._id %>" class="btn btn-success btn-sm">Restore</a> -->
+                             <button class="btn btn-dark btn-sm restore-btn"
+                                data-id="<%= category._id %>">Restore</button>
+                        </td>
+                    </tr>
+                    <!-- Add more rows here -->
+                <%})%>
+                <%}%>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    <div class="container mt-3">
+                <nav aria-label="Page Navigation">
+                    <ul class="pagination justify-content-center mb-20">
+                        <% for(let i=1; i <=totalPages; i++) { %>
+                            <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                            <% } %>
+                    </ul>
+                </nav>
+            </div>
+
+
+            <script>
+                const searchInput = document.getElementById('searchInput');
+                const clearBtn = document.getElementById('clearSearch');
+
+                // Show/hide clear button based on input
+                searchInput.addEventListener('input', () => {
+                    clearBtn.style.display = searchInput.value ? 'block' : 'none';
+                });
+
+                // Trigger search on Enter
+                searchInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        const query = searchInput.value.trim();
+                        window.location.href = `/admin/trash-category?search=${encodeURIComponent(query)}&page=1`;
+                    }
+                });
+
+                // Clear search
+                clearBtn.addEventListener('click', () => {
+                    searchInput.value = '';
+                    clearBtn.style.display = 'none';
+                    window.location.href = '/admin/trash-category'; // Reload full list
+                });
+
+                // Initialize clear button on page load
+                if (searchInput.value) {
+                    clearBtn.style.display = 'block';
+                }
+
+
+
+
+
+
+
+                 document.querySelectorAll('.restore-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const categoryId = this.dataset.id;
+
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "Do you want to restore this category?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, restore it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                fetch(`/admin/restore-category/${categoryId}`, {
+                                    method: 'PATCH', // use DELETE if route is delete
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            Swal.fire('Restored!', data.message, 'success').then(() => {
+                                                // location.reload(); // refresh page to show updated data
+                                                window.location.href = '/admin/category'
+                                            });
+                                        } else {
+                                            Swal.fire('Oops!', data.message || 'Something went wrong.', 'error');
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        Swal.fire('Error', 'Could not restore category.', 'error');
+                                    });
+                            }
+                        });
+                    });
+                });
+
+
+
+
+//                 document.addEventListener("DOMContentLoaded", () => {
+//     const restoreButtons = document.querySelectorAll(".restore-btn");
+
+//     restoreButtons.forEach(button => {
+//       button.addEventListener("click", async () => {
+//         const categoryId = button.getAttribute("data-id");
+
+//         const confirmRestore = confirm("Are you sure you want to restore this category?");
+//         if (!confirmRestore) return;
+
+//         try {
+//           const response = await fetch(`/admin/restore-category/${categoryId}`, {
+//             method: "PATCH",
+//             headers: {
+//               "Content-Type": "application/json"
+//             }
+//           });
+
+//           if (response.ok) {
+//             location.reload(); // reload page to reflect restored data
+//           } else {
+//             alert("Failed to restore category.");
+//           }
+//         } catch (error) {
+//           console.error("Error restoring category:", error);
+//           alert("Something went wrong.");
+//         }
+//       });
+//     });
+//   });
+
+
+
+            </script>
+
+
+    <%-include("../../views/partials/admin/footer")%>

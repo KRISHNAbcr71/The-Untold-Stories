@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Image</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .cropper-container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .cropper-container img {
+            max-width: 100%;
+        }
+        .save-button {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .save-button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="cropper-container">
+        <h2>Crop Image</h2>
+        <img id="cropImage" src="" alt="Image to crop">
+        <button class="save-button" onclick="saveCroppedImage()">Save</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+     
+const urlParams = new URLSearchParams(window.location.search);
+const index = urlParams.get('index');
+const imageData = localStorage.getItem(`imageToCrop_${index}`);
+
+const image = document.getElementById('cropImage');
+if (imageData) {
+    image.src = imageData;
+    image.onload = function () {
+        cropper = new Cropper(image, {
+            aspectRatio: 1, 
+            viewMode: 2,
+        });
+    };
+} else {
+    alert("No image found. Please upload again.");
+    window.location.href = "/admin/addProducts";
+}
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function saveCroppedImage() {
+    const canvas = cropper.getCroppedCanvas();
+    if (canvas) {
+        const croppedData = canvas.toDataURL("image/png"); 
+        const urlParams = new URLSearchParams(window.location.search);
+        const index = urlParams.get("index");
+
+        console.log("Saving cropped image for index:", index);
+        localStorage.setItem(`croppedImage_${index}`, croppedData);
+
+        window.location.href = `/admin/addProducts?index=${index}`
+    }
+}
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    </script>
+</body>
+</html>

@@ -10,10 +10,10 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    pages: {
-        type: Number,
-        required: true
-    },
+    // pages: {
+    //     type: Number,
+    //     required: true
+    // },
     author: {
         type: String,
         required: true
@@ -23,36 +23,49 @@ const productSchema = new Schema({
         ref: "Category",
         required: true
     },
-    regularPrice: {
+    // regularPrice: {
+    //     type: Number,
+    //     required: true
+    // },
+    price: {
         type: Number,
         required: true
     },
-    salePrice: {
-        type: Number,
-        required: true
-    },
-    productOffer: {
-        type: Number,
-        default: 0
-    },
+    // salePrice: {
+    //     type: Number,
+    //     required: true
+    // },
+    // productOffer: {
+    //     type: Number,
+    //     default: 0
+    // },
     quantity: {
         type: Number,
-        required: true
+        required: true,
+        min: [0, 'Quantity cannot be negative']
     },
     productImage: {
         type: [String],
         required: true
     },
-    isBlocked: {
+    isListed: {
         type: Boolean,
-        required: true
+        default: false
     },
     status: {
         type: String,
         enum: ['Available','Out of stock','Unavailable'],
         required: true,
         default: 'Available'
-    }
+    },
+    isDeleted: {
+        type: Boolean, 
+        default: false
+    },
+    deletedAt: {
+        type: Date,
+        default: null
+    },
 },{timestamps:true})
 
 const Product = mongoose.model("Product",productSchema)

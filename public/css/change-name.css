@@ -1,0 +1,14 @@
+.btn-save {
+    background-color: #fca311 !important ;
+    font-weight: bold;
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background-color: #6c757d;
+    color: white;
+}

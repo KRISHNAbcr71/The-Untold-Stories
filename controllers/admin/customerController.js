@@ -1,55 +1,46 @@
 const User = require('../../models/userSchema')
 
+
+
 const customerInfo = async (req, res) => {
   try {
     let search = req.query.search || "";
     let page = parseInt(req.query.page) || 1;
-    const limit = 3;
+    const limit = 10;
 
-    //Fetch matching users
-    const userData = await User.find({
+    const matchCondition = {
       isAdmin: false,
       $or: [
         { name: { $regex: ".*" + search + ".*", $options: "i" } },
         { email: { $regex: ".*" + search + ".*", $options: "i" } },
       ],
-    })
-      .limit(limit)  // how many results to fetch (3 per page)
-      .skip((page - 1) * limit)  // skips results based on page (e.g. page 2 skips 3 users)
-      .sort({ createdOn: -1 })  // most recent users first
+    };
+
+    const count = await User.countDocuments(matchCondition);
+
+    const userData = await User.find(matchCondition)
+      .sort({ createdOn: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .exec();
 
-
-      //Handle no result case
-      const noResults = userData.length === 0;
-
-    if (userData.length === 0) {
-      return res.render("customers", {
-        data: [],
-        totalPages: 0,
-        currentPage: page,
-        search: search,
-        noResults
+    for (let u of userData) {
+      const index = await User.countDocuments({
+        isAdmin: false,
+        createdOn: { $gt: u.createdOn }
       });
+      u.globalIndex = index + 1;
     }
 
-    //Count total matching customers for pagination
-    const count = await User.countDocuments({
-      isAdmin: false,
-      $or: [
-        { name: { $regex: ".*" + search + ".*", $options: "i" } },
-        { email: { $regex: ".*" + search + ".*", $options: "i" } },
-      ],
-    });
     const totalPages = Math.ceil(count / limit);
 
-    //Render customer view with all necessary data
     res.render("customers", {
       data: userData,
-      totalPages: totalPages,
+      totalPages,
       currentPage: page,
-      search:search,
-      noResults
+      limit,
+      search,
+      noResults: userData.length === 0
     });
 
   } catch (error) {
@@ -62,15 +53,15 @@ const customerInfo = async (req, res) => {
 
 
 
+
+
 const customerBlocked = async(req,res)=>{
   try {
     let id = req.query.id
     await User.updateOne({_id:id},{$set:{isBlocked:true}})
     res.status(200).json({ success: true });
-    // res.redirect('/admin/users')
     
   } catch (error) {
-    // res.redirect('/pageError')
      res.status(500).json({ success: false, error: 'Block failed' });
   }
 };
@@ -83,13 +74,14 @@ const customerUnblocked = async(req,res)=>{
     let id = req.query.id
     await User.updateOne({_id:id},{$set:{isBlocked:false}})
     res.status(200).json({ success: true });
-    // res.redirect('/admin/users')
     
   } catch (error) {
-    // res.redirect('/pageError')
      res.status(500).json({ success: false, error: 'Unblock failed' });
   }
 }
+
+
+
 
 module.exports = {
     customerInfo,

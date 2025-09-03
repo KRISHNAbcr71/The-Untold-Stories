@@ -1,0 +1,137 @@
+<%-include("../../views/partials/user/header")%>
+    <link rel="stylesheet" href="/css/address.css">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 sidebar">
+                <h2>KRISHNA BCR71</h2>
+                <a href="/userProfile" class="nav-link">My Profile</a>
+                <a href="/address" class="nav-link">Address</a>
+                <a href="#" class="nav-link">Orders</a>
+                <a href="#" class="nav-link">Wishlist</a>
+                <a href="#" class="nav-link">Wallet</a>
+            </div>
+
+            <div class="col-md-9 p-5">
+                <h2 class="mb-4">My Addresses</h2>
+
+                <!-- Example saved address card -->
+                <div class="address-card">
+                    <!-- Always show this "Add Address" card -->
+                    <div class="col-md-4 mb-3">
+                        <a href="/add-address" style="text-decoration: none;">
+                            <div class="card h-100 shadow-sm d-flex justify-content-center align-items-center text-center"
+                                style="cursor: pointer; width: 470px;">
+                                <div class="card-body">
+                                    <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
+                                    <p class="mt-2">Add New Address</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                
+                <%if(userAddress && userAddress.address.length > 0 ){%>
+                    <% userAddress.address.forEach((address)=>{%>
+                        <div class="address-card" style="margin-left: 10px;">
+                            <h5>
+                                <%=address.addressType %>
+                            </h5>
+                            <p><strong>
+                                    <%=address.name %>
+                                </strong></p>
+                            <p>Landmark: 
+                                <strong><%=address.landmark %></strong>
+                            </p>
+                            <p>State:
+                                <strong><%=address.state %></strong>
+                            </p>
+                            <p>Pincode:
+                                <strong><%=address.pincode %></strong>
+                            </p>
+                            <p>Full Address:
+                                <strong><%=address.fullAddress %></strong>
+                            </p>
+                            <p>Phone:
+                                <strong><%=address.phone %></strong>
+                            </p>
+                            <p>Alt Phone:
+                                <strong><%=address.altPhone %></strong>
+                            </p>
+                            <!-- <p>Phone: 1234567899 | Alt: 9876543210</p> -->
+                            <div class="address-actions">
+                                 <a href="/edit-address?id=<%=address._id%>" class="btn btn-sm btn-warning">Edit</a>
+                                 <a href="#" class="btn btn-sm btn-danger delete-btn"
+                                    data-id='<%=address._id%>'>Delete</a>
+                            </div>
+                        </div>
+                        <%})%>
+                            <%}else{%>
+                                <div class="address-card mb-3">
+                                    <div class="card h-100 shadow-sm d-flex justify-content-center align-items-center text-center p-4"
+                                        style="width: 470px; margin: auto;">
+                                        <div class="card-body">
+                                            <i class="bi bi-exclamation-circle"
+                                                style="font-size: 2rem; color: #888;"></i>
+                                            <p class="mt-2" style="color: #555; font-size: 1.2rem; font-style: italic;">
+                                                No address added yet.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%}%>
+                    </div>    
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault()
+                        const addressId = this.dataset.id;
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "Do you want to delete this address?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                fetch(`/delete-address/${addressId}`, {
+                                    method: 'DELETE', // use DELETE if route is delete
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            Swal.fire('Deleted!', data.message, 'success').then(() => {
+                                                location.reload(); // refresh page to show updated data
+                                            });
+                                        } else {
+                                            Swal.fire('Oops!', data.message || 'Something went wrong.', 'error');
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        Swal.fire('Error', 'Could not delete category.', 'error');
+                                    });
+                            }
+                        });
+                    });
+                });
+    </script>

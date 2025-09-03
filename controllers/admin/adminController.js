@@ -2,6 +2,9 @@ const User = require('../../models/userSchema')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
+
+
+
 const loadErrorPage = async(req,res)=>{
     try {
         res.status(500).render('error-page')
@@ -11,15 +14,15 @@ const loadErrorPage = async(req,res)=>{
 }
 
 
-
-
-
+// Controller to load the admin login page
 const loadLogin = async (req, res) => {
     try {
         if (req.session.admin) {
             return res.redirect('/admin/dashboard')
         }
-        res.render('admin-login', { message: null })
+        const message = req.session.message || null
+        req.session.message = null
+        res.render('admin-login', { message })
     } catch (error) {
         console.error('[Load login error]',error)
         res.redirect('/admin/pageError')
@@ -28,19 +31,21 @@ const loadLogin = async (req, res) => {
 };
 
 
-
+// Controller to handle admin login form submission
 const login = async (req,res)=>{
     try {
         const {email,password} = req.body
         const admin = await User.findOne({email, isAdmin:true})
 
         if(!admin){
-            return res.render('admin-login',{message:'Invalid email or not an admin'})
+            req.session.message = 'Invalid Email'
+            return res.redirect('/admin/login')
         }
 
         const passwordMatch = await bcrypt.compare(password,admin.password)
         if(!passwordMatch){
-            return res.render('admin-login',{message:'Incorrect password'})
+            req.session.message = 'Incorrect Password'
+            return res.redirect('/admin/login')
         }
 
         req.session.admin = true
@@ -52,8 +57,7 @@ const login = async (req,res)=>{
 }
 
 
-
-
+// Controller to load the admin dashboard page
 const loadDashboard = async (req, res) => {
     try {
         if (req.session.admin) {
@@ -67,6 +71,7 @@ const loadDashboard = async (req, res) => {
 }
 
 
+// Controller to handle admin logout
 const logout = async(req,res)=>{
     try {
         req.session.destroy(err=>{
@@ -82,6 +87,8 @@ const logout = async(req,res)=>{
         res.redirect('/pageError')
     }
 }
+
+
 module.exports = {
     loadErrorPage,
     loadLogin,

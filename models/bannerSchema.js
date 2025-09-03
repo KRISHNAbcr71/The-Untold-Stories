@@ -24,8 +24,16 @@ const bannerSchema = new Schema({
     endDate: {
         type: Date,
         required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
-})
+},{timestamps: true})
 
 const Banner = mongoose.model("Banner",bannerSchema)
 module.exports = Banner

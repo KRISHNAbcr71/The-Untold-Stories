@@ -48,6 +48,23 @@ body {
   color: white !important;  /* white text for current page */
 }
 
+.pagination {
+  margin-bottom: 0 !important;
+}
+
+.table-wrapper {
+  position: relative;
+  min-height: 595px;
+}
+
+.pagination-container {
+  position: absolute;
+  bottom: 10px; 
+  left: 50%;
+  transform: translateX(-50%);
+} 
+
+
 
 
 
