@@ -39,6 +39,8 @@
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 
 
 
@@ -358,5 +360,25 @@
         behavior: 'smooth' 
       });
     }
+
+
+    async function updateCounts() {
+      try {
+        const cartRes = await fetch('/cart-count')
+        const cartData = await cartRes.json()
+        document.querySelector('.cart-count').textContent = cartData.count
+
+        const wishRes = await fetch('/wishlist-count')
+        const wishData = await wishRes.json()
+        document.querySelector('.wishlist-count').textContent = wishData.count
+        
+      } catch (error) {
+        console.error('Error fetching counts:', error);
+      }
+    }
+
+    updateCounts()
+
+    setInterval(updateCounts, 10000)
 
   </script>

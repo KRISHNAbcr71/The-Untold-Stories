@@ -11,7 +11,7 @@ const productInfo = async (req, res) => {
   try {
     const search = req.query.search || "";
     const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = 10;
+    const limit = 5;
 
     const baseCondition = { isDeleted: { $ne: true } };
     const matchCondition = {

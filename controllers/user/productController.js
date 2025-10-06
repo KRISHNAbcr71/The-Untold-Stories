@@ -12,9 +12,11 @@ const loadProductDetailsPage = async(req,res)=>{
         const product = await Product.findOne({_id:productId, isListed: true}).populate('category')
         
 
-        if(!product || product.quantity <= 0){
+        if(!product || product.isDeleted){
             return res.redirect('/shop')
         }
+
+        if(!product.category || !product.category.isListed || product.category.isDeleted) return res.redirect('/shop')
 
         const findCategory = product.category
 

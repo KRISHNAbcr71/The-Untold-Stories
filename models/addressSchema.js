@@ -8,11 +8,11 @@ const addressSchema = new Schema({
         required: true
     },
     address: [{
-        addressType: {
-            type: String,
-            required: true,
-            enum: ['Home','Work','Other']
-        },
+        // addressType: {
+        //     type: String,
+        //     required: true,
+        //     enum: ['Home','Work','Other']
+        // },
         name: {
             type: String,
             required: true

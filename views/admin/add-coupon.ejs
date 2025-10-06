@@ -1,0 +1,219 @@
+<%-include("../../views/partials/admin/header")%>
+
+  <div class="container mt-5">
+    <div class="card shadow-lg rounded-4">
+      <div class="card-header text-center">
+        <h3 class="mb-0">Add New Coupon</h3>
+      </div>
+      <div class="card-body p-4">
+
+        <!-- Coupon Form -->
+        <form action="/admin/addCoupon" method="POST" id="couponForm" onsubmit="return handleFormSubmit(event)">
+
+          <!-- Coupon Code -->
+          <div class="mb-3">
+            <label for="code" class="form-label">Coupon Code</label>
+            <input type="text" class="form-control" id="code" name="code" placeholder="e.g. SAVE20">
+            <div id="code-error" class="error-message text-danger small mt-1"></div>
+          </div>
+
+
+          <!-- Start Date -->
+          <div class="mb-3">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="startDate" name="startDate">
+            <div id="startDate-error" class="error-message text-danger small mt-1"></div>
+          </div>
+
+          <!-- End Date -->
+          <div class="mb-3">
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="endDate" name="endDate">
+            <div id="endDate-error" class="error-message text-danger small mt-1"></div>
+          </div>
+
+
+          <!-- Discount Value -->
+          <div class="mb-3">
+            <label for="discountValue" class="form-label">Discount Value</label>
+            <input type="number" class="form-control" id="discountValue" name="discountValue"
+              placeholder="Enter discount (e.g. 10%)">
+            <div id="discountValue-error" class="error-message text-danger small mt-1"></div>
+          </div>
+
+
+
+
+          <!-- Minimum Order Value -->
+          <div class="mb-3">
+            <label for="minValue" class="form-label">Minimum Order Value (₹)</label>
+            <input type="number" class="form-control" id="minValue" name="minValue" placeholder="Minimum Order Value">
+            <div id="minValue-error" class="error-message text-danger small mt-1"></div>
+          </div>
+
+
+
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">Add Coupon</button>
+            <a href="/admin/coupon" class="btn btn-secondary px-4">Cancel</a>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    function setDefaultStartDate() {
+      const today = new Date().toISOString().split('T')[0];
+      const startDateInput = document.getElementById('startDate')
+      startDateInput.setAttribute('min', today)
+      startDateInput.value = today
+    }
+
+    window.onload = setDefaultStartDate;
+
+
+    function handleFormSubmit(event) {
+      event.preventDefault()
+      if (!validateForm()) return false
+
+      fetch('/admin/addCoupon', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          code: document.getElementById('code').value.trim(),
+          startDate: document.getElementById('startDate').value.trim(),
+          endDate: document.getElementById('endDate').value.trim(),
+          discountValue: Number(document.getElementById('discountValue').value.trim()),
+          minValue: Number(document.getElementById('minValue').value.trim())
+        })
+      }).then(async response => {
+        const data = await response.json().catch(() => { })
+        if (!response.ok) {
+          throw new Error(data.message || 'An error occurred.')
+        }
+        return data;
+
+      }).then(data => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Coupon added',
+          text: data.message || 'The coupon has been successfully added'
+        }).then(() => {
+          window.location.href = '/admin/coupon'
+        });
+      }).catch(error => {
+        if (error.message === 'Coupon already exists!') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops',
+            text: 'Coupon code already exists'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops',
+            text: 'An error occurred while adding the coupon'
+          });
+        }
+      });
+    }
+
+
+    function validateForm() {
+      clearErrorMessages()
+      const code = document.getElementById('code').value.trim()
+      const start = document.getElementById('startDate').value.trim()
+      const end = document.getElementById('endDate').value.trim()
+      const discount = document.getElementById('discountValue').value.trim()
+      const minimum = document.getElementById('minValue').value.trim()
+      let isValid = true
+
+      if (code === '') {
+        displayErrorMessage('code-error', 'Please enter coupon code')
+        isValid = false
+      }
+
+      if (start === '') {
+        displayErrorMessage('startDate-error', 'Please select a start date')
+        isValid = false
+      }
+
+      if (end === '') {
+        displayErrorMessage('endDate-error', 'Please select an end date')
+        isValid = false
+      }
+
+
+      if (new Date(start) < new Date(new Date().toISOString().split('T')[0])) {
+        displayErrorMessage("startDate-error", "Start date cannot be in the past!");
+        isValid = false;
+      }
+
+      if (new Date(end) <= new Date(start)) {
+        displayErrorMessage("endDate-error", "End date must be greater than start date.");
+        isValid = false;
+      }
+
+
+      if (discount === '') {
+        displayErrorMessage('discountValue-error', 'Please enter the discount amount')
+        isValid = false
+      }
+
+      if (isNaN(discount) || Number(discount) <= 0) {
+        displayErrorMessage('discountValue-error', 'Discount must be a positive number')
+        isValid = false
+      }
+
+      if (minimum === '') {
+        displayErrorMessage('minValue-error', 'Please enter the minimum order value')
+        isValid = false
+      }
+
+      if (minimum && (isNaN(minimum) || Number(minimum) < 0)) {
+        displayErrorMessage('minValue-error', 'Minimum value must be 0 or greater')
+        isValid = false
+      }
+
+      return isValid
+
+    }
+
+    function displayErrorMessage(elementId, message) {
+      let errorElement = document.getElementById(elementId)
+      errorElement.innerText = message
+      errorElement.style.display = 'block'
+
+    }
+
+    function clearErrorMessages() {
+      let errorElements = document.getElementsByClassName('error-message')
+      Array.from(errorElements).forEach(element => {
+        element.innerText = ''
+        element.style.display = 'none'
+      });
+
+      function attachInputListeners() {
+        const fields = ['code', 'startDate', 'endDate', 'discountValue', 'minValue'];
+        fields.forEach(fieldId => {
+          const input = document.getElementById(fieldId);
+          input.addEventListener('input', () => {
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            errorElement.innerText = '';
+            errorElement.style.display = 'none';
+          });
+        });
+      }
+
+      attachInputListeners();
+
+    }
+  </script>
+
+
+  <%-include("../../views/partials/admin/footer")%>

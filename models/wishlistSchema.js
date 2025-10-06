@@ -13,6 +13,10 @@ const wishlistSchema = new Schema({
             ref: "Product",
             required: true
         },
+        price: {
+            type: Number,
+            required: true
+        },
         addedOn: {
             type: Date,
             default: Date.now

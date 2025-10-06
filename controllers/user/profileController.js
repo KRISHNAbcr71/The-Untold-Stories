@@ -516,7 +516,7 @@ const verifyChangePasswordOtp = async(req,res) => {
     try {
         const {otp} = req.body
         if(otp === req.session.userOtp){
-            res.json({success:true, redirectUrl:'/reset-password'})
+            res.json({success:true, redirectUrl:'/reset-newPassword'})
         }else{
             res.json({success:false, message:'OTP not matching'})
         }
@@ -525,6 +525,48 @@ const verifyChangePasswordOtp = async(req,res) => {
         res.redirect('/pageNotFound')
     }
 }
+
+
+
+const getResetNewPasswordPage = async(req,res) => {
+    try {
+        res.render('reset-newPassword')
+    } catch (error) {
+        console.error('[rendering reset new password page error]', error)
+        res.redirect('/pageNotFound')
+    }
+}
+
+
+
+const resetNewpassword = async(req,res) => {
+    try {
+        const {password,confirmPassword} = req.body
+        const email = req.session.email
+        if(password === confirmPassword){
+            const passwordHash = await securePassword(password)
+            await User.updateOne(
+                {email:email},
+                {$set:{password:passwordHash}}
+            )
+
+            req.session.destroy(err => {
+                if(err){
+                    console.error('Error destroying session: ',err)
+                    return res.redirect('/pageNotFound')
+                }
+                res.redirect('/login')
+            });
+            
+        }else{
+            res.render('reset-newPassword',{message:'Passwords do not match'})
+        }
+    } catch (error) {
+        console.error('[Error checking password ]', error)
+        res.redirect('/pageNotFound')
+    }
+}
+
 
 module.exports = {
     getForgotPasswordPage,
@@ -545,5 +587,7 @@ module.exports = {
     resendEmailOtp,
     getChangePasswordEmailValid,
     changePasswordValid,
-    verifyChangePasswordOtp
+    verifyChangePasswordOtp,
+    getResetNewPasswordPage,
+    resetNewpassword
 }

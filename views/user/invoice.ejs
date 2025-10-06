@@ -1,0 +1,105 @@
+<%-include("../../views/partials/user/header")%>
+    <link rel="stylesheet" href="/css/invoice.css">
+
+    <div class="invoice-container">
+        <div class="header">
+            <h1>Invoice</h1>
+        </div>
+
+        <div class="details">
+            <div><strong>Invoice No:</strong> INV<%= order._id.toString().slice(-6) %>
+            </div>
+            <div><strong>Order ID:</strong>
+                <%= order.orderId %>
+            </div>
+            <div><strong>Customer Name:</strong>
+                <%= order.selectedAddress.name %>
+            </div>
+            <div><strong>Address:</strong>
+                <p style="margin-bottom: 0;">
+                    <%= order.selectedAddress.fullAddress %>
+                </p>
+                <p style="margin-bottom: 0;">
+                    <%= order.selectedAddress.landmark %>
+                </p>
+                <p style="margin-bottom: 0;">
+                    <%= order.selectedAddress.state %>
+                </p>
+                <p style="margin-bottom: 0;">
+                    <%= order.selectedAddress.pincode %>
+                </p>
+            </div>
+            <div><strong>Phone:</strong>
+                <%= order.selectedAddress.phone %>
+            </div>
+            <div><strong>Alt Phone:</strong>
+                <%= order.selectedAddress.altPhone %>
+            </div>
+            <div><strong>Date:</strong>
+                <%= order.invoiceDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) %>
+            </div>
+        </div>
+
+        <div class="items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% order.orderItems.forEach(item=> { %>
+                        <tr>
+                            <td>
+                                <%= item.product.productName %>
+                            </td>
+                            <td>
+                                <%= item.quantity %>
+                            </td>
+                            <td>₹<%= item.price %>
+                            </td>
+                            <td>₹<%= item.price * item.quantity %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- <div class="total">
+        <strong>Subtotal:</strong> ₹<%= order.subtotal %><br>
+        <strong>Discount:</strong> ₹<%= order.discountAmount %><br>
+        <strong>Delivery:</strong> ₹<%= order.deliveryCharge %><br>
+        <strong>Final Amount:</strong> ₹<%= order.finalAmount %>
+    </div> -->
+        <div class="summary-section">
+            <div class="payment-info">
+                <p><strong>Payment Method:</strong>
+                    <%= order.paymentMethod %>
+                </p>
+                <p><strong>Payment Status:</strong>
+                    <%= order.paymentStatus %>
+                </p>
+            </div>
+
+            <div class="total">
+                <strong>Subtotal:</strong> ₹<%= order.subtotal %><br>
+                    <strong>Discount:</strong> ₹<%= order.discountAmount %><br>
+                        <strong>Delivery:</strong> ₹<%= order.deliveryCharge %><br>
+                            <strong>Final Amount:</strong> ₹<%= order.finalAmount %>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            Thank you for your purchase!
+        </div>
+        <div class="action-buttons">
+            <a href="/my-order" class="btn">Go Back</a>
+            <!-- <button class="btn">Download Invoice</button> -->
+            <a href="/invoice/<%= order.orderId %>/download" class="btn">Download Invoice</a>
+        </div>
+    </div>

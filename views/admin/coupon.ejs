@@ -1,0 +1,153 @@
+<%-include("../../views/partials/admin/header")%>
+<link rel="stylesheet" href="/css/coupon.css">
+
+
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h2 class="mb-0">Coupon</h2>
+    <div class="search-container position-relative">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search coupon..." value="<%= search || '' %>">
+      <span class="search-clear" id="clearSearch" style="display:none;">&times;</span>
+    </div>
+</div>
+
+<div class="d-flex" style="gap: 10px;">
+    <a href="/admin/addCoupon" class="btn btn-secondary add-cat" style="width: 200px;">Add Coupon</a>
+    <a href="/admin/trashProduct" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
+</div>
+
+
+
+<div class="table-wrapper">
+    <div class="table-responsive container-fluid">
+        <table class="table table-bordered text-center mt-4">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Coupon Code</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Discount Value</th>
+                    <th>Minimum Order Value</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% coupons.forEach(coupon => {%>
+                <tr>
+                    <td><%= coupon.code %></td>
+                    
+                    <td><%= coupon.startDate.toDateString() %></td>
+                    <td><%= coupon.endDate.toDateString() %></td>
+                    <td><%= coupon.discountValue %>%</td>
+                    <td>₹<%= coupon.minValue %></td>
+                    <td>
+                        <% if(coupon.status === 'Upcoming'){ %>
+                            <span class="badge bg-warning text-dark">Upcoming</span>
+                        <% } else if(coupon.status === 'Active') { %>
+                            <span class="badge bg-success">Active</span>
+                        <% } else {%>   
+                            <span class="badge bg-danger">Expired</span>
+                        <% } %> 
+                    </td>
+                    <td>
+                        <a href="/admin/editCoupon?id=<%= coupon._id %>" class="btn btn-dark btn-sm">Edit</a>
+                    </td>
+                    <td>
+                        <button class="btn btn-dark btn-sm delete-btn" data-id="<%= coupon._id %>">Delete</button>
+                    </td>
+                </tr>
+                <%})%>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container mt-3 pagination-container">
+        <nav aria-label="Page Navigation">
+            <ul class="pagination justify-content-center mb-20">
+                <% for(let i=1; i <=totalPages; i++) { %>
+                    <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearch');
+
+    // Show/hide clear button based on input
+    searchInput.addEventListener('input', () => {
+        clearBtn.style.display = searchInput.value ? 'block' : 'none';
+    });
+
+    // Trigger search on Enter
+    searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            window.location.href = `/admin/coupon?search=${encodeURIComponent(query)}&page=1`;
+        }
+    });
+
+    // Clear search
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        window.location.href = '/admin/coupon'; // Reload full list
+    });
+
+    // Initialize clear button on page load
+    if (searchInput.value) {
+        clearBtn.style.display = 'block';
+    }
+
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const couponId = this.dataset.id
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to delete this coupon?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(result => {
+                if(result.isConfirmed){
+                    fetch(`/admin/deleteCoupon/${couponId}`,{
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type':'application/json'
+                        }
+                    }).then(res => res.json())
+                    .then(data => {
+                        if(data.success){
+                            Swal.fire('Deleted!',data.message,'success')
+                            .then(()=>{
+                                location.reload()
+                            });
+                        }else{
+                            Swal.fire('Oops!',data.message||'Something went wrong','error')
+                        }
+                    }).catch(error =>{
+                        console.error(error)
+                        Swal.fire('Error','Could not delete coupon','error')
+                    });
+                }
+            });
+        });
+    });
+
+</script>
+
+
+
+
+<%-include("../../views/partials/admin/footer")%>

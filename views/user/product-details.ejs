@@ -16,6 +16,7 @@
                     <a href="/shop">Shop</a>
                     <span class="breadcrumb-separator">/</span>
                     <span class="current">Product</span>
+                    
                 </nav>
             </div>
         </div>
@@ -58,45 +59,60 @@
 
                 <!-- Stock Status -->
                 <% if (product.quantity> 0) { %>
-                    <% if (product.quantity <= 10) { %>
+                    <% if (product.quantity <=10) { %>
                         <p class="text-danger">Only <%= product.quantity %> left in stock!</p>
                         <% } else { %>
                             <p><strong>Stock:</strong> <span class="text-success">Available</span> </p>
                             <% } %>
-                                <% }%>
+                                <% }else{%>
+                                    <p><strong>Stock:</strong> <span class="text-danger">Out of stock</span> </p>
+                                    <%}%>
 
 
 
-                                    <p><strong>Details:</strong></p>
+                                        <p><strong>Details:</strong></p>
 
-                                    <ul style="list-style-type: none;">
-                                        <li><i class="fas fa-feather-alt"></i> <span class="text-primary">Author:
-                                                <%=product.author%></span></li>
-                                        <li><i class="fas fa-book"></i><span class="text-primary"> Genre:
-                                                <%=product.category.name%></span></li>
-                                        <li><i class="fas fa-truck"></i><span class="text-primary"> Free Delivery</span>
-                                        </li>
-                                        <li><i class="fas fa-sync-alt"></i><span class="text-primary"> 10 Days
-                                                Replacement</span></li>
-                                        <li><i class="fas fa-credit-card"></i><span class="text-primary"> Cash on
-                                                Delivery available</span></li>
-                                    </ul>
+                                        <ul style="list-style-type: none;">
+                                            <li><i class="fas fa-feather-alt"></i> <span class="text-primary">Author:
+                                                    <%=product.author%>
+                                                </span></li>
+                                            <li><i class="fas fa-book"></i><span class="text-primary"> Genre:
+                                                    <%=product.category.name%>
+                                                </span></li>
+                                            <li><i class="fas fa-truck"></i><span class="text-primary"> Free
+                                                    Delivery</span>
+                                            </li>
+                                            <li><i class="fas fa-sync-alt"></i><span class="text-primary"> 10 Days
+                                                    Replacement</span></li>
+                                            <li><i class="fas fa-credit-card"></i><span class="text-primary"> Cash on
+                                                    Delivery available</span></li>
+                                        </ul>
 
-                                    <!-- Add to Cart Button -->
-                                    <button action="/add-to-cart/<%= product._id %>" method="POST"
-                                        onsubmit="return checkProductStatus()" class="btn-cart-wishlist">
-                                        Add to Cart
-                                    </button>
+                                        <!-- Add to Cart Button -->
+                                        <!-- <form action="/add-to-cart/<%= product._id %>" method="post" onsubmit="return checkProductStatus()">
+                                        <button type="submit" class="btn-cart-wishlist">Add to Cart</button>
+                                    </form>
 
-                                    <button action="" method="POST"
-                                        onsubmit="return checkProductStatus()" class="btn-cart-wishlist">
-                                        Add to Wishlist
-                                    </button>
-                                    <div>
-  <button class="btn-buy" action="/buy-now/<%= product._id %>" method="POST">
-      Buy Now
-  </button>
-</div>
+                                    <form action="/add-to-wishlist/<%= product._id %>" method="post" onsubmit="return checkProductStatus()">
+                                        <button type="submit" class="btn-cart-wishlist">Add to Wishlist</button>
+                                    </form> -->
+                                        <!-- Add to Cart Button -->
+                                        <button type="button" class="btn-cart-wishlist"
+                                            onclick="addToCart('<%= product._id %>')">
+                                            Add to Cart
+                                        </button>
+
+                                        <!-- Add to Wishlist Button -->
+                                        <button type="button" class="btn-cart-wishlist"
+                                            onclick="addToWishlist('<%= product._id %>')">
+                                            Add to Wishlist
+                                        </button>
+
+                                        <div>
+                                            <form action="/buy-now/<%= product._id %>" method="post">
+                                                <button type="submit" class="btn-buy">Buy Now</button>
+                                            </form>
+                                        </div>
 
             </div>
 
@@ -108,18 +124,6 @@
             <div class="col-12">
                 <h4>Customer Reviews</h4>
                 <p class="text-muted">No reviews yet. Be the first to review this product!</p>
-                <!-- <div class="card mb-3">
-                <div class="card-body">
-                    <h6 class="card-title">John Doe <span class="text-warning">★★★★☆</span></h6>
-                    <p class="card-text">Great product! Fast delivery and good quality.</p>
-                </div>
-            </div> -->
-                <!-- <div class="card mb-3">
-                <div class="card-body">
-                    <h6 class="card-title">Jane Smith <span class="text-warning">★★★☆☆</span></h6>
-                    <p class="card-text">Decent, but battery life could be better.</p>
-                </div>
-            </div> -->
             </div>
         </div>
 
@@ -140,7 +144,7 @@
                                     ₹<%= rp.price%>
                                 </p>
                                 <!-- <button class="btn btn-outline-primary btn-sm">View</button> -->
-                                 <a href="/productDetails?id=<%=rp._id%>" class="btn btn-sm btn-view">View</a>
+                                <a href="/productDetails?id=<%=rp._id%>" class="btn btn-sm btn-view">View</a>
                             </div>
                         </div>
                     </div>
@@ -213,6 +217,84 @@
             lens.style.backgroundImage = `url('${mainImage.src}')`;
             lens.style.backgroundSize = `${mainImage.width * zoomLevel}px ${mainImage.height * zoomLevel}px`;
             lens.style.backgroundPosition = `-${x * zoomLevel - lens.offsetWidth / 2}px -${y * zoomLevel - lens.offsetHeight / 2}px`;
+        }
+
+
+
+
+        async function addToCart(productId) {
+            try {
+                const response = await fetch(`/add-to-cart/${productId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart',
+                        text: result.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    updateCounts();
+                }else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: result.message || "Could not add product to cart"
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong while adding to cart.'
+                });
+            }
+        }
+
+        
+
+        async function addToWishlist(productId) {
+            try {
+                const response = await fetch(`/add-to-wishlist/${productId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Wishlist',
+                        text: result.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    updateCounts();
+                }else{
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Notice',
+                        text: result.message,
+                        showConfirmButton: true
+                    })
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong while adding to wishlist.'
+                });
+            }
         }
 
 

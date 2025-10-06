@@ -54,7 +54,7 @@ body {
 
 .table-wrapper {
   position: relative;
-  min-height: 595px;
+  min-height: 500px;
 }
 
 .pagination-container {

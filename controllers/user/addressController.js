@@ -37,16 +37,19 @@ const postAddAddress = async (req, res) => {
     try {
         const userId = req.session.user
         const userData = await User.findOne({ _id: userId })
-        const { addressType, name, landmark, state, pincode, fullAddress, phone, altPhone } = req.body
+        // const { addressType, name, landmark, state, pincode, fullAddress, phone, altPhone } = req.body
+        const { name, landmark, state, pincode, fullAddress, phone, altPhone } = req.body
         let userAddress = await Address.findOne({ userId: userData._id })
         if (!userAddress) {
             const newAddress = new Address({
                 userId: userData._id,
-                address: [{ addressType, name, landmark, state, pincode, fullAddress, phone, altPhone }]
+                // address: [{ addressType, name, landmark, state, pincode, fullAddress, phone, altPhone }]
+                address: [{ name, landmark, state, pincode, fullAddress, phone, altPhone }]
             });
             await newAddress.save();
         } else {
-            userAddress.address.push({ addressType, name, landmark, state, pincode, fullAddress, phone, altPhone });
+            // userAddress.address.push({ addressType, name, landmark, state, pincode, fullAddress, phone, altPhone });
+            userAddress.address.push({ name, landmark, state, pincode, fullAddress, phone, altPhone });
             await userAddress.save();
         }
         res.json({ message: 'Address added successfully' })
@@ -113,7 +116,7 @@ const editAddress = async (req, res) => {
             { userId: userData._id, "address._id": new mongoose.Types.ObjectId(addressId)},
             {
                 $set: {
-                    "address.$.addressType": data.addressType,
+                    // "address.$.addressType": data.addressType,
                     "address.$.name": data.name,
                     "address.$.landmark": data.landmark,
                     "address.$.state": data.state,

@@ -11,6 +11,7 @@
                     <a href="/">Home</a>
                     <span class="breadcrumb-separator">/</span>
                     <span class="current">Shop</span>
+                    
                 </nav>
             </div>
         </div>
@@ -89,19 +90,17 @@
                     <!-- Filter by category -->
 
                     <div class="card p-3 shadow-sm">
-  <h5 class="mb-3">Categories</h5>
-  <div class="list-group">
-    <a href="/shop" class="list-group-item list-group-item-action <%= !category ? 'active' : '' %>">
-      All
-    </a>
-    <% categories.forEach(cat => { %>
-      <a href="/shop?category=<%= cat._id %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort ? '&sort=' + sort : '' %><%= !isNaN(minPrice) ? '&minPrice=' + minPrice : '' %><%= !isNaN(maxPrice) ? '&maxPrice=' + maxPrice : '' %>"
-         class="list-group-item list-group-item-action <%= category == cat._id ? 'active' : '' %>">
-        <%= cat.name %>
-      </a>
-    <% }) %>
-  </div>
-</div>
+                        <h5 class="mb-3">Categories</h5>
+                        <div class="list-group">
+                            <a href="/shop" class="list-group-item list-group-item-action <%= !category ? 'active' : '' %>">All</a>
+                            <% categories.forEach(cat => { %>
+                            <a href="/shop?category=<%= cat._id %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort ? '&sort=' + sort : '' %><%= !isNaN(minPrice) ? '&minPrice=' + minPrice : '' %><%= !isNaN(maxPrice) ? '&maxPrice=' + maxPrice : '' %>"
+                            class="list-group-item list-group-item-action <%= category == cat._id ? 'active' : '' %>">
+                            <%= cat.name %>
+                            </a>
+                            <% }) %>
+                        </div>
+                    </div>
 
 
 
@@ -110,36 +109,29 @@
                     <!-- Filter by price -->
 
                     <div class="card p-3 shadow-sm mt-4">
-  <h5 class="mb-3">Filter by Price</h5>
-  <div class="list-group">
-    <a href="/shop?minPrice=0&maxPrice=500<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-       class="list-group-item list-group-item-action <%= minPrice == 0 && maxPrice == 500 ? 'active' : '' %>">
-      Under ₹500
-    </a>
+                    <h5 class="mb-3">Filter by Price</h5>
+                    <div class="list-group">
+                        <a href="/shop?minPrice=0&maxPrice=500<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+                        class="list-group-item list-group-item-action <%= minPrice == 0 && maxPrice == 500 ? 'active' : '' %>">
+                        Under ₹500
+                        </a>
 
-    <a href="/shop?minPrice=500&maxPrice=1000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-       class="list-group-item list-group-item-action <%= minPrice == 500 && maxPrice == 1000 ? 'active' : '' %>">
-      ₹500 - ₹1000
-    </a>
+                        <a href="/shop?minPrice=500&maxPrice=1000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 500 && maxPrice == 1000 ? 'active' : '' %>">
+                          ₹500 - ₹1000
+                        </a>
 
-    <a href="/shop?minPrice=1000&maxPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-       class="list-group-item list-group-item-action <%= minPrice == 1000 && maxPrice == 2000 ? 'active' : '' %>">
-      ₹1000 - ₹2000
-    </a>
+                        <a href="/shop?minPrice=1000&maxPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 1000 && maxPrice == 2000 ? 'active' : '' %>">
+                          ₹1000 - ₹2000
+                        </a>
 
-    <a href="/shop?minPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-       class="list-group-item list-group-item-action <%= minPrice == 2000 ? 'active' : '' %>">
-      Above ₹2000
-    </a>
-  </div>
-</div>
-
-
-                    
-
-
-
-
+                        <a href="/shop?minPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 2000 ? 'active' : '' %>">
+                          Above ₹2000
+                        </a>
+                    </div>
+                    </div>
                    
                 </aside>
 
@@ -155,7 +147,7 @@
                                     <a href="/productDetails?id=<%=product._id%>">
                                     <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
                                     </a>
-                                    <a href="/wishlist/add/<%= product._id %>" class="wishlist-icon">❤️</a>
+                                    <!-- <a href="/wishlist/add/<%= product._id %>" class="wishlist-icon">❤️</a> -->
 
 
 
@@ -165,9 +157,10 @@
                                 </h5>
                                 <p class="price">₹<%= product.price %>
                                 </p>
-                                <form action="/cart/add/<%= product._id %>" method="post">
+                                <!-- <form action="/add-to-cart/<%= product._id %>" method="post">
                                     <button class="btn-buy">Add to Cart</button>
-                                </form>
+                                </form> -->
+                                <button type="button" class="btn-buy" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
                             </div>
 
                             <%})%>
@@ -229,6 +222,99 @@
         if (searchInput.value) {
             clearBtn.style.display = 'block';
         }
+
+
+
+
+
+
+
+
+
+        // async function addToCart(productId) {
+        //     try {
+        //         const response = await fetch(`/add-to-cart/${productId}`, {
+        //             method: "POST",
+        //             headers: {
+        //                 "Content-Type": "application/json"
+        //             }
+        //         });
+
+        //         const result = await response.json();
+
+        //         if (result.message) {
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: 'Added to Cart',
+        //                 text: result.message,
+        //                 showConfirmButton: false,
+        //                 timer: 2000
+        //             });
+        //         }
+        //     } catch (error) {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Oops!',
+        //             text: 'Something went wrong while adding to cart.'
+        //         });
+        //     }
+        // }
+
+
+        async function addToCart(productId) {
+        try {
+            const response = await fetch(`/add-to-cart/${productId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                // If status is 401 (not logged in)
+                if (response.status === 401) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Login Required',
+                        text: result.message,
+                        confirmButtonText: 'Go to Login'
+                    }).then(() => {
+                        window.location.href = '/login'; // redirect after OK
+                    });
+                } else {
+                    // Other errors (404, 400, 500, etc.)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message || 'Something went wrong'
+                    });
+                }
+                return;
+            }
+
+            // ✅ Success
+            Swal.fire({
+                icon: 'success',
+                title: 'Added to Cart',
+                text: result.message,
+                showConfirmButton: false,
+                timer: 500
+            });
+
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong while adding to cart.'
+            });
+        }
+    }
+
+
+
+        
 
     </script>
 

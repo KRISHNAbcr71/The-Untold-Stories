@@ -50,25 +50,28 @@
       <div class="row g-4">
         <!-- Book Card -->
          <%if(products.length>0){%>
-         <%for(let i=0; i<products.length; i++){%>
+         <% products.forEach(product => { %>
         <div class="col-md-3 col-sm-6">
           <div class="book-card">
             <div class="image-wrapper">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
+              <!-- <button class="wishlist-btn"><i class="icon-heart"></i></button> -->
               
-              <a href="/productDetails?id=<%=products[i]._id%>">
-              <img src="/<%=products[i].productImage[0]%>" alt="<%=products[i].productName%>" class="book-image">
+              <a href="/productDetails?id=<%=product._id%>">
+              <img src="/<%=product.productImage[0]%>" alt="<%=product.productName%>" class="book-image">
               </a>
             </div>
             <div class="book-info">
-              <h5 class="book-title"><%=products[i].productName%></h5>
-              <p class="book-author"><%=products[i].author%></p>
-              <p class="book-price"><%=products[i].price%></p>
-              <button class="btn btn-buy">Add to Cart</button>
+              <h5 class="book-title"><%=product.productName%></h5>
+              <p class="book-author"><%=product.author%></p>
+              <p class="book-price"><%=product.price%></p>
+               <button type="button" class="btn btn-buy"
+                                            onclick="addToCart('<%= product._id %>')">
+                                            Add to Cart
+                                        </button>
             </div>
           </div>
         </div>
-        <%}%>
+        <%})%>
         <%}else{%>
           <p class="text-center">No new arrivals right now. Check back later!</p>
         <%}%>
@@ -214,6 +217,7 @@
                 $35.00
               </p>
               <button class="btn-add">Add to Cart</button>
+               
             </div>
           </div>
         </div>
@@ -221,4 +225,58 @@
     </div>
   </section>
 
+
+  <script>
+
+    async function addToCart(productId) {
+        try {
+            const response = await fetch(`/add-to-cart/${productId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                // If status is 401 (not logged in)
+                if (response.status === 401) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Login Required',
+                        text: result.message,
+                        confirmButtonText: 'Go to Login'
+                    }).then(() => {
+                        window.location.href = '/login'; // redirect after OK
+                    });
+                } else {
+                    // Other errors (404, 400, 500, etc.)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message || 'Something went wrong'
+                    });
+                }
+                return;
+            }
+
+            // ✅ Success
+            Swal.fire({
+                icon: 'success',
+                title: 'Added to Cart',
+                text: result.message,
+                showConfirmButton: false,
+                timer: 500
+            });
+
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong while adding to cart.'
+            });
+        }
+    }
+  </script>
   <%-include("../../views/partials/user/footer")%>

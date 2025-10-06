@@ -345,14 +345,14 @@ const loadHomepage = async (req, res) => {
                 isListed: true,
                 isDeleted: false,
                 category: { $in: categories.map(category => category._id) },
-                quantity: { $gt: 0 }
+                // quantity: { $gt: 0 }
             }
         )
 
         productData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         productData = productData.slice(0, 4)
 
-        console.log("Products fetched:", productData);
+        //console.log("Products fetched:", productData);
 
 
         if (userId) {
@@ -389,11 +389,16 @@ const loadShoppingPage = async (req, res) => {
         const maxPrice = parseFloat(req.query.maxPrice)
         const sort = req.query.sort || ""
 
+        let userData = null
+        if(req.session.user){
+            userData = await User.findById(req.session.user)
+        }
+
         const match = {
             isListed: true,
             isDeleted: false,
             price: { $gt: 0 },
-            quantity: { $gt: 0 }
+            // quantity: { $gt: 0 }
         }
 
         
@@ -477,7 +482,8 @@ const loadShoppingPage = async (req, res) => {
             maxPrice,
             sort,
             limit,
-            totalProducts
+            totalProducts,
+            user: userData
         });
 
 

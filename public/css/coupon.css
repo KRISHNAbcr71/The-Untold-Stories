@@ -1,4 +1,3 @@
-
 body {
   background-color: #f8f9fa;
 }
@@ -33,20 +32,6 @@ body {
   font-size: 1.2rem;
 }
 
-.page-item .page-link {
-  color: black !important;  /* blue for all page numbers */
-}
-
-.page-item.active .page-link {
-  background-color: #343a40; /* dark background for current page */
-  border-color: #343a40;
-  color: white !important;  /* white text for current page */
-}
-
-.add-cat:hover{
-  color: #ffc107;
-}
-
 
 .table td,
 .table th {
@@ -56,7 +41,7 @@ body {
 
 .table-wrapper {
   position: relative;
-  min-height: 550px;
+  min-height: 450px;
 }
 
 .pagination-container {
@@ -65,3 +50,12 @@ body {
   left: 50%;
   transform: translateX(-50%);
 } 
+.page-item .page-link {
+  color: black !important;  /* blue for all page numbers */
+}
+
+.page-item.active .page-link {
+  background-color: #343a40; /* dark background for current page */
+  border-color: #343a40;
+  color: white !important;  /* white text for current page */
+}

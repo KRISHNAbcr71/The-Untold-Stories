@@ -13,11 +13,11 @@
                         <div class="row g-3">
 
                             <!-- Address Type -->
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <label class="form-label">Address Type</label>
                                 <input type="text" id="addressType" class="form-control" name="addressType">
                                 <div id="typeError" class="error-message text-danger"></div>
-                            </div>
+                            </div> -->
 
                             <!-- Name -->
                             <div class="col-md-4">
@@ -89,7 +89,7 @@
             document.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
 
             let isValid = true;
-            const addressType = document.getElementById('addressType');
+            // const addressType = document.getElementById('addressType');
             const name = document.getElementById('name');
             const landmark = document.getElementById('landmark');
             const state = document.getElementById('state');
@@ -98,7 +98,7 @@
             const phone = document.getElementById('phone');
             const altPhone = document.getElementById('altPhone');
 
-            const typeError = document.getElementById('typeError')
+            // const typeError = document.getElementById('typeError')
             const nameError = document.getElementById('nameError')
             const landmarkError = document.getElementById('landmarkError')
             const stateError = document.getElementById('stateError')
@@ -108,10 +108,10 @@
             const altphoneError = document.getElementById('altphoneError')
 
             // Address Type
-            if (addressType.value.trim() === '') {
-                typeError.textContent = 'Address type is required';
-                isValid = false;
-            }
+            // if (addressType.value.trim() === '') {
+            //     typeError.textContent = 'Address type is required';
+            //     isValid = false;
+            // }
 
             // Name
             if (name.value.trim() === '') {
@@ -165,7 +165,7 @@
 
             // Form data
             const formData = {
-                addressType: addressType.value.trim(),
+                // addressType: addressType.value.trim(),
                 name: name.value.trim(),
                 landmark: landmark.value.trim(),
                 state: state.value.trim(),

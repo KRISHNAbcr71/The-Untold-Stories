@@ -1,0 +1,433 @@
+<%-include("../../views/partials/admin/header")%>
+
+<style>
+  #searchInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+.page-item .page-link {
+  color: black !important;  /* blue for all page numbers */
+}
+
+.page-item.active .page-link {
+  background-color: #343a40; /* dark background for current page */
+  border-color: #343a40;
+  color: white !important;  /* white text for current page */
+}
+
+</style>
+  <div class="container">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">Orders</h4>
+          <div>
+            <span class="badge bg-info wallet-badge" id="walletBadge">Wallet: ₹0</span>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="row g-2 align-items-center mb-3">
+          <div class="col-md-4">
+            <input id="searchInput" type="search" class="form-control" value="<%= search || '' %>"
+              placeholder="Search by order ID or user name">
+          </div>
+          <div class="col-md-2">
+            <select id="statusFilter" class="form-select" onchange="applyFilters()">
+              <!-- <option value="">All Statuses</option>
+              <option>pending</option>
+              <option>shipped</option>
+              <option>out for delivery</option>
+              <option>delivered</option>
+              <option>cancelled</option> -->
+              <option value="" <%=!statusFilter ? 'selected' : '' %>>All Statuses</option>
+              <option value="pending" <%=statusFilter==='pending' ? 'selected' : '' %>>Pending</option>
+              <option value="shipped" <%=statusFilter==='shipped' ? 'selected' : '' %>>Shipped</option>
+              <option value="out for delivery" <%=statusFilter==='out for delivery' ? 'selected' : '' %>>Out for
+                Delivery</option>
+              <option value="delivered" <%=statusFilter==='delivered' ? 'selected' : '' %>>Delivered</option>
+              <option value="cancelled" <%=statusFilter==='cancelled' ? 'selected' : '' %>>Cancelled</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <select id="sortSelect" class="form-select" onchange="applyFilters()">
+              <!-- <option value="date_desc">Date: Newest first</option>
+              <option value="date_asc">Date: Oldest first</option>
+              <option value="amount_desc">Amount: High → Low</option>
+              <option value="amount_asc">Amount: Low → High</option> -->
+              <option value="date_desc" <%=sortOption==='date_desc' ? 'selected' : '' %>>Date: Newest first</option>
+              <option value="date_asc" <%=sortOption==='date_asc' ? 'selected' : '' %>>Date: Oldest first</option>
+              <option value="amount_desc" <%=sortOption==='amount_desc' ? 'selected' : '' %>>Amount: High → Low</option>
+              <option value="amount_asc" <%=sortOption==='amount_asc' ? 'selected' : '' %>>Amount: Low → High</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">Clear</button>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle" id="ordersTable">
+            <thead class="table-light">
+              <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>User</th>
+                <th>Payment Method</th>
+                <th>Total (₹)</th>
+                <th>Status</th>
+                <th>Return</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTbody">
+              <% if(noResults) { %>
+                <tr>
+                  <td colspan="7" class="text-center text-muted">No orders found</td>
+                </tr>
+                <% } else { %>
+                  <% order.forEach(function(order) { %>
+                    <tr>
+                      <td>
+                        <%= order.orderId %>
+                      </td>
+                      <td>
+                        <%= order.createdAt.toLocaleDateString("en-IN") %>
+                      </td>
+                      <td>
+                        <div>
+                          <%= order.user ? order.user.name : "Unknown User" %>
+                        </div>
+                        <small class="text-muted">
+                          <%= order.user ? order.user.email : "" %>
+                        </small>
+                      </td>
+                      <td>
+                        <%= order.paymentMethod %>
+                      </td>
+                      <td>
+                        <%= order.finalAmount %>
+                      </td>
+                      <td>
+                        <!-- <form action="/updateStatus/<%= order._id %>?_method=PATCH" method="POST"> -->
+                        <select name="status" class="form-select form-select-sm" data-order-id="<%= order._id %>">
+                          <option value="pending" <%=order.status==="Pending" ? "selected" : "" %>>Pending</option>
+                          <option value="shipped" <%=order.status==="Shipped" ? "selected" : "" %>>Shipped</option>
+                          <option value="out for delivery" <%=order.status==="Out for Delivery" ? "selected" : "" %>>Out
+                            for Delivery</option>
+                          <option value="delivered" <%=order.status==="Delivered" ? "selected" : "" %>>Delivered
+                          </option>
+                          <option value="cancelled" <%=order.status==="Cancelled" ? "selected" : "" %>>Cancelled
+                          </option>
+                        </select>
+                        <!-- </form> -->
+                      </td>
+                      <td>
+                        <% if (order.returnRequested && !order.returnVerified) { %>
+                          <span class="text-warning">Requested</span>
+                          <% } else if (order.returnVerified) { %>
+                            <span class="text-success">Verified</span>
+                            <% } else { %>
+                              -
+                              <% } %>
+                      </td>
+                      <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary view-order" data-bs-toggle="viewOrderModal"
+                          data-bs-target="#viewModal" data-order-id="<%= order._id %>">View</a>
+                        <% if (order.returnRequested && !order.returnVerified) { %>
+                          <button type="button" class="btn btn-sm btn-outline-danger verify-return-btn"
+                            data-order-id="<%= order._id %>">
+                            Verify Return
+                          </button>
+                          <% } %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                      <% } %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- View Order Modal -->
+  <div class="modal fade" id="viewOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Order Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="orderDetailsContainer"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Return Verify Modal -->
+  <div class="modal fade" id="returnVerifyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Verify Return Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="returnVerifyBody"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="rejectReturnBtn" type="button" class="btn btn-outline-danger"
+            data-bs-dismiss="modal">Reject</button>
+          <button id="acceptReturnBtn" type="button" class="btn btn-success">Accept & Refund to Wallet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  <div class="container mt-3 pagination-container">
+    <nav aria-label="Page Navigation">
+        <ul class="pagination justify-content-center mb-20">
+        <% for(let i=1; i <=totalPages; i++) { %>
+          <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+          </li>
+        <% } %>
+        </ul>
+    </nav>
+  </div>
+
+
+
+
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+
+    document.querySelectorAll('select[name="status"]').forEach(select => {
+      select.addEventListener('change', async function () {
+        const orderId = this.dataset.orderId;
+        const status = this.value;
+
+        try {
+          const res = await fetch(`/admin/updateStatus/${orderId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+          });
+
+          const data = await res.json()
+
+          if (data.success) {
+            Swal.fire('Success', `Status updated to ${data.status}`, 'success')
+          } else {
+            Swal.fire('Error', 'Failed to update status', 'error')
+          }
+        } catch (error) {
+          console.error(error)
+          Swal.fire('Error', 'Something went wrong.', 'error')
+        }
+      })
+    })
+
+
+
+
+    document.querySelectorAll('.view-order').forEach(btn => {
+      btn.addEventListener('click', async function (e) {
+        e.preventDefault();
+        const orderId = this.dataset.orderId;
+        const container = document.getElementById('orderDetailsContainer');
+
+        try {
+          const res = await fetch(`/admin/details/${orderId}`);
+          const order = await res.json();
+
+          let html = `
+        <h6>Order Information</h6>
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>Order ID:</strong> ${order.orderId}</li>
+          <li class="list-group-item"><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString("en-IN")}</li>
+          <li class="list-group-item"><strong>Status:</strong> ${order.status}</li>
+          <li class="list-group-item"><strong>Payment Method:</strong> ${order.paymentMethod}</li>
+          <li class="list-group-item"><strong>Payment Status:</strong> ${order.paymentStatus}</li>
+        </ul>
+
+        <h6>Customer Details</h6>
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>Name:</strong> ${order.user?.name || "Unknown"}</li>
+          <li class="list-group-item"><strong>Email:</strong> ${order.user?.email || ""}</li>
+          <li class="list-group-item"><strong>Address:</strong> ${order.selectedAddress?.fullAddress || ""}</li>
+        </ul>
+
+        <h6>Products</h6>
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Price (₹)</th>
+              <th>Qty</th>
+              <th>Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${order.orderItems.map(item => `
+              <tr>
+                <td>${item.product?.productName || "Deleted Product"}</td>
+                <td>${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price * item.quantity}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div class="text-end mt-3"><strong>Final Amount: ₹${order.finalAmount}</strong></div>
+      `;
+
+          container.innerHTML = html;
+
+          // ✅ Open the modal AFTER setting content
+          var viewOrderModal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+          viewOrderModal.show();
+
+        } catch (err) {
+          console.error(err);
+          container.innerHTML = '<p class="text-danger">Failed to load order details.</p>';
+        }
+      });
+    });
+
+
+
+
+
+
+
+
+
+    // Select all verify return buttons
+    document.querySelectorAll('.verify-return-btn').forEach(btn => {
+      btn.addEventListener('click', async function () {
+        const orderId = this.dataset.orderId;
+        const container = document.getElementById('returnVerifyBody');
+
+        try {
+          // Fetch order details
+          const res = await fetch(`/admin/details/${orderId}`);
+          const order = await res.json();
+
+          // Build modal content
+          let html = `
+        <p>Order <strong>${order.orderId}</strong> requested a return.</p>
+        <p>User: ${order.user?.name || "Unknown"} (${order.user?.email || ""})</p>
+        <h6>Products</h6>
+        <ul>
+          ${order.orderItems.map(item => `<li>${item.product?.productName || "Deleted Product"} — ₹${item.price} × ${item.quantity}</li>`).join('')}
+        </ul>
+        <p>Total Refund Amount: ₹${order.finalAmount}</p>
+      `;
+
+          container.innerHTML = html;
+
+          // Show the modal
+          var returnVerifyModal = new bootstrap.Modal(document.getElementById('returnVerifyModal'));
+          returnVerifyModal.show();
+
+          // Optional: handle accept/reject buttons
+          document.getElementById('acceptReturnBtn').onclick = async function () {
+            try {
+              const res = await fetch(`/admin/acceptReturn/${orderId}`, { method: 'POST' });
+              const data = await res.json();
+              if (data.success) {
+                returnVerifyModal.hide();
+                Swal.fire('Success', 'Return accepted and refunded', 'success').then(() => { location.reload(); })
+              }
+            } catch (err) {
+              console.error(err);
+              Swal.fire('Error', 'Something went wrong', 'error');
+            }
+          };
+
+          document.getElementById('rejectReturnBtn').onclick = async function () {
+            try {
+              const res = await fetch(`/admin/rejectReturn/${orderId}`, { method: 'POST' });
+              const data = await res.json();
+              if (data.success) {
+                returnVerifyModal.hide();
+                Swal.fire('Success', 'Return request rejected', 'success').then(() => {location.reload()})
+              }
+            } catch (err) {
+              console.error(err);
+              Swal.fire('Error', 'Something went wrong', 'error');
+            }
+          };
+
+        } catch (err) {
+          console.error(err);
+          container.innerHTML = '<p class="text-danger">Failed to load return details.</p>';
+        }
+      });
+    });
+
+
+
+
+
+
+
+
+
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyFilters();
+    }
+  });
+
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.trim();
+      const status = document.getElementById('statusFilter').value;
+      const sort = document.getElementById('sortSelect').value;
+
+      // Build query string
+      let query = [];
+      if (search) query.push(`search=${encodeURIComponent(search)}`);
+      if (status) query.push(`status=${encodeURIComponent(status)}`);
+      if (sort) query.push(`sort=${encodeURIComponent(sort)}`);
+
+      // Redirect to backend with query params
+      window.location.href = `/admin/orders?${query.join('&')}`;
+    }
+
+    function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('sortSelect').value = 'date_desc';
+
+      window.location.href = '/admin/orders';
+    }
+
+
+
+  </script>

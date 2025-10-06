@@ -1,0 +1,85 @@
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9f9f9;
+}
+
+.success-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 70px); /* adjust for header height */
+  padding-top: 20px; /* optional spacing from top */
+}
+
+.success-container {
+  background: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  width: 420px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.check-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: #fca311; /* updated */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+
+.success-container h2 {
+  margin: 10px 0;
+  font-size: 22px;
+  color: #333;
+}
+
+.success-container p {
+  color: #666;
+  font-size: 14px;
+}
+
+.actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: 0.2s;
+  text-align: center;
+}
+
+.view-order {
+  border: 2px solid #fca311; /* updated */
+  color: #fca311;           /* updated */
+  background: #fff;
+}
+
+.view-order:hover {
+  background: #fca311; /* updated */
+  color: #fff;
+}
+
+.continue-shopping {
+  background: #fca311; /* updated */
+  color: #fff;
+  border: none;
+}
+
+.continue-shopping:hover {
+  background: #e59500; /* slightly darker shade of #fca311 */
+}

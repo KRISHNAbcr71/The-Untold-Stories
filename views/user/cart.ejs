@@ -1,0 +1,152 @@
+<%-include("../../views/partials/user/header")%>
+<link rel="stylesheet" href="/css/cart.css">
+
+
+
+
+<div class="container">
+  <h2 style="text-align: center;margin-top: 10px;font-weight: bold;">MY CART</h2>
+
+  <div class="cart-card">
+    <!-- Cart Item -->
+     
+
+     <%if(cart.items.length > 0){%>
+      <p class="above-head">Price</p>
+      <%cart.items.forEach(item => {%>
+    <div class="cart-item" data-product-id="<%= item.productId._id%>">
+      <div class="item-left">
+        <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+      </div>
+
+      <!-- Product details -->
+      <div class="item-middle">
+        <h4><strong><%= item.productId.productName %></strong></h4>
+        <p>by <%= item.productId.author %></p>
+        <p><%= item.productId.category.name%></p>
+        
+        <div class="quantity-controls">
+          <button class="decrease-btn">-</button>
+          <span><%= item.quantity %></span>
+          <button class="increase-btn">+</button>
+          <button class="delete-btn">Delete</button>
+        </div>
+      </div>
+      <div class="item-right">
+        <!-- <h4><strong>Price</strong></h4> -->
+         
+        ₹ <%= item.price %>
+      </div>
+    </div>
+    <%})%>
+
+
+    <!-- Subtotal and Checkout -->
+    <div class="subtotal-section">
+      <!-- <h5>Subtotal (<%= cart.items.length %> item): <strong>₹<%= subtotal %></strong> </h3> -->
+        <h5>Subtotal (<%= cart.items.length %> item<%= cart.items.length > 1 ? 's' : '' %>): <strong>₹<%= subtotal %></strong> </h3>
+      <a href="/checkout" class="checkout-btn">Proceed to Buy</a>
+    </div>
+    <%}else{%>
+      <p>Cart is empty</p>
+     <%}%> 
+  </div>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+  // Handle increase quantity
+  document.querySelectorAll('.increase-btn').forEach(btn => {
+    btn.addEventListener('click', async(e) =>{
+      const cartItem = e.target.closest('.cart-item')
+      const productId = cartItem.dataset.productId
+
+      try {
+        const response = await fetch(`/increase/${productId}`, {
+          method: 'POST',
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ action: "increase" })
+        })
+        const result = await response.json();
+        if(response.ok){
+          location.reload()
+        }else {
+          Swal.fire({
+            icon: "warning",
+            title: "Oops",
+            text: result.message || "Something went wrong"
+          });
+        }
+        
+      } catch (error) {
+        console.error(error)
+      }
+
+    });
+  });
+
+
+  // Handle decrease quantity
+  document.querySelectorAll('.decrease-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const cartItem = e.target.closest('.cart-item');
+      const productId = cartItem.dataset.productId;
+      const quantityElement = cartItem.querySelector('span')
+      const currentQuantity = parseInt(quantityElement.textContent) 
+
+      if(currentQuantity <= 1){
+        return
+      }
+
+      try {
+        const res = await fetch(`/decrease/${productId}`, {
+          method: 'POST',
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ action: "decrease" })
+        });
+        location.reload()
+      } catch(err) {
+        console.error(err);
+      }
+    });
+  });
+
+
+
+  // Handle delete with SweetAlert confirmation
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const cartItem = e.target.closest('.cart-item');
+      const productId = cartItem.dataset.productId;
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to remove this item from cart?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove it!'
+      }).then(async (result) => {
+        if(result.isConfirmed){
+          try {
+            const res = await fetch(`/deleteFromCart/${productId}`, { method: 'DELETE' });
+            const data = await res.json();
+            if(data.message) Swal.fire('Removed!', data.message, 'success').then(()=> location.reload());
+          } catch(err) {
+            console.error(err);
+          }
+        }
+      });
+    });
+  });
+
+
+</script>
+
+
+
+
+

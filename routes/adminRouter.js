@@ -5,7 +5,8 @@ const customerController = require('../controllers/admin/customerController')
 const categoryController = require('../controllers/admin/categoryController')
 const productController = require('../controllers/admin/productController')
 const bannerController = require('../controllers/admin/bannerController')
-const {userAuth} = require('../middlewares/cache')
+const couponController = require('../controllers/admin/couponController')
+const orderController = require('../controllers/admin/orderController')
 const { route } = require('./userRouter')
 const {upload, uploadBanner} = require('../middlewares/multer')
 
@@ -61,6 +62,25 @@ router.patch('/restoreProduct/:id',productController.restoreProduct)
 router.get('/banner',bannerController.getBannerPage)
 router.get('/addBanner',bannerController.getAddBannerPage)
 router.post('/addBanner',uploadBanner,bannerController.addBanner)
+
+
+// Coupon management
+// -----------------
+router.get('/coupon',couponController.getCouponPage)
+router.get('/addCoupon',couponController.getAddCouponPage)
+router.post('/addCoupon',couponController.addCoupon)
+router.get('/editCoupon',couponController.getEditCoupon)
+router.patch('/editCoupon/:id',couponController.editCoupon)
+router.delete('/deleteCoupon/:id',couponController.deleteCoupon)
+
+
+// Order Management
+router.get('/orders',orderController.getOrderPage)
+router.patch('/updateStatus/:orderId',orderController.updateStatus)
+router.get('/details/:orderId',orderController.viewOrderDetails)
+router.post('/acceptReturn/:orderId',orderController.acceptReturnRequest)
+router.post('/rejectReturn/:orderId',orderController.rejectReturnRequest)
+
 
 
 module.exports = router

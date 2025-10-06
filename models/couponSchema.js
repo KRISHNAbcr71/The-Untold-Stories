@@ -6,31 +6,33 @@ const couponSchema = new Schema({
     //     type: Schema.Types.ObjectId,
     //     ref: "User"
     // }],
-    name: {
+    code: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
-    // createdOn: {
-    //     type: Date,
-    //     default: Date.now,
-    //     required: true
-    // },
-    expireOn: {
+    discountValue: {
+        type: Number,
+        required: true
+    },
+    startDate: {
         type: Date,
         required: true
     },
-    offerPrice: {
-        type: Number,
+    endDate: {
+        type: Date,
         required: true
     },
-    minimumPrice: {                  // The minimum cart amount to apply the coupon
+    minValue: {                  // The minimum cart amount to apply the coupon
         type: Number,
-        required: true
+        default: 0
     },
     isListed: {
         type: Boolean,
         default: true
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     },
     redeemedUsers: [{                    // Each user can use a coupon only one time.
         type: Schema.Types.ObjectId,

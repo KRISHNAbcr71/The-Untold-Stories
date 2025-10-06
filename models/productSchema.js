@@ -10,10 +10,6 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    // pages: {
-    //     type: Number,
-    //     required: true
-    // },
     author: {
         type: String,
         required: true
@@ -23,10 +19,6 @@ const productSchema = new Schema({
         ref: "Category",
         required: true
     },
-    // regularPrice: {
-    //     type: Number,
-    //     required: true
-    // },
     price: {
         type: Number,
         required: true
