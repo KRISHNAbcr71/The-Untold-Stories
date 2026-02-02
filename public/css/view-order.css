@@ -1,14 +1,3 @@
-/* .circle { 
-    width: 25px; 
-    height: 25px; 
-    background: #ccc; 
-    border-radius: 50%; 
-    margin: auto; 
-} 
-.circle.active { 
-    background: #198754; 
-} */
- /* Status Tracker Circles */
 .circle {
   width: 25px;
   height: 25px;
@@ -19,5 +8,5 @@
 }
 
 .circle.active {
-  background-color: #fca311; /* active color */
+  background-color: #d4a373; /* active color */
 }

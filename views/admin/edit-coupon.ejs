@@ -15,7 +15,6 @@
           <div class="mb-3">
             <label for="code" class="form-label">Coupon Code</label>
             <input type="text" class="form-control" id="code" name="code" value="<%= coupon.code %>">
-            <div id="code-error" class="error-message text-danger small mt-1"></div>
           </div>
 
 
@@ -23,14 +22,12 @@
           <div class="mb-3">
             <label for="startDate" class="form-label">Start Date</label>
             <input type="date" class="form-control" id="startDate" name="startDate" value="<%= coupon.startDate.toISOString().split('T')[0] %>">
-            <div id="startDate-error" class="error-message text-danger small mt-1"></div>
           </div>
 
           <!-- End Date -->
           <div class="mb-3">
             <label for="endDate" class="form-label">End Date</label>
             <input type="date" class="form-control" id="endDate" name="endDate" value="<%= coupon.endDate.toISOString().split('T')[0] %>">
-            <div id="endDate-error" class="error-message text-danger small mt-1"></div>
           </div>
 
 
@@ -39,7 +36,6 @@
           <div class="mb-3">
             <label for="discountValue" class="form-label">Discount Value</label>
             <input type="number" class="form-control" id="discountValue" name="discountValue" value="<%= coupon.discountValue %>">
-            <div id="discountValue-error" class="error-message text-danger small mt-1"></div>
           </div>
 
 
@@ -47,7 +43,6 @@
           <div class="mb-3">
             <label for="minValue" class="form-label">Minimum Order Value (₹)</label>
             <input type="number" class="form-control" id="minValue" name="minValue" value="<%= coupon.minValue%>">
-            <div id="minValue-error" class="error-message text-danger small mt-1"></div>
           </div>
 
           
@@ -64,6 +59,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
   function setDefaultStartDate() {
@@ -124,78 +120,43 @@
 
 
   function validateForm(){
-    clearErrorMessages()
     const now = new Date()
     const code = document.getElementById('code').value.trim()
     const start = document.getElementById('startDate').value.trim()
     const end = document.getElementById('endDate').value.trim()
     const discount = document.getElementById('discountValue').value.trim()
     const minimum = document.getElementById('minValue').value.trim()
-    let isValid = true
 
-    if(code === ''){
-      displayErrorMessage('code-error','Please enter coupon code')
-      isValid = false
-    }
-
-    if(start === ''){
-      displayErrorMessage('startDate-error','Please select a start date')
-      isValid = false
-    }
-
-    if(end === ''){
-      displayErrorMessage('endDate-error','Please select an end date')
-      isValid = false
+    if(!code || !start || !end || !discount || !minimum){
+      Swal.fire('Error','All fields are required','error')
+      return false
     }
 
     if (new Date(start) < new Date(new Date().toISOString().split('T')[0])) {
-      displayErrorMessage("startDate-error", "Start date cannot be in the past!");
-      isValid = false;
+      Swal.fire('Error','Start date cannot be in the past!','error')
+      return false
     }
 
     if (new Date(end) <= new Date(start)) {
-      displayErrorMessage("endDate-error", "End date must be greater than start date.");
-      isValid = false;
+      Swal.fire('Error','End date must be greater than start date','error')
+      return false
     }
 
-    if(discount === ''){
-      displayErrorMessage('discountValue-error','Please enter the discount amount')
-      isValid = false
-    }
 
     if (isNaN(discount) || Number(discount) <= 0) {
-      displayErrorMessage('discountValue-error','Discount must be a positive number')
-      isValid = false
-    }
-
-    if(minimum === ''){
-      displayErrorMessage('minValue-error','Please enter the minimum order value')
-      isValid = false
+      Swal.fire('Error','Discount must be a positive number','error')
+      return false
     }
 
     if (minimum && (isNaN(minimum) || Number(minimum) < 0)) {
-      displayErrorMessage('minValue-error','Minimum value must be 0 or greater')
-      isValid = false
+      Swal.fire('Error','Minimum value must be 0 or greater','error')
+      return false
     }
 
-    return isValid
-  }
-
-  function displayErrorMessage(elementId,message){
-    let errorElement = document.getElementById(elementId)
-    errorElement.innerText = message
-    errorElement.style.display = 'block'
+    return true
 
   }
 
-  function clearErrorMessages(){
-    let errorElements = document.getElementsByClassName('error-message')
-    Array.from(errorElements).forEach( element => {
-      element.innerText = ''
-      element.style.display = 'none'
-    });
-
-  }
 
 </script>
  

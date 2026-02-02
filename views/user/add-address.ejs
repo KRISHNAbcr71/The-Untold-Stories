@@ -1,216 +1,202 @@
 <%-include("../../views/partials/user/header")%>
-<link rel="stylesheet" href="/css/add-address.css">
+<link rel="stylesheet" href="/css/add-address.css" />
 
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm p-4">
+        <h3 class="mb-4 text-center">Add Address</h3>
+        <form id="addressForm">
+          <input type="hidden" id="source" name="source" value="<%=source %>" />
 
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-
-                <div class="card shadow-sm p-4">
-                    <h3 class="mb-4 text-center">Add Address</h3>
-                    <form action="/add-address" method="POST" id="addressForm">
-
-                        <div class="row g-3">
-
-                            <!-- Address Type -->
-                            <!-- <div class="col-md-4">
-                                <label class="form-label">Address Type</label>
-                                <input type="text" id="addressType" class="form-control" name="addressType">
-                                <div id="typeError" class="error-message text-danger"></div>
-                            </div> -->
-
-                            <!-- Name -->
-                            <div class="col-md-4">
-                                <label class="form-label">Name</label>
-                                <input type="text" id="name" class="form-control" name="name">
-                                <div id="nameError" class="error-message text-danger"></div>
-                            </div>
-
-                            <!-- Landmark -->
-                            <div class="col-md-4">
-                                <label class="form-label">Landmark</label>
-                                <input type="text" id="landmark" class="form-control" name="landmark">
-                                <div id="landmarkError" class="error-message text-danger"></div>
-                            </div>
-
-                            <!-- State -->
-                            <div class="col-md-4">
-                                <label class="form-label">State</label>
-                                <input type="text" id="state" class="form-control" name="state">
-                                <div id="stateError" class="error-message text-danger"></div>
-                            </div>
-
-                            <!-- Pincode -->
-                            <div class="col-md-4">
-                                <label class="form-label">Pincode</label>
-                                <input type="number" id="pincode" class="form-control" name="pincode">
-                                <div id="pincodeError" class="error-message text-danger"></div>
-                            </div>
-
-                            <!-- Full address -->
-                            <div class="col-md-4">
-                                <label class="form-label">Full Address</label>
-                                <textarea id="fullAddress" class="form-control" name="fullAddress" rows="2"></textarea>
-                                <div id="fullAddressError" class="error-message text-danger"></div>
-                            </div>
-
-                            <!-- Phone -->
-                            <div class="col-md-6">
-                                <label class="form-label">Phone</label>
-                                <input type="text" id="phone" class="form-control" name="phone">
-                                <div id="phoneError" class="error-message text-danger"></div>
-                            </div>
-
-                            <!-- Alternate Phone -->
-                            <div class="col-md-6">
-                                <label class="form-label">Alternate Phone</label>
-                                <input type="text" id="altPhone" class="form-control" name="altPhone">
-                                <div id="altphoneError" class="error-message text-danger"></div>
-                            </div>
-
-                            <div class="col-12 text-center mt-3">
-                                <button type="submit" class="btn px-5 btn-sub">Submit</button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
+          <div class="row g-3">
+            <!-- Name -->
+            <div class="col-md-4">
+              <label class="form-label">Name</label>
+              <input type="text" id="name" class="form-control" name="name" />
             </div>
-        </div>
+
+            <!-- Landmark -->
+            <div class="col-md-4">
+              <label class="form-label">Landmark</label>
+              <input
+                type="text"
+                id="landmark"
+                class="form-control"
+                name="landmark"
+              />
+            </div>
+
+            <!-- State -->
+            <div class="col-md-4">
+              <label class="form-label">State</label>
+              <input type="text" id="state" class="form-control" name="state" />
+            </div>
+
+            <!-- Pincode -->
+            <div class="col-md-4">
+              <label class="form-label">Pincode</label>
+              <input
+                type="text"
+                id="pincode"
+                class="form-control"
+                name="pincode"
+                maxlength="6"
+              />
+            </div>
+
+            <!-- Full address -->
+            <div class="col-md-4">
+              <label class="form-label">Full Address</label>
+              <textarea
+                id="fullAddress"
+                class="form-control"
+                name="fullAddress"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <!-- Phone -->
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="text" id="phone" class="form-control" name="phone" />
+            </div>
+
+            <!-- Alternate Phone -->
+            <div class="col-md-6">
+              <label class="form-label">Alternate Phone</label>
+              <input
+                type="text"
+                id="altPhone"
+                class="form-control"
+                name="altPhone"
+              />
+            </div>
+
+            <div class="col-12 text-center mt-3">
+              <button type="submit" class="btn px-5 btn-sub">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
+<script>
+  document
+    .getElementById("addressForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-        document.getElementById('addressForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
+      // inputs
+      const name = document.getElementById("name").value.trim();
+      const landmark = document.getElementById("landmark").value.trim();
+      const state = document.getElementById("state").value.trim();
+      const pincode = document.getElementById("pincode").value.trim();
+      const fullAddress = document.getElementById("fullAddress").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const altPhone = document.getElementById("altPhone").value.trim();
 
-            document.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
+      const source = document.getElementById("source").value;
 
-            let isValid = true;
-            // const addressType = document.getElementById('addressType');
-            const name = document.getElementById('name');
-            const landmark = document.getElementById('landmark');
-            const state = document.getElementById('state');
-            const pincode = document.getElementById('pincode');
-            const fullAddress = document.getElementById('fullAddress');
-            const phone = document.getElementById('phone');
-            const altPhone = document.getElementById('altPhone');
+      if (!name || !landmark || !state || !pincode || !fullAddress || !phone) {
+        return Swal.fire("Error", "All fields are required", "error");
+      }
 
-            // const typeError = document.getElementById('typeError')
-            const nameError = document.getElementById('nameError')
-            const landmarkError = document.getElementById('landmarkError')
-            const stateError = document.getElementById('stateError')
-            const pincodeError = document.getElementById('pincodeError')
-            const fullAddressError = document.getElementById('fullAddressError')
-            const phoneError = document.getElementById('phoneError')
-            const altphoneError = document.getElementById('altphoneError')
+      // Pincode
+      if (!/^[1-9]{1}[0-9]{2}\s?[0-9]{3}$/.test(pincode)) {
+        return Swal.fire("Error", "Enter a valid 6-digit pincode", "error");
+      }
 
-            // Address Type
-            // if (addressType.value.trim() === '') {
-            //     typeError.textContent = 'Address type is required';
-            //     isValid = false;
-            // }
+      // Full Address
+      if (fullAddress.length < 10) {
+        return Swal.fire(
+          "Error",
+          "Full address must be at least 10 characters",
+          "error"
+        );
+      }
 
-            // Name
-            if (name.value.trim() === '') {
-                nameError.textContent = 'Name is required';
-                isValid = false;
-            }
+      // Phone
+      if (!/^\d{10}$/.test(phone)) {
+        return Swal.fire(
+          "Error",
+          "Enter a valid 10-digit phone number",
+          "error"
+        );
+      }
 
-            // Landmark
-            if (landmark.value.trim() === '') {
-                landmarkError.textContent = 'Landmark is required';
-                isValid = false;
-            }
+      // Alternate Phone (optional, but must be valid if filled)
+      if (altPhone !== "" && !/^\d{10}$/.test(altPhone)) {
+        return Swal.fire(
+          "Error",
+          "Enter a valid 10-digit alternate phone number",
+          "error"
+        );
+      }
 
-            // State
-            if (state.value.trim() === '') {
-                stateError.textContent = 'State is required';
-                isValid = false;
-            }
+      if (phone === altPhone) {
+        return Swal.fire(
+          "Error",
+          "Phone number and alternate phone number should be different.",
+          "error"
+        );
+      }
 
-            // Pincode
-            if (!/^[1-9]{1}[0-9]{2}\s?[0-9]{3}$/.test(pincode.value.trim())) {
-                pincodeError.textContent = 'Enter a valid 6-digit pincode';
-                isValid = false;
-            }
+      // Form data
+      const formData = {
+        // addressType: addressType.value.trim(),
+        name: name,
+        landmark: landmark,
+        state: state,
+        pincode: pincode,
+        fullAddress: fullAddress,
+        phone: phone,
+        altPhone: altPhone,
+        source,
+      };
 
-            // Full Address
-            if (fullAddress.value.trim().length < 10) {
-                fullAddressError.textContent = 'Full address must be at least 10 characters';
-                isValid = false;
-            }
-
-            // Phone
-            if (!/^\d{10}$/.test(phone.value.trim())) {
-                phoneError.textContent = 'Enter a valid 10-digit phone number';
-                isValid = false;
-            }
-
-            // Alternate Phone (optional, but must be valid if filled)
-            if (altPhone.value.trim() !== '' && !/^\d{10}$/.test(altPhone.value.trim())) {
-                altphoneError.textContent = 'Enter a valid 10-digit alternate phone number';
-                isValid = false;
-            }
-
-            if(phone.value.trim() === altPhone.value.trim()){
-                altphoneError.textContent = 'Phone number and alternate phone number should be different.'
-                isValid = false;
-            }
-
-            // Stop form if validation fails
-            if (!isValid) return
-
-            // Form data
-            const formData = {
-                // addressType: addressType.value.trim(),
-                name: name.value.trim(),
-                landmark: landmark.value.trim(),
-                state: state.value.trim(),
-                pincode: pincode.value.trim(),
-                fullAddress: fullAddress.value.trim(),
-                phone: phone.value.trim(),
-                altPhone: altPhone.value.trim()
-            };
-
-
-            try {
-                const response = await fetch('/add-address', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Address Added',
-                        text: data.message,
-                        confirmButtonColor: '#28a745'
-                    }).then(() => window.location.href = '/address');
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed',
-                        text: data.error || 'Something went wrong',
-                        confirmButtonColor: '#dc3545'
-                    });
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'An unexpected error occurred',
-                    confirmButtonColor: '#dc3545'
-                });
-            }
-
+      try {
+        const response = await fetch("/add-address", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         });
 
-    </script>
+        const data = await response.json();
+
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "Address Added",
+            text: data.message,
+            confirmButtonColor: "#28a745",
+          }).then(() => {
+            if (source === "checkout") {
+              window.location.href = "/checkout";
+            } else {
+              window.location.href = "/address";
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: data.message || "Something went wrong",
+            confirmButtonColor: "#dc3545",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "An unexpected error occurred",
+          confirmButtonColor: "#dc3545",
+        });
+      }
+    });
+</script>

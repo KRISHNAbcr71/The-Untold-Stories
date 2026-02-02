@@ -23,14 +23,6 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    // salePrice: {
-    //     type: Number,
-    //     required: true
-    // },
-    // productOffer: {
-    //     type: Number,
-    //     default: 0
-    // },
     quantity: {
         type: Number,
         required: true,
@@ -58,6 +50,10 @@ const productSchema = new Schema({
         type: Date,
         default: null
     },
+    productOffer: {
+        type: Number,
+        default:0
+    }
 },{timestamps:true})
 
 const Product = mongoose.model("Product",productSchema)

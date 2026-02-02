@@ -1,10 +1,8 @@
 <%-include("../../views/partials/user/header")%>
-
   <link rel="stylesheet" href="/css/my-order.css">
 
-
   <div class="container-fluid">
-    <div class="row">
+    <div class="row min-vh-100">
       <!-- Sidebar -->
       <div class="col-md-3 sidebar">
         <h2>
@@ -13,14 +11,13 @@
         <a href="/userProfile" class="nav-link">My Profile</a>
         <a href="/address" class="nav-link">Address</a>
         <a href="/my-order" class="nav-link">Orders</a>
-        <a href="/wishlist" class="nav-link">Wishlist</a>
         <a href="/wallet" class="nav-link">Wallet</a>
       </div>
 
       <!-- Main Content -->
       <div class="col-md-9">
         <div class="mt-5 px-4">
-          <h2 class="mb-4 text-center">My Orders</h2>
+          <h2 class="mb-4 text-center fw-bold">My Orders</h2>
 
           <!-- Search -->
           <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
@@ -50,8 +47,9 @@
                   </p>
                   <p><strong>Total Amount:</strong> ₹<%= order.finalAmount %>
                   </p>
-                  <p><strong>Discount Amount:</strong> ₹<%= order.discountAmount %>
+                  <!-- <p><strong>Coupon Discount Amount:</strong> ₹<%= order.discountAmount %>
                   </p>
+                  <p><strong>Offer Amount:</strong> ₹<%= order.offerAppliedAmount  %></p> -->
                   <p><strong>Delivery Charge:</strong> ₹<%= order.deliveryCharge %>
                   </p>
                   <p><strong>Payment Method:</strong>
@@ -64,55 +62,61 @@
                   <!-- Products -->
                   <div class="products-list mb-3">
                     <% order.items.forEach(item=> { %>
-                      <div class="d-flex align-items-center mb-2">
-                        <% if(item.image) { %>
+                      <div class="d-flex align-items-center mb-2 product-item
+                      <%= item.itemStatus === 'Cancelled' ? 'cancelled-product' : '' %>">
+                        <% if (item.image) { %>
                           <img src="/<%= item.image %>" alt="<%= item.productName %>"
                             style="width: 100px; height: 120px; object-fit: cover; margin-right: 10px;">
                           <% } else { %>
-                            <div style="width:100px; height:100px; background:#ccc; margin-right:10px;"></div>
+                            <div style="width:100px; height:120px; background:#ccc; margin-right:10px;"></div>
                             <% } %>
                               <div>
-                                <p class="mb-0"><strong>
+                                <p class="mb-0">
+                                  <strong>
                                     <%= item.productName %>
-                                  </strong></p>
+                                  </strong>
+                                </p>
                                 <p class="mb-0">Qty: <%= item.quantity %>
                                 </p>
                                 <p class="mb-0">Price: ₹<%= item.price %>
                                 </p>
-                                <% if(item.itemStatus==='Cancelled' ) { %>
-                                  <p class="text-danger mb-0">Cancelled</p>
-                                  <% } else { %>
-                                    <a href="#" class="text-danger cancel-product"
-                                      style="cursor: pointer; text-decoration: none;" data-order="<%= order.orderId %>"
-                                      data-product="<%= item.productId %>">Cancel Product</a>
-                                    <% } %>
+                                <!-- <p class="mb-0">Final Price: ₹<%=item.finalPrice%></p> -->
+                                <% if (item.itemStatus==='Cancelled' ) { %>
+                                  <span class="badge bg-secondary mt-1">Cancelled</span>
+                                  <% } %>
 
+                                    <% if (item.itemStatus==='Pending' && order.status==='Pending' ) { %>
+                                      <a href="#" class="text-danger cancel-product"
+                                        style="cursor: pointer; text-decoration: none;"
+                                        data-order="<%= order.orderId %>" data-product="<%= item.productId %>">
+                                        Cancel Product
+                                      </a>
+                                      <% } %>
                               </div>
                       </div>
                       <% }) %>
                   </div>
 
-                  <!-- Actions -->
-                  <div class="order-actions d-flex gap-2">
-                    <button class="btn btn-danger btn-sm cancel-order" data-bs-toggle="modal" data-bs-target="#cancelModal"
-                      data-order="<%= order.orderId %>">Cancel</button>
-                    <!-- <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                      data-bs-target="#returnModal">Return</button> -->
-                    <a href="/view-order-details/<%= order.orderId %>" class="btn btn-primary btn-sm">View Details</a>
-                    <a href="/invoice/<%= order.orderId %>" class="btn btn-success btn-sm">Download Invoice</a>
-
-                  </div>
+                  <% const hasActiveItems=order.items.some( item=> item.itemStatus !== 'Cancelled' ) %>
+                    <%const isCancellable=order.status==='Pending' ;%>
+                      <!-- Actions -->
+                      <div class="order-actions d-flex gap-2">
+                        <%if(isCancellable){%>
+                          <button class="btn btn-danger btn-sm cancel-order" data-bs-toggle="modal"
+                            data-bs-target="#cancelOrderModal" data-order="<%= order.orderId %>">Cancel Order</button>
+                          <%}%>
+                            <a href="/view-order-details/<%= order.orderId %>" class="btn btn-primary btn-sm">View
+                              Details</a>
+                            <a href="/invoice/<%= order.orderId %>" class="btn btn-success btn-sm">Download Invoice</a>
+                      </div>
                 </div>
               </div>
-
-
-
 
               <!-- Cancel Product Modal -->
               <div class="modal fade" id="cancelProductModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                   <form class="modal-content" id="cancelProductForm">
-                     <!-- Hidden inputs for orderId and productId  -->
+                    <!-- Hidden inputs for orderId and productId  -->
                     <input type="hidden" name="orderId" id="cancelOrderId">
                     <input type="hidden" name="productId" id="cancelProductId">
 
@@ -154,11 +158,11 @@
 
 
 
-               <!-- Cancel Order Modal  -->
+              <!-- Cancel Order Modal  -->
               <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                   <form class="modal-content" id="cancelOrderFormUnique">
-                     <!-- Hidden input for orderId  -->
+                    <!-- Hidden input for orderId  -->
                     <input type="hidden" name="orderId" id="orderIdInput">
 
                     <div class="modal-header">
@@ -201,142 +205,156 @@
                   <p class="text-center mt-5" style="color: #555;">No orders placed yet.</p>
                   <% } %>
         </div>
-      </div>
 
+        <div class="container pagination-container">
+          <nav aria-label="Page Navigation">
+            <ul class="pagination justify-content-center mb-20">
+              <% for(let i=1; i <=totalPages; i++) { %>
+                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                  <a class="page-link" href="?page=<%= i %>">
+                    <%= i %>
+                  </a>
+                </li>
+                <% } %>
+            </ul>
+          </nav>
+        </div>
+
+      </div>
     </div>
   </div>
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/your-order-modal.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    const clearBtn = document.getElementById('clearSearch');
-
-    // Show/hide clear button based on input
-    searchInput.addEventListener('input', () => {
-      clearBtn.style.display = searchInput.value ? 'block' : 'none';
-    });
-
-    // Trigger search on Enter
-    searchInput.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        const query = searchInput.value.trim();
-        window.location.href = `/my-order?search=${encodeURIComponent(query)}`;
-      }
-    });
-
-    // Clear search
-    clearBtn.addEventListener('click', () => {
-      searchInput.value = '';
-      clearBtn.style.display = 'none';
-      window.location.href = '/my-order'; // Reload full list
-    });
-
-    // Initialize clear button on page load
-    if (searchInput.value) {
-      clearBtn.style.display = 'block';
-    }
 
 
 
+  <%-include("../../views/partials/user/footer")%>
 
-    document.addEventListener('DOMContentLoaded', () => {
 
-      const cancelLinks = document.querySelectorAll('.cancel-product');
-      const cancelOrderIdInput = document.getElementById('cancelOrderId');
-      const cancelProductIdInput = document.getElementById('cancelProductId');
-      const cancelForm = document.getElementById('cancelProductForm');
-      const cancelModal = new bootstrap.Modal(document.getElementById('cancelProductModal'));
 
-      cancelLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const orderId = link.dataset.order;
-          const productId = link.dataset.product;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/your-order-modal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-          cancelOrderIdInput.value = orderId;
-          cancelProductIdInput.value = productId;
 
-          cancelForm.action = `/cancel-product/${orderId}/${productId}`;
+    <script>
+      const searchInput = document.getElementById('searchInput');
+      const clearBtn = document.getElementById('clearSearch');
 
-          cancelModal.show();
-        });
+      searchInput.addEventListener('input', () => {
+        clearBtn.style.display = searchInput.value ? 'block' : 'none';
       });
 
-      const reasonRadios = document.querySelectorAll('.cancel-reason');
-      const otherReason = document.getElementById('otherReason');
-
-      reasonRadios.forEach(radio => {
-        radio.addEventListener('change', () => {
-          if (radio.value === 'Other' && radio.checked) {
-            otherReason.style.display = 'block';
-            otherReason.required = true;
-          } else {
-            otherReason.style.display = 'none';
-            otherReason.required = false;
-          }
-        });
-      });
-
-
-      cancelForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // stop normal form submit
-
-        const orderId = cancelOrderIdInput.value;
-        const productId = cancelProductIdInput.value;
-        const reason = document.querySelector('input[name="reasonOption"]:checked')?.value === 'Other'
-          ? otherReason.value
-          : document.querySelector('input[name="reasonOption"]:checked')?.value;
-
-        try {
-          const res = await fetch(`/cancel-product/${orderId}/${productId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reason })
-          });
-
-          const data = await res.json();
-
-          if (data.success) {
-            Swal.fire({
-              icon: 'success',
-              title: 'Cancelled!',
-              text: data.message,
-              confirmButtonText: 'OK'
-            }).then(() => {
-              cancelModal.hide();
-              location.reload(); // refresh to update order status
-            });
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: data.message
-            });
-          }
-        } catch (err) {
-          console.error(err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong'
-          });
+      searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          const query = searchInput.value.trim();
+          window.location.href = `/my-order?search=${encodeURIComponent(query)}`;
         }
       });
 
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        window.location.href = '/my-order';
+      });
+
+      if (searchInput.value) {
+        clearBtn.style.display = 'block';
+      }
 
 
 
-    });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const cancelLinks = document.querySelectorAll('.cancel-product');
+        const cancelOrderIdInput = document.getElementById('cancelOrderId');
+        const cancelProductIdInput = document.getElementById('cancelProductId');
+        const cancelForm = document.getElementById('cancelProductForm');
+        const cancelModal = new bootstrap.Modal(document.getElementById('cancelProductModal'));
+
+        cancelLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            if (link.classList.contains('disabled-link')) return;
+            e.preventDefault();
+            const orderId = link.dataset.order;
+            const productId = link.dataset.product;
+
+            cancelOrderIdInput.value = orderId;
+            cancelProductIdInput.value = productId;
+
+            cancelForm.action = `/cancel-product/${orderId}/${productId}`;
+
+            cancelModal.show();
+          });
+        });
+
+        const reasonRadios = document.querySelectorAll('.cancel-reason');
+        const otherReason = document.getElementById('otherReason');
+
+        reasonRadios.forEach(radio => {
+          radio.addEventListener('change', () => {
+            if (radio.value === 'Other' && radio.checked) {
+              otherReason.style.display = 'block';
+              otherReason.required = true;
+            } else {
+              otherReason.style.display = 'none';
+              otherReason.required = false;
+            }
+          });
+        });
+
+
+        cancelForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const orderId = cancelOrderIdInput.value;
+          const productId = cancelProductIdInput.value;
+          const reason = document.querySelector('input[name="reasonOption"]:checked')?.value === 'Other'
+            ? otherReason.value
+            : document.querySelector('input[name="reasonOption"]:checked')?.value;
+
+          try {
+            const res = await fetch(`/cancel-product/${orderId}/${productId}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ reason })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Cancelled!',
+                text: data.message,
+                confirmButtonText: 'OK'
+              }).then(() => {
+                cancelModal.hide();
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.message
+              });
+            }
+          } catch (err) {
+            console.error(err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Something went wrong'
+            });
+          }
+        });
+
+      });
 
 
 
-      
+
 
       const cancelOrderLinks = document.querySelectorAll('.cancel-order')
       const orderIdInput = document.getElementById('orderIdInput');
@@ -345,6 +363,7 @@
 
       cancelOrderLinks.forEach(link => {
         link.addEventListener('click', (e) => {
+          if (link.disabled) return;
           e.preventDefault();
           const orderId = link.dataset.order;
 
@@ -359,7 +378,6 @@
       const orderReasonRadios = document.querySelectorAll('.order-cancel-reason');
       const orderOtherReason = document.getElementById('orderOtherReason');
 
-      // Show/hide textarea for "Other"
       orderReasonRadios.forEach(radio => {
         radio.addEventListener('change', () => {
           if (radio.value === 'Other' && radio.checked) {
@@ -372,9 +390,8 @@
         });
       });
 
-      
 
-      // Submit order cancellation
+
       cancelOrderForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const orderId = orderIdInput.value;
@@ -419,8 +436,5 @@
       });
 
 
-  
 
-
-
-  </script>
+    </script>

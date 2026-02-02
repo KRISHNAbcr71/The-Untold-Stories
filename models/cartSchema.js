@@ -27,13 +27,12 @@ const cartSchema = new Schema({
         },
         status: {
             type: String,
-            // enum: ['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Failed'],
             default: 'Placed'
         },
         cancellationReason: {
             type: String,
             enum: ['None','Changed my mind','Ordered by mistake','Found a better price',
-                  'Product not needed','Delivery too late','Other'],   // Default when not cancelled
+                  'Product not needed','Delivery too late','Other'], 
             default: 'None'
         }
     }]

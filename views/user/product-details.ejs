@@ -1,304 +1,480 @@
 <%-include("../../views/partials/user/header")%>
-    <link rel="stylesheet" href="/css/product-details.css">
+<link rel="stylesheet" href="/css/product-details.css">
 
+<!-- Breadcrumb Section -->
+<section class="breadcrumb-section py-4 bg-light">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary">Home</a></li>
+                <li class="breadcrumb-item"><a href="/shop" class="text-decoration-none text-secondary">Shop</a></li>
+                <li class="breadcrumb-item"><a href="/shop?category=<%= product.category._id %>" class="text-decoration-none text-secondary"><%= product.category.name %></a></li>
+                <li class="breadcrumb-item active fw-bold" style="color: #d4a373;" aria-current="page"><%= product.productName %></li>
+            </ol>
+        </nav>
+    </div>
+</section>
 
-
-
-
-    <!-- Breadcrumb Section Begin -->
-    <section class="breadcrumb-section py-4">
-        <div class="container">
-            <div
-                class="breadcrumb-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                <nav class="breadcrumb-nav">
-                    <a href="/">Home</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <a href="/shop">Shop</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="current">Product</span>
+<!-- Main Product Section -->
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Product Images Section -->
+        <div class="col-lg-6">
+            <div class="product-image-container mb-4">
+                <div class="main-image-wrapper position-relative rounded-4 overflow-hidden shadow-lg" id="mainImageWrapper">
+                    <img id="mainImage" src="/<%= product.productImage[0] %>" 
+                         alt="<%= product.productName %>" 
+                         class="main-image w-100">
+                    <div class="image-zoom-overlay" id="zoomOverlay"></div>
                     
-                </nav>
-            </div>
-        </div>
-    </section>
-    <!-- Breadcrumb Section End -->
-
-
-
-    <div class="container py-5">
-        <div class="row">
-
-            <!-- Product Image -->
-            <div class="image-section">
-                <img id="mainImage" src="/<%= product.productImage[0] %>" alt="Product Image" class="main-image">
-                <div id="zoomLens"></div>
-                <div class="thumbnail-container">
-                    <%for(let i=0; i<product.productImage.length; i++){%>
-                        <img src="/<%= product.productImage[i] %>" data-image="/<%= product.productImage[i] %>"
-                            class="active" alt="Product Image">
-                        <%}%>
+                    <!-- Badges -->
+                     <%if(discountValue > 0){%>
+                    <div class="product-badges position-absolute top-0 start-0 p-3">
+                            <span class="badge bg-danger fs-6 px-3 py-2 shadow"><%= discountValue %>%</span>
+                    </div>
+                    <%}%>
+                </div>
+                
+                <!-- Thumbnails -->
+                <div class="thumbnail-container mt-4">
+                    <div class="row g-2">
+                        <% for(let i=0; i<product.productImage.length; i++) { %>
+                            <div class="col-3">
+                                <div class="thumbnail-item p-2 border rounded-3 <%= i === 0 ? 'active-thumbnail' : '' %>" 
+                                     data-image="/<%= product.productImage[i] %>">
+                                    <img src="/<%= product.productImage[i] %>" 
+                                         class="img-fluid rounded-2" 
+                                         alt="Thumbnail <%= i+1 %>">
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Product Info -->
-            <div class="col-md-7">
-                <h2>
-                    <%= product.productName %>
-                </h2>
-
+        <!-- Product Info Section -->
+        <div class="col-lg-6">
+            <div class="product-details">
+                <h1 class="product-title mb-3 fw-bold display-6"><%= product.productName %></h1>
+                
+                <!-- Author & Category -->
+                <div class="d-flex align-items-center mb-4">
+                    <div class="me-4">
+                        <span class="text-muted">By</span>
+                        <span class="fw-bold ms-1" style="color: #d4a373;"><%= product.author %></span>
+                    </div>
+                    <div class="vr"></div>
+                    <div class="ms-4">
+                        <span class="text-muted">Category:</span>
+                        <span class="fw-bold ms-1" style="color: #d4a373;"><%= product.category.name %></span>
+                    </div>
+                </div>
+                
                 <!-- Ratings -->
-                <div class="rating mb-2">
-                    <p class="text-muted">No ratings yet. Be the first to rate this product!</p>
+                 <div>
+                    <p>(No ratings yet)</p>
+                 </div>
+                <!-- <div class="rating-section mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="star-rating me-3">
+                            <% for(let i=1; i<=5; i++) { %>
+                                <i class="bi bi-star<%= i <= 3 ? '-fill' : '' %> text-warning fs-5"></i>
+                            <% } %>
+                        </div>
+                        <span class="text-muted">(No ratings yet)</span>
+                        <button class="btn btn-outline-primary btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#rateProductModal">
+                            Be the first to rate
+                        </button>
+                    </div>
+                </div> -->
+                
+                <!-- Price Section -->
+                <div class="price-section mb-4 p-4 bg-light rounded-4">
+                    <div class="d-flex align-items-center gap-3">
+                    <% if (discountValue > 0) { %>
+                        <span class="text-muted fs-5 fw-bold" style="color:#d4a373;"><del>₹<%= product.price %></del></span>
+                      <h2 class="fw-bold" style="color:#d4a373;">₹<%= offerPrice %></h2>
+                      <span class="badge bg-danger px-3 py-2"><%= discountValue %>% OFF</span>
+                    <% } else { %>
+                    <h2 class="fw-bold" style="color:#d4a373;">₹<%= product.price %></h2>
+                    <% } %>
                 </div>
 
-                <!-- Price & Discounts -->
-                <h3 class="text-success">₹<%= product.price %>
-                        <!-- <small class="text-muted"><del>₹399.00</del></small> -->
-                </h3>
-                <p class="discount">Get 10% off on orders above ₹500</p>
 
+                </div>
+                
                 <!-- Stock Status -->
-                <% if (product.quantity> 0) { %>
-                    <% if (product.quantity <=10) { %>
-                        <p class="text-danger">Only <%= product.quantity %> left in stock!</p>
-                        <% } else { %>
-                            <p><strong>Stock:</strong> <span class="text-success">Available</span> </p>
-                            <% } %>
-                                <% }else{%>
-                                    <p><strong>Stock:</strong> <span class="text-danger">Out of stock</span> </p>
-                                    <%}%>
-
-
-
-                                        <p><strong>Details:</strong></p>
-
-                                        <ul style="list-style-type: none;">
-                                            <li><i class="fas fa-feather-alt"></i> <span class="text-primary">Author:
-                                                    <%=product.author%>
-                                                </span></li>
-                                            <li><i class="fas fa-book"></i><span class="text-primary"> Genre:
-                                                    <%=product.category.name%>
-                                                </span></li>
-                                            <li><i class="fas fa-truck"></i><span class="text-primary"> Free
-                                                    Delivery</span>
-                                            </li>
-                                            <li><i class="fas fa-sync-alt"></i><span class="text-primary"> 10 Days
-                                                    Replacement</span></li>
-                                            <li><i class="fas fa-credit-card"></i><span class="text-primary"> Cash on
-                                                    Delivery available</span></li>
-                                        </ul>
-
-                                        <!-- Add to Cart Button -->
-                                        <!-- <form action="/add-to-cart/<%= product._id %>" method="post" onsubmit="return checkProductStatus()">
-                                        <button type="submit" class="btn-cart-wishlist">Add to Cart</button>
-                                    </form>
-
-                                    <form action="/add-to-wishlist/<%= product._id %>" method="post" onsubmit="return checkProductStatus()">
-                                        <button type="submit" class="btn-cart-wishlist">Add to Wishlist</button>
-                                    </form> -->
-                                        <!-- Add to Cart Button -->
-                                        <button type="button" class="btn-cart-wishlist"
-                                            onclick="addToCart('<%= product._id %>')">
-                                            Add to Cart
-                                        </button>
-
-                                        <!-- Add to Wishlist Button -->
-                                        <button type="button" class="btn-cart-wishlist"
-                                            onclick="addToWishlist('<%= product._id %>')">
-                                            Add to Wishlist
-                                        </button>
-
-                                        <div>
-                                            <form action="/buy-now/<%= product._id %>" method="post">
-                                                <button type="submit" class="btn-buy">Buy Now</button>
-                                            </form>
-                                        </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Reviews Section -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <h4>Customer Reviews</h4>
-                <p class="text-muted">No reviews yet. Be the first to review this product!</p>
-            </div>
-        </div>
-
-        <!-- Related Products -->
-        <div class="row mt-5">
-            <h4>Related Products</h4>
-            <%if(relatedProducts && relatedProducts.length> 0){%>
-                <% relatedProducts.forEach(rp=>{ %>
-                    <div class="col-md-3 mb-4 product-card">
-
-                        <div class="card related-card h-100 ">
-                            <img src="/<%= rp.productImage[0]%>" class="card-img-top" alt="Product">
-                            <div class="card-body text-center">
-                                <h6 class="card-title">
-                                    <%= rp.productName%>
-                                </h6>
-                                <p class="price">
-                                    ₹<%= rp.price%>
-                                </p>
-                                <!-- <button class="btn btn-outline-primary btn-sm">View</button> -->
-                                <a href="/productDetails?id=<%=rp._id%>" class="btn btn-sm btn-view">View</a>
+                <div class="stock-status mb-4">
+                    <% if (product.quantity > 0) { %>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success fs-4 me-3"></i>
+                            <div>
+                                <p class="mb-0 fw-bold text-success">In Stock</p>
+                                <% if (product.quantity <= 10) { %>
+                                    <p class="mb-0 text-danger">Only <%= product.quantity %> items left!</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-x-circle-fill text-danger fs-4 me-3"></i>
+                            <div>
+                                <p class="mb-0 fw-bold text-danger">Out of Stock</p>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                
+                <!-- Quick Features -->
+                <div class="quick-features mb-5">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 bg-white rounded-3 shadow-sm">
+                                <i class="bi bi-credit-card fs-4 me-3" style="color: #d4a373;"></i>
+                                <div>
+                                    <p class="mb-0 fw-bold">Cash on Delivery</p>
+                                    <p class="mb-0 text-muted small">Pay when received</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 bg-white rounded-3 shadow-sm">
+                                <i class="bi bi-shield-check fs-4 me-3" style="color: #d4a373;"></i>
+                                <div>
+                                    <p class="mb-0 fw-bold">Secure Payment</p>
+                                    <p class="mb-0 text-muted small">100% safe</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <%})%>
-
-                        <%}else{%>
-                            <p class="text-muted">No related products found.</p>
-                            <%}%>
-
-
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <div class="d-flex flex-wrap gap-3">
+                        <% if (product.quantity > 0) { %>
+                            <button class="btn cart-action btn-lg px-5 py-3 d-flex align-items-center"
+                                    onclick="addToCart('<%= product._id %>')">
+                                <i class="bi bi-cart-plus me-3 fs-5"></i>
+                                Add to Cart
+                            </button>
+                        <% } %>
+                        
+                        <button class="btn wishlist-action btn-lg px-5 py-3 d-flex align-items-center"
+                                onclick="addToWishlist('<%= product._id %>')">
+                            <i class="bi bi-heart me-3 fs-5"></i>
+                            Add to Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <!-- Product Description & Details -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <ul class="nav nav-tabs border-0 mb-4" id="productTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#description" type="button" role="tab">
+                                Description
+                            </button>
+                        </li>
+                        <!-- <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="details-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#details" type="button" role="tab">
+                                Product Details
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#reviews" type="button" role="tab">
+                                Reviews (0)
+                            </button>
+                        </li> -->
+                    </ul>
+                    
+                    <div class="tab-content" id="productTabContent">
+                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="mb-4">About this Book</h4>
+                                    <p class="lead"><%= product.description || 'A captivating read that will keep you engaged from start to finish.' %></p>
+                                </div>
 
 
+                                <div class="col-md-4">
+                                    <div class="small-image-wrapper rounded-3 overflow-hidden shadow-sm">
+                                        <img src="/<%= product.productImage[0] %>" 
+                                            alt="<%= product.productName %>" 
+                                            class="img-fluid rounded-2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- <div class="tab-pane fade" id="reviews" role="tabpanel">
+                            <div class="text-center py-5">
+                                <i class="bi bi-chat-square-text display-1 text-muted mb-4"></i>
+                                <h4>No Reviews Yet</h4>
+                                <p class="text-muted mb-4">Be the first to share your thoughts about this book!</p>
+                                <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                    Write a Review
+                                </button>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="section-title mb-5">Related Products</h2>
+            
+            <% if(relatedProducts && relatedProducts.length > 0) { %>
+                <div class="row g-4">
+                    <% relatedProducts.forEach(rp => { %>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="card product-card h-100 border-0 shadow-sm hover-shadow transition-all">
+                                <div class="position-relative overflow-hidden">
+                                    <img src="/<%= rp.productImage[0] %>" 
+                                         class="card-img-top product-image" 
+                                         alt="<%= rp.productName %>">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-between p-3">
+                                        <% if (rp.quantity <= 5 && rp.quantity > 0) { %>
+                                            <span class="badge bg-danger align-self-start">Low Stock</span>
+                                        <% } %>
+                                        <button class="btn btn-light btn-sm rounded-circle align-self-end"
+                                                onclick="addToWishlist('<%= rp._id %>')">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold mb-2 text-truncate"><%= rp.productName %></h6>
+                                    <p class="text-muted small mb-2">By <%= rp.author %></p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="price fw-bold fs-5" style="color: #d4a373;">₹<%= rp.price %></span>
+                                        <a href="/productDetails?id=<%= rp._id %>" 
+                                           class="btn view-btn btn-sm px-3">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <i class="bi bi-book display-1 text-muted mb-4"></i>
+                    <h4 class="text-muted">No related products found</h4>
+                    <p class="text-muted">Check back later for similar books</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
 
 
+<script>
+    // Image Gallery Functionality
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
+    const zoomOverlay = document.getElementById('zoomOverlay');
+    const mainImageWrapper = document.getElementById('mainImageWrapper');
 
+    // Thumbnail click handler
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const newSrc = thumb.getAttribute('data-image');
+            mainImage.src = newSrc;
+            
+            // Update active thumbnail
+            thumbnails.forEach(t => t.classList.remove('active-thumbnail'));
+            thumb.classList.add('active-thumbnail');
+        });
+    });
 
+    // Zoom functionality
+    mainImageWrapper.addEventListener('mousemove', (e) => {
+        const rect = mainImageWrapper.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        zoomOverlay.style.backgroundImage = `url('${mainImage.src}')`;
+        zoomOverlay.style.backgroundPosition = `${x}% ${y}%`;
+        zoomOverlay.style.opacity = '1';
+    });
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    mainImageWrapper.addEventListener('mouseleave', () => {
+        zoomOverlay.style.opacity = '0';
+    });
 
-
-
-
-    <script>
-
-        const mainImage = document.getElementById('mainImage');
-        const thumbnails = document.querySelectorAll('.thumbnail-container img');
-        const lens = document.getElementById("zoomLens");
-        const zoomLevel = 2;
-
-        // Thumbnail click change
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', () => {
-                const newSrc = thumbnail.getAttribute('data-image');
-                mainImage.src = newSrc;
-
-                thumbnails.forEach(t => t.classList.remove('active'));
-                thumbnail.classList.add('active');
+    // Star rating for review modal
+    /**const stars = document.querySelectorAll('.star-rating-input i');
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const rating = parseInt(star.getAttribute('data-rating'));
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('bi-star-fill');
+                    s.classList.remove('bi-star');
+                } else {
+                    s.classList.add('bi-star');
+                    s.classList.remove('bi-star-fill');
+                }
             });
         });
+    });**/
 
-        // Zoom Lens
-        mainImage.addEventListener("mousemove", moveLens);
-        lens.addEventListener("mousemove", moveLens);
-        mainImage.addEventListener("mouseenter", () => lens.style.display = "block");
-        mainImage.addEventListener("mouseleave", () => lens.style.display = "none");
+    // Add to Cart Function
+    async function addToCart(productId) {
+        try {
+            const response = await fetch(`/add-to-cart/${productId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
 
-        function moveLens(e) {
-            const rect = mainImage.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const result = await response.json();
 
-            let lensX = x - lens.offsetWidth / 2;
-            let lensY = y - lens.offsetHeight / 2;
-
-            // Prevent lens from going outside image
-            if (lensX < 0) lensX = 0;
-            if (lensY < 0) lensY = 0;
-            if (lensX > rect.width - lens.offsetWidth) lensX = rect.width - lens.offsetWidth;
-            if (lensY > rect.height - lens.offsetHeight) lensY = rect.height - lens.offsetHeight;
-
-            lens.style.left = `${lensX}px`;
-            lens.style.top = `${lensY}px`;
-
-            // Apply zoom effect
-            lens.style.backgroundImage = `url('${mainImage.src}')`;
-            lens.style.backgroundSize = `${mainImage.width * zoomLevel}px ${mainImage.height * zoomLevel}px`;
-            lens.style.backgroundPosition = `-${x * zoomLevel - lens.offsetWidth / 2}px -${y * zoomLevel - lens.offsetHeight / 2}px`;
-        }
-
-
-
-
-        async function addToCart(productId) {
-            try {
-                const response = await fetch(`/add-to-cart/${productId}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart',
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    customClass: {
+                        popup: 'rounded-4'
                     }
                 });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Cart',
-                        text: result.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                    updateCounts();
-                }else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops!',
-                        text: result.message || "Could not add product to cart"
-                    });
-                }
-            } catch (error) {
+                updateCartCount();
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops!',
-                    text: 'Something went wrong while adding to cart.'
-                });
-            }
-        }
-
-        
-
-        async function addToWishlist(productId) {
-            try {
-                const response = await fetch(`/add-to-wishlist/${productId}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
+                    text: result.message || "Could not add product to cart",
+                    customClass: {
+                        popup: 'rounded-4'
                     }
                 });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Wishlist',
-                        text: result.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                    updateCounts();
-                }else{
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Notice',
-                        text: result.message,
-                        showConfirmButton: true
-                    })
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong while adding to cart.',
+                customClass: {
+                    popup: 'rounded-4'
                 }
-            } catch (error) {
+            });
+        }
+    }
+
+    // Add to Wishlist Function
+    async function addToWishlist(productId) {
+        try {
+            const response = await fetch(`/add-to-wishlist/${productId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    text: 'Something went wrong while adding to wishlist.'
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    customClass: {
+                        popup: 'rounded-4'
+                    }
+                });
+                updateWishlistCount();
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Notice',
+                    text: result.message,
+                    showConfirmButton: true,
+                    customClass: {
+                        popup: 'rounded-4'
+                    }
                 });
             }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong while adding to wishlist.',
+                customClass: {
+                    popup: 'rounded-4'
+                }
+            });
         }
+    }
 
+    // Share Product Function
+    function shareProduct() {
+        if (navigator.share) {
+            navigator.share({
+                title: '<%= product.productName %>',
+                text: 'Check out this amazing book!',
+                url: window.location.href,
+            });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            Swal.fire({
+                icon: 'success',
+                title: 'Link Copied!',
+                text: 'Product link copied to clipboard',
+                showConfirmButton: false,
+                timer: 2000,
+                customClass: {
+                    popup: 'rounded-4'
+                }
+            });
+        }
+    }
 
-    </script>
+    // Submit Review Function
+    function submitReview() {
+        Swal.fire({
+            icon: 'info',
+            title: 'Coming Soon!',
+            text: 'Review functionality will be available soon.',
+            showConfirmButton: true,
+            customClass: {
+                popup: 'rounded-4'
+            }
+        });
+        $('#reviewModal').modal('hide');
+    }
 
+    // Update cart and wishlist counts (assuming these functions exist)
+    function updateCartCount() {
+        // Implement cart count update logic
+        console.log('Cart updated');
+    }
 
-    <%-include("../../views/partials/user/footer")%>
+    function updateWishlistCount() {
+        // Implement wishlist count update logic
+        console.log('Wishlist updated');
+    }
+</script>
+
+<%-include("../../views/partials/user/footer")%>

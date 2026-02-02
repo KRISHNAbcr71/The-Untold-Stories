@@ -1,0 +1,200 @@
+<%-include("../../views/partials/admin/header")%>
+
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Edit Offer</h4>
+            </div>
+
+            <div class="card-body">
+                <form id="offerForm" onsubmit="return handleFormSubmit(event)">
+                    <input type="hidden" name="id" value="<%= offer._id %>">
+
+                    <!-- Offer Name -->
+                    <div class="mb-3">
+                        <label class="form-label">Offer Name</label>
+                        <input type="text" class="form-control" name="name" id="offerName" value="<%= offer.name %>">
+                    </div>
+
+                    <!-- Discount Value -->
+                    <div class="mb-3">
+                        <label class="form-label">Discount Value</label>
+                        <input type="number" class="form-control" name="discountValue" id="discountValue"
+                            value="<%= offer.discountValue %>">
+                    </div>
+
+                    <!-- Applies To -->
+                    <div class="mb-3">
+                        <label class="form-label">Applies To</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="appliesTo" value="product"
+                                    <%=offer.appliesTo==='product' ? 'checked' : '' %> disabled>
+                                <label class="form-check-label">Product</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="appliesTo" value="category"
+                                    <%=offer.appliesTo==='category' ? 'checked' : '' %> disabled>
+                                <label class="form-check-label">Category</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Show Selected Targets -->
+                    <div class="mb-3">
+                        <label class="form-label">Selected Targets</label>
+                        <div class="p-3 border rounded bg-light">
+                            <% if (offer.appliesTo==='product' ) { %>
+                                <% products.forEach(product=> { %>
+                                    <% const isSelected=offer.targetIds.some(id=> id.toString() ===
+                                        product._id.toString()); %>
+                                        <% if (isSelected) { %>
+                                            <span class="badge bg-dark me-2 mb-2 p-2">
+                                                <%= product.productName %>
+                                            </span>
+                                            <% } %>
+                                                <% }) %>
+                                                    <% } else { %>
+                                                        <% categories.forEach(category=> { %>
+                                                            <% const isSelected=offer.targetIds.some(id=> id.toString()
+                                                                === category._id.toString()); %>
+                                                                <% if (isSelected) { %>
+                                                                    <span class="badge bg-dark me-2 mb-2 p-2">
+                                                                        <%= category.name %>
+                                                                    </span>
+                                                                    <% } %>
+                                                                        <% }) %>
+                                                                            <% } %>
+                        </div>
+                        <small class="text-muted">Targets cannot be modified after creation</small>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" name="startDate" id="startDate"
+                                value="<%= offer.startDate.toISOString().split('T')[0] %>">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" name="endDate" id="endDate"
+                                value="<%= offer.endDate.toISOString().split('T')[0] %>">
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/admin/offer" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Edit Offer</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        const appliesToRadios = document.querySelectorAll('input[name="appliesTo"]');
+        const productTargets = document.getElementById('productTargets');
+        const categoryTargets = document.getElementById('categoryTargets');
+
+        appliesToRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === 'product' && radio.checked) {
+                    productTargets.classList.remove('d-none');
+                    categoryTargets.classList.add('d-none');
+                }
+                if (radio.value === 'category' && radio.checked) {
+                    categoryTargets.classList.remove('d-none');
+                    productTargets.classList.add('d-none');
+                }
+            });
+        });
+
+        // Set default start date as today
+        wwindow.onload = () => {
+            const today = new Date().toISOString().split('T')[0];
+            const startDateInput = document.getElementById('startDate');
+            // Only set min if not already set
+            if (!startDateInput.min) {
+                startDateInput.min = today;
+            }
+            // Don't set value - keep existing value from EJS
+        };
+
+        // Form submit handler
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            // Get form values
+            const id = document.querySelector('input[name="id"]').value;
+            const name = document.getElementById('offerName').value.trim();
+            const discountValue = Number(document.getElementById('discountValue').value);
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            // Validation
+            if (!name || !discountValue || !startDate || !endDate) {
+                return Swal.fire("Error", "All fields are required", "error");
+            }
+
+            if (discountValue <= 0) {
+                return Swal.fire('Error', 'Enter a valid discount value', 'error');
+            }
+
+            if (startDate === endDate) {
+                return Swal.fire('Error', 'Start date and end date cannot be the same', 'error');
+            }
+
+            if (endDate < startDate) {
+                return Swal.fire('Error', 'Invalid date range', 'error');
+            }
+
+            // If all validations pass, submit
+            try {
+                const response = await fetch(`/admin/editOffer/${id}`, {
+                    method: 'PATCH', // or 'PATCH'
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        discountValue: discountValue,
+                        startDate: startDate,
+                        endDate: endDate
+                        // Note: Not sending appliesTo or targetIds as they're read-only
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to update offer');
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Offer updated successfully'
+                }).then(() => {
+                    window.location.href = '/admin/offer';
+                });
+
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Failed to update offer'
+                });
+            }
+        }
+
+    </script>

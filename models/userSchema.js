@@ -1,102 +1,155 @@
-
-const mongoose = require('mongoose')
-const { Schema } = mongoose
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  phone: {
+    type: String,
+    unique: true,
+    sparse: true,
+    default: null,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  password: {
+    type: String,
+    required: false,
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+  cart: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Cart",
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true
+  ],
+  wishlist: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Wishlist",
     },
-    phone: {
-        type: String,
-        unique: true,
-        sparse: true,
-        default: null
-        // type: String,
-        // required: false,
-        // unique: false,      // optional, not needed if false
-        // sparse: false,      // optional, usually needed when `unique: true` and optional field
-        // default: null       //  To explicitly store null when a value isn't given.
+  ],
+  orderHistory: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Order",
     },
-    googleId: {
-        type: String,
-        unique: true,
-        sparse: true
-    },
-    password: {
-        type: String,
-        required: false
-    },
-    isBlocked: {
-        type: Boolean,
-        default: false
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    cart: [{
+  ],
+  createdOn: {
+    // Date of account creation
+    type: Date,
+    default: Date.now,
+  },
+  referralCode: {
+    type: String,
+    unique: true
+  },
+  referredBy: {
+    type: Schema.Types.ObjectId,
+    ref:"User",
+    default:null
+  },
+  referralRewardCredited: {
+    type:Boolean,
+    default:false
+  },
+  searchHistory: [
+    {
+      category: {
         type: Schema.Types.ObjectId,
-        ref: "Cart"
-    }],
-    wallet: {
-        type: Number,
-        default: 0
-    },
-    wishlist: [{
-        type: Schema.Types.ObjectId,
-        ref: "Wishlist"
-    }],
-    orderHistory: [{
-        type: Schema.Types.ObjectId,
-        ref: "Order"
-    }],
-    createdOn: {    // Date of account creation
+        ref: "Category",
+      },
+      priceRange: {
+        min: { type: Number, default: null },
+        max: { type: Number, default: 9007199254740991 },
+      },
+      sortBy: {
+        type: String,
+        enum: ["priceLow", "priceHigh", "nameAZ", "nameZA"],
+        default: null,
+      },
+      searchOn: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+      },
     },
-    referalCode: {
-        type: String
-    },
-    redeemed: {
-        type: Boolean,
-        default: false,
-        required: true
-    },
-    redeemedUsers: [{
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }],
-    searchHistory: [{
-        category: {
-            type: Schema.Types.ObjectId,
-            ref: "Category"
-        },
-        priceRange: {
-            min: { type: Number, default: null },
-            max: { type: Number, default: 9007199254740991 }
-        },
-        sortBy: {
+  ],
+  profileImage: {
+    type: String,
+    default: "",
+  },
+
+  wallet: {
+    type: {
+      balance: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+      transactions: [
+        {
+          type: {
             type: String,
-            enum: ['priceLow', 'priceHigh', 'nameAZ', 'nameZA'],
-            default: null
-        },
-        searchOn: {
+            enum: ["credit", "debit", "refund", "payment","referral"],
+            required: true,
+          },
+          amount: {
+            type: Number,
+            required: true,
+            min: 0,
+          },
+          description: {
+            type: String,
+            required: true,
+          },
+          orderId: {
+            type: Schema.Types.ObjectId,
+            ref: "Order",
+            default: null,
+          },
+          razorpayOrderId: {
+            type: String,
+            default: null,
+          },
+          razorpayPaymentId: {
+            type: String,
+            default: null,
+          },
+          status: {
+            type: String,
+            enum: ["pending", "completed", "failed", "cancelled"],
+            default: "pending",
+          },
+          createdAt: {
             type: Date,
-            default: Date.now
-        }
-    }],
-    profileImage: {
-        type: String, 
-        default: ""
-    }
-})
+            default: Date.now,
+          },
+        },
+      ],
+    },
+    default: () => ({ 
+      balance: 0, 
+      transactions: [] 
+    }),
+  },
+});
 
-
-const User = mongoose.model("User", userSchema)
-module.exports = User
+const User = mongoose.model("User", userSchema);
+module.exports = User;

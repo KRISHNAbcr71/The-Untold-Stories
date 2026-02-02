@@ -1,12 +1,387 @@
-
-
-
 <%-include("../../views/partials/admin/header")%>
+  <link rel="stylesheet" href="/css/dashboard.css">
 
-<div class="container my-4">
-  <h3 class="mb-4">Dashboard</h3>
-  <!-- Add your dashboard content/cards/tables here -->
+
+  <div class="container-fluid p-4">
+
+    <!-- PAGE TITLE -->
+    <h2 class="mb-4 fw-bold">📊 Sales Report</h2>
+
+    <!-- ================= FILTER SECTION ================= -->
+    <div class="card mb-4">
+  <div class="card-body">
+
+    <!-- QUICK FILTERS + RESET -->
+    <div class="row align-items-center mb-3">
+      <div class="col-md-8">
+        <label class="form-label fw-semibold">Quick Filters</label>
+        <div>
+          <button class="btn btn-outline-primary btn-sm quick-filter" data-filter="today">Today</button>
+          <button class="btn btn-outline-primary btn-sm quick-filter" data-filter="week">This Week</button>
+          <button class="btn btn-outline-primary btn-sm quick-filter" data-filter="month">This Month</button>
+          <button class="btn btn-outline-primary btn-sm quick-filter" data-filter="year">This Year</button>
+          <button class="btn btn-outline-secondary btn-sm" id="customBtn">Custom</button>
+        </div>
+      </div>
+
+      <div class="col-md-4 text-end">
+        <button class="btn btn-outline-danger btn-sm" id="resetFilters">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- CUSTOM DATE RANGE (HIDDEN INITIALLY) -->
+    <div id="customRange" class="row g-3 align-items-end d-none">
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">From</label>
+        <input type="date" id="fromDate" class="form-control">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">To</label>
+        <input type="date" id="toDate" class="form-control">
+      </div>
+
+      <div class="col-md-4 text-end">
+        <button class="btn btn-primary px-4" id="generateReport">
+          Generate Report
+        </button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
+    
 
-<%-include("../../views/partials/admin/footer")%>
+    <!-- ================= GRAPH SECTION ================= -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">📈 Sales Trend</h6>
+            <canvas id="salesChart" height="177"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">🍩 Discount Breakdown</h6>
+
+            <canvas id="discountChart" class="mb-3"></canvas>
+
+            <!-- Discount Values -->
+            <div class="discount-info">
+              <div class="d-flex justify-content-between">
+                <span>Offer Discount</span>
+                <strong>₹<%= summary.offerDiscount %></strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>Coupon Discount</span>
+                <strong>₹<%= summary.couponDiscount %></strong>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between">
+                <span>Total Discount</span>
+                <strong>₹<%= summary.offerDiscount + summary.couponDiscount %></strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= SUMMARY CARDS ================= -->
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+        <div class="summary-card">
+          <p>Total Orders</p>
+          <h4>
+            <%= summary.totalOrders %>
+          </h4>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="summary-card">
+          <p>Gross Sales</p>
+          <h4>₹<%= summary.grossSales %>
+          </h4>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="summary-card">
+          <p>Net Revenue</p>
+          <h4>₹<%= summary.netRevenue %>
+          </h4>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="summary-card">
+          <p>Offer Discount</p>
+          <h4>₹<%= summary.offerDiscount %>
+          </h4>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="summary-card">
+          <p>Coupon Discount</p>
+          <h4>₹<%= summary.couponDiscount %>
+          </h4>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="summary-card">
+          <p>Total Discount</p>
+          <h4>₹<%= summary.offerDiscount + summary.couponDiscount %>
+          </h4>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= SALES REPORT TABLE ================= -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">📋 Sales Details</h6>
+
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <% if (orders.length===0) { %>
+                <tr>
+                  <td colspan="7" class="text-center text-muted">No orders found</td>
+                </tr>
+                <% } %>
+
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Gross</th>
+                    <th>Offer Discount</th>
+                    <th>Coupon Discount</th>
+                    <th>Net Amount</th>
+                  </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(order=> {%>
+                <tr>
+                  <td>
+                    <%= order.orderId %>
+                  </td>
+                  <td>
+                    <%= order.createdAt.toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <%= order.user ? order.user.name : 'Deleted User' %>
+                  </td>
+                  <td>₹<%= order.grossAmount %>
+                  </td>
+                  <td>₹<%= order.offerDiscount %>
+                  </td>
+                  <td>₹<%= order.discountAmount %>
+                  </td>
+                  <td class="fw-bold">₹<%= order.finalAmount %>
+                  </td>
+                </tr>
+                <%})%>
+            </tbody>
+          </table>
+
+          <!-- ================= PAGINATION ================= -->
+          <ul class="pagination justify-content-end mt-3">
+
+            <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="?page=<%= pagination.currentPage - 1 %>">Previous</a>
+            </li>
+
+            <% for (let i=1; i <=pagination.totalPages; i++) { %>
+              <li class="page-item <%= pagination.currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
+
+                <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                  <a class="page-link" href="?page=<%= pagination.currentPage + 1 %>">Next</a>
+                </li>
+
+          </ul>
+
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= DOWNLOAD SECTION ================= -->
+    <div class="text-end">
+      <a href="/admin/downloadSalesReportPDF?filter=<%= filter %>&from=<%= from %>&to=<%= to %>" class="btn btn-outline-danger me-2">
+    Download PDF
+  </a>
+
+
+
+    </div>
+
+  </div>
+
+
+
+  <script id="salesTrendData" type="application/json"><%- JSON.stringify(salesTrend || []) %></script>
+  <script id="discountData" type="application/json">
+  <%- JSON.stringify({ 
+    offerDiscount: summary?.offerDiscount || 0, 
+    couponDiscount: summary?.couponDiscount || 0 
+    }) %>
+  </script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      /* ===== QUICK FILTER BUTTONS ===== */
+      document.querySelectorAll('.quick-filter').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+          window.location.href = `/admin/dashboard?filter=${filter}`
+        });
+      });
+
+      /* ===== GENERATE REPORT BUTTON ===== */
+      document.getElementById('generateReport').addEventListener('click', () => {
+        const from = document.getElementById('fromDate').value;
+        const to = document.getElementById('toDate').value;
+
+        if (!from || !to) {
+          Swal.fire('error', 'Please select both From and To dates')
+          return;
+        }
+
+        window.location.href = `/admin/dashboard?filter=custom&from=${from}&to=${to}`
+      })
+
+
+
+
+
+
+
+
+      const salesTrendScript = document.getElementById('salesTrendData');
+      const discountScript = document.getElementById('discountData');
+
+      const salesTrendData = JSON.parse(salesTrendScript.textContent || '[]');
+      const discountData = JSON.parse(discountScript.textContent || '{}');
+
+
+      /* ========== SALES TREND CHART ========== */
+
+      if (salesTrendData.length > 0) {
+        const labels = salesTrendData.map(d => d._id);
+        const revenue = salesTrendData.map(d => d.totalRevenue);
+
+        new Chart(document.getElementById('salesChart'), {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Net Revenue',
+              data: revenue,
+              borderWidth: 2,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+          }
+        });
+      } else {
+        console.warn('⚠ No sales trend data');
+      }
+
+      /* ========== DISCOUNT CHART ========== */
+
+      new Chart(document.getElementById('discountChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Offer Discount', 'Coupon Discount'],
+          datasets: [{
+            data: [
+              discountData.offerDiscount || 0,
+              discountData.couponDiscount || 0
+            ]
+          }]
+        },
+        options: { responsive: true }
+      });
+
+
+
+
+    });
+
+
+
+    const customBtn = document.getElementById('customBtn');
+  const customRange = document.getElementById('customRange');
+  const resetBtn = document.getElementById('resetFilters');
+
+  // Show custom date range
+  customBtn.addEventListener('click', () => {
+    customRange.classList.remove('d-none');
+
+    // deactivate quick filters
+    document.querySelectorAll('.quick-filter').forEach(btn => {
+      btn.classList.remove('active');
+    });
+  });
+
+  // Quick filter active state + hide custom range
+  document.querySelectorAll('.quick-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.quick-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // hide custom range
+      customRange.classList.add('d-none');
+      document.getElementById('fromDate').value = '';
+      document.getElementById('toDate').value = '';
+    });
+  });
+
+  // Reset everything
+  resetBtn.addEventListener('click', () => {
+    document.querySelectorAll('.quick-filter').forEach(b => b.classList.remove('active'));
+    document.getElementById('fromDate').value = '';
+    document.getElementById('toDate').value = '';
+    customRange.classList.add('d-none');
+
+    // reload full dashboard
+    window.location.href = '/admin/dashboard';
+  });
+  </script>
+
+
+
+
+
+
+
+
+
+
+  <%-include("../../views/partials/admin/footer")%>

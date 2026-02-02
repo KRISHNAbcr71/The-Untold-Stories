@@ -1,125 +1,161 @@
 <%-include("../../views/partials/user/header")%>
-<link rel="stylesheet" href="/css/cart.css">
+  <link rel="stylesheet" href="/css/cart.css">
 
-
-
-
-<div class="container">
-  <h2 style="text-align: center; margin-top: 10px; font-weight: bold;">MY WISHLIST</h2>
-
+  <div class="page-wrapper">
+    <main class="content">
   <div class="cart-card">
-    <!-- Cart Item -->
-     
-
-
-    <%if(wishlist && wishlist.products && wishlist.products.length > 0) { %>
-      <p class="above-head">Price</p>
-      <%wishlist.products.forEach(product => {%>
-    <div class="wishlist-item" data-product-id="<%= product.productId._id%>">
-      <div class="item-left">
-        <img src="/<%= product.productId.productImage[0]%>" alt="<%= product.productId.name %>">
-      </div>
-
-      <!-- Product details -->
-      <div class="item-middle">
-        <h4><strong><%= product.productId.productName %></strong></h4>
-        <p>by <%= product.productId.author %></p>
- 
-        <div class="quantity-controls">
-          <button class="delete-btn" style="margin-left: 0;">Delete</button>
-          <button class="add-to-cart-btn">Add to Cart</button>
+    <% if (wishlist && wishlist.products && wishlist.products.length> 0) { %>
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Details</th>
+            <th>Price</th>
+            <th>Action</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% wishlist.products.forEach(product=> { %>
+            <tr class="cart-item wishlist-item" data-product-id="<%= product.productId._id %>">
+              <!-- Image -->
+              <td>
+                <img src="/<%= product.productId.productImage[0] %>" alt="<%= product.productId.productName %>"
+                  class="cart-img" />
+              </td>
+              <!-- Product details -->
+              <td>
+                <strong>
+                  <%= product.productId.productName %>
+                </strong><br>
+                <small>by <%= product.productId.author %></small><br>
+                <small class="text-muted">
+                  <%= product.productId.category ? product.productId.category.name:'' %>
+                </small>
+              </td>
+              <!-- Price -->
+              <td>
+                <% if (product.offerPercentage> 0) { %>
+                  <div class="final-price fw-bold">
+                    ₹<%= product.finalPrice.toFixed(2) %>
+                  </div>
+                  <span class="badge bg-success ms-2">
+                    <%= product.offerPercentage %>% OFF
+                  </span>
+                  <div class="original-price">
+                    <small class="text-muted text-decoration-line-through">
+                      ₹<%= product.price.toFixed(2) %>
+                    </small>
+                  </div>
+                  <div class="savings">
+                    <small class="text-success">
+                      Save: ₹<%= product.discountAmount.toFixed(2) %>
+                    </small>
+                  </div>
+                  <% } else { %>
+                    <div class="regular-price fw-bold">
+                      ₹<%= product.price.toFixed(2) %>
+                    </div>
+                    <% } %>
+              </td>
+              <!-- Add to cart -->
+              <td>
+                <button class="checkout-btn">Add to Cart</button>
+              </td>
+              <!-- Remove -->
+              <td>
+                <button class="delete-btn delete-icon">✕</button>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <!-- Empty wishlist -->
+        <div class="empty-cart">
+          <div class="empty-icon">💛</div>
+          <h4>Your wishlist is empty</h4>
+          <p>Save your favorite books here for later.</p>
+          <a href="/shop" class="empty-cart-btn">Browse Books</a>
         </div>
-      </div>
-      <div class="item-right">
-        ₹ <%= product.productId.price%>
-      </div>
-    </div>
-    <%})%>
-    <%}else{%>
-      <p>Wishlist is empty</p>
-      <%}%>
-
-
-
-      <!-- <p>Wishlist is empty</p> -->
-
+        <% } %>
+  </div>
+  </main>
+  <%-include("../../views/partials/user/footer")%>
   </div>
 
+  
 
-</div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
 
-<script>
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click',(e) => {
-      const wishlistItem = e.target.closest('.wishlist-item');
-      const productId = wishlistItem.dataset.productId;
-      
-      Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to remove this item from wishlist?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, remove it!'
-      }).then(async (result) => {
-        if(result.isConfirmed){
-          try {
-            const res = await fetch(`/deleteFromWishlist/${productId}`,{method: 'DELETE'})
-            const data = await res.json()
-            if(data.message){
-              Swal.fire({
-                title: 'Removed!',
-                text: data.message,
-                icon: 'success'
-              }).then(()=> 
-              wishlistItem.remove())
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const wishlistItem = e.target.closest('.wishlist-item');
+        const productId = wishlistItem.dataset.productId;
+        Swal.fire({
+          title: "Are you sure?",
+          text: "Do you want to remove this item from wishlist?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, remove it!'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const res = await fetch(`/deleteFromWishlist/${productId}`, { method: 'DELETE' })
+              const data = await res.json()
+              if (data.message) {
+                Swal.fire({
+                  title: 'Removed!',
+                  text: data.message,
+                  icon: 'success'
+                }).then(() =>
+                  wishlistItem.remove())
+              }
+            } catch (error) {
+              console.error(error)
             }
-          } catch (error) {
-            console.error(error)
           }
+        })
+      })
+    })
+
+
+
+    document.querySelectorAll('.checkout-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const wishlistItem = e.target.closest('.wishlist-item');
+        const productId = wishlistItem.dataset.productId;
+        try {
+          const res = await fetch(`/add-to-cart/${productId}`, { method: 'POST' })
+          const data = await res.json()
+          if (res.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Moved to Cart',
+              text: data.message,
+              showConfirmButton: false,
+              timer: 500
+            }).then(() => {
+              wishlistItem.remove()
+            })
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops',
+              text: data.message || 'Faied to remove item'
+            })
+          }
+        } catch (error) {
+          console.error(error)
+          Swal.fire({
+            icon: 'error',
+            title: 'Something went wrong',
+            text: 'Please try again later'
+          })
         }
       })
     })
-  })
-
-
-
-  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-    btn.addEventListener('click',async(e) => {
-      const wishlistItem = e.target.closest('.wishlist-item');
-      const productId = wishlistItem.dataset.productId;
-
-      try {
-        const res = await fetch(`/add-to-cart/${productId}`,{method:'POST'})
-        const data = await res.json()
-
-        if(res.ok){
-          Swal.fire({
-            icon: 'success',
-            title: 'Moved to Cart',
-            text: data.message,
-            showConfirmButton: false,
-            timer: 500
-          }).then(() => {
-            wishlistItem.remove()
-          })
-        }else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops',
-            text: data.message
-          })
-        }
-        
-      } catch (error) {
-        console.error(error)
-        Swal.fire({
-          icon: 'error',
-          title: 'Something went wrong',
-          text: 'Please try again later'
-        })
-        
-      }
-    })
-  })
-</script>
+    
+  </script>

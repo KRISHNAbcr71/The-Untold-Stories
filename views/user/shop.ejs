@@ -1,267 +1,435 @@
 <%-include("../../views/partials/user/header")%>
-
-    <link rel="stylesheet" href="/css/shop.css">
-
-    <!-- Breadcrumb Section Begin -->
-    <section class="breadcrumb-section py-4">
-        <div class="container">
-            <div
-                class="breadcrumb-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                <nav class="breadcrumb-nav">
-                    <a href="/">Home</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="current">Shop</span>
-                    
-                </nav>
-            </div>
-        </div>
-    </section>
-    <!-- Breadcrumb Section End -->
+<link rel="stylesheet" href="/css/shop.css">
 
 
 
-    <!-- Shop Section Begin -->
-    <section class="shop-layout">
-        <div class="container">
-            <div class="shop-topbar">
-                <div class="results-count">
-                    Showing
-                    <%if(products.length> 0) {%>
-                        <%= (currentPage - 1) * limit + 1 %> - <%= (currentPage - 1) * limit + products.length %>
-                                <%}else{%>
-                                    0
-                                    <%}%>
-                                        of <%= totalProducts %> results
-                                            <!-- 1–12 of 126 results -->
-                </div>
-                <div class="sort-box">
-                    <!-- Sort by Price: -->
-                    <form action="/shop" method="get">
-                        <% if (search) { %>
-                            <input type="hidden" name="search" value="<%= search %>">
-                            <% } %>
-                                <% if(category) { %>
-                                    <input type="hidden" name="category" value="<%= category %>">
-                                    <% } %>
-                                        <% if (minPrice) { %>
-                                            <input type="hidden" name="minPrice" value="<%= minPrice %>">
-                                            <% } %>
-
-                                                <% if (maxPrice) { %>
-                                                    <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
-                                                    <% } %>
-                                                        <select name="sort" onchange="this.form.submit()">
-                                                            <option value="" disabled <%=!sort ? 'selected' :'' %>>Sort
-                                                            </option>
-                                                            <option value="priceLowHigh" <%=sort=="priceLowHigh"
-                                                                ? 'selected' : '' %>>Low To High
-                                                            </option>
-                                                            <option value="priceHighLow" <%=sort=="priceHighLow"
-                                                                ? 'selected' : '' %>>High To Low
-                                                            </option>
-                                                            <option value="a-z" <%=sort=="a-z" ? 'selected' : '' %>>A -
-                                                                Z
-                                                            </option>
-                                                            <option value="z-a" <%=sort=="z-a" ? 'selected' : '' %>>Z -
-                                                                A
-                                                            </option>
-                                                        </select>
-                    </form>
-                </div>
-            </div>
-
-            <div class="shop-content">
-                <!-- Sidebar -->
-                <aside class="sidebar">
-
-                    <!-- Search -->
-                    <!-- <form class="d-flex align-items-center ms-0 mb-4 searchForm" method="get" action="/shop">
-                        <input class="search-form" type="search" placeholder="Search books here..." value="<%= search || '' %>"/>
-                    </form> -->
-                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                        <h2 class="mb-0">Category</h2>
-                        <div class="search-container position-relative">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search books..."
-                                value="<%= search || '' %>">
-                            <span class="search-clear" id="clearSearch" style="display:none;">&times;</span>
-                        </div>
-                    </div>
-
-                    <!-- Filter by category -->
-
-                    <div class="card p-3 shadow-sm">
-                        <h5 class="mb-3">Categories</h5>
-                        <div class="list-group">
-                            <a href="/shop" class="list-group-item list-group-item-action <%= !category ? 'active' : '' %>">All</a>
-                            <% categories.forEach(cat => { %>
-                            <a href="/shop?category=<%= cat._id %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort ? '&sort=' + sort : '' %><%= !isNaN(minPrice) ? '&minPrice=' + minPrice : '' %><%= !isNaN(maxPrice) ? '&maxPrice=' + maxPrice : '' %>"
-                            class="list-group-item list-group-item-action <%= category == cat._id ? 'active' : '' %>">
-                            <%= cat.name %>
-                            </a>
-                            <% }) %>
-                        </div>
-                    </div>
-
-
-
-                    
-
-                    <!-- Filter by price -->
-
-                    <div class="card p-3 shadow-sm mt-4">
-                    <h5 class="mb-3">Filter by Price</h5>
-                    <div class="list-group">
-                        <a href="/shop?minPrice=0&maxPrice=500<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-                        class="list-group-item list-group-item-action <%= minPrice == 0 && maxPrice == 500 ? 'active' : '' %>">
-                        Under ₹500
-                        </a>
-
-                        <a href="/shop?minPrice=500&maxPrice=1000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-                           class="list-group-item list-group-item-action <%= minPrice == 500 && maxPrice == 1000 ? 'active' : '' %>">
-                          ₹500 - ₹1000
-                        </a>
-
-                        <a href="/shop?minPrice=1000&maxPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-                           class="list-group-item list-group-item-action <%= minPrice == 1000 && maxPrice == 2000 ? 'active' : '' %>">
-                          ₹1000 - ₹2000
-                        </a>
-
-                        <a href="/shop?minPrice=2000<%= search ? '&search=' + encodeURIComponent(search) : '' %><%= category ? '&category=' + category : '' %><%= sort ? '&sort=' + sort : '' %>"
-                           class="list-group-item list-group-item-action <%= minPrice == 2000 ? 'active' : '' %>">
-                          Above ₹2000
-                        </a>
-                    </div>
-                    </div>
-                   
-                </aside>
-
-
-
-                <!-- Products -->
-                <main class="product-grid">
-                    <%if(products.length> 0){%>
-                        <% products.forEach(product=> {%>
-
-                            <div class="product-card">
-                                <div class="product-img-wrapper">
-                                    <a href="/productDetails?id=<%=product._id%>">
-                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
-                                    </a>
-                                    <!-- <a href="/wishlist/add/<%= product._id %>" class="wishlist-icon">❤️</a> -->
-
-
-
-                                </div>
-                                <h5>
-                                    <%= product.productName %>
-                                </h5>
-                                <p class="price">₹<%= product.price %>
-                                </p>
-                                <!-- <form action="/add-to-cart/<%= product._id %>" method="post">
-                                    <button class="btn-buy">Add to Cart</button>
-                                </form> -->
-                                <button type="button" class="btn-buy" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
-                            </div>
-
-                            <%})%>
-
-                                <%}else{%>
-                                    <p>No products found.</p>
-                                    <%}%>
-                </main>
-            </div>
-        </div>
-
-
-
-        <div class="container mt-3 pagination-container">
-            <nav aria-label="Page Navigation">
-                <ul class="pagination justify-content-center mb-20">
-                    <% for(let i=1; i <=totalPages; i++) { %>
-                        <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
-                            <a class="page-link" href="?page=<%= i %>">
-                                <%= i %>
-                            </a>
-                        </li>
-                        <% } %>
-                </ul>
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section py-4">
+    <div class="container">
+        <div class="breadcrumb-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+            <nav class="breadcrumb-nav">
+                <a href="/">Home</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="current">Shop</span>
             </nav>
         </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
 
-    </section>
+<!-- Shop Section Begin -->
+<section class="shop-layout">
+    <div class="container">
+        <!-- Helper function to build URL with all current filters -->
+        <% 
+        function buildQueryParams(exclude = {}) {
+            const params = {};
+            
+            // Add current filters
+            if (search && !exclude.search) params.search = search;
+            if (category && !exclude.category) params.category = category;
+            if (sort && !exclude.sort) params.sort = sort;
+            if (minPrice !== undefined && !exclude.minPrice) params.minPrice = minPrice;
+            if (maxPrice !== undefined && !exclude.maxPrice) params.maxPrice = maxPrice;
+            if (currentPage && currentPage !== 1 && !exclude.page) params.page = currentPage;
+            
+            // Convert to query string
+            return new URLSearchParams(params).toString();
+        }
+        %>
 
-    <!-- jQuery + Slick JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+        <div class="shop-topbar">
+            <div class="results-count">
+                Showing
+                <% if(products.length > 0) { %>
+                    <%= (currentPage - 1) * limit + 1 %> - <%= (currentPage - 1) * limit + products.length %>
+                <% } else { %>
+                    0
+                <% } %>
+                of <%= totalProducts %> results
+            </div>
+            <div class="sort-box">
+                <!-- Sort Dropdown - Preserves all filters -->
+                <form action="/shop" method="get">
+                    <% if (search) { %>
+                        <input type="hidden" name="search" value="<%= search %>">
+                    <% } %>
+                    <% if(category) { %>
+                        <input type="hidden" name="category" value="<%= category %>">
+                    <% } %>
+                    <% if (minPrice) { %>
+                        <input type="hidden" name="minPrice" value="<%= minPrice %>">
+                    <% } %>
+                    <% if (maxPrice) { %>
+                        <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
+                    <% } %>
+                    <select name="sort" onchange="this.form.submit()">
+                        <option value="" disabled <%= !sort ? 'selected' : '' %>>Sort</option>
+                        <option value="priceLowHigh" <%= sort == "priceLowHigh" ? 'selected' : '' %>>Low To High</option>
+                        <option value="priceHighLow" <%= sort == "priceHighLow" ? 'selected' : '' %>>High To Low</option>
+                        <option value="a-z" <%= sort == "a-z" ? 'selected' : '' %>>A - Z</option>
+                        <option value="z-a" <%= sort == "z-a" ? 'selected' : '' %>>Z - A</option>
+                    </select>
+                </form>
+            </div>
+        </div>
 
-    <script>
-        const searchInput = document.getElementById('searchInput');
-        const clearBtn = document.getElementById('clearSearch');
+        <div class="shop-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h2 class="mb-0">Category</h2>
+                    <div class="search-container position-relative">
+                        <!-- Search form that preserves current filters -->
+                        <form method="get" action="/shop" id="searchForm" class="d-inline">
+                            <% if (category) { %>
+                                <input type="hidden" name="category" value="<%= category %>">
+                            <% } %>
+                            <% if (sort) { %>
+                                <input type="hidden" name="sort" value="<%= sort %>">
+                            <% } %>
+                            <% if (minPrice) { %>
+                                <input type="hidden" name="minPrice" value="<%= minPrice %>">
+                            <% } %>
+                            <% if (maxPrice) { %>
+                                <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
+                            <% } %>
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="search" 
+                                   placeholder="Search books..."
+                                   value="<%= search || '' %>"
+                                   id="searchInput">
+                            <span class="search-clear" id="clearSearch" style="display:none;">&times;</span>
+                        </form>
+                    </div>
+                </div>
 
-        // Show/hide clear button based on input
+                <!-- Filter by category -->
+                <div class="card p-3 shadow-sm">
+                    <h5 class="mb-3">Categories</h5>
+                    <div class="list-group">
+                        <!-- All Categories - Preserves other filters -->
+                        <a href="/shop" 
+                           class="list-group-item list-group-item-action <%= !category ? 'active' : '' %>">
+                           All
+                        </a>
+                        
+                        <% categories.forEach(cat => { %>
+                            <a href="/shop?category=<%= cat._id %><%= buildQueryParams({ category: true }) ? '&' + buildQueryParams({ category: true }) : '' %>"
+                               class="list-group-item list-group-item-action <%= category == cat._id ? 'active' : '' %>">
+                               <%= cat.name %>
+                            </a>
+                        <% }) %>
+                    </div>
+                </div>
+
+                <!-- Filter by price -->
+                <div class="card p-3 shadow-sm mt-4">
+                    <h5 class="mb-3">Filter by Price</h5>
+                    <div class="list-group">
+                        <!-- Under ₹500 - Preserves category and search -->
+                        <a href="/shop?minPrice=0&maxPrice=500<%= buildQueryParams({ minPrice: true, maxPrice: true }) ? '&' + buildQueryParams({ minPrice: true, maxPrice: true }) : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 0 && maxPrice == 500 ? 'active' : '' %>">
+                           Under ₹500
+                        </a>
+
+                        <!-- ₹500 - ₹1000 -->
+                        <a href="/shop?minPrice=500&maxPrice=1000<%= buildQueryParams({ minPrice: true, maxPrice: true }) ? '&' + buildQueryParams({ minPrice: true, maxPrice: true }) : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 500 && maxPrice == 1000 ? 'active' : '' %>">
+                           ₹500 - ₹1000
+                        </a>
+
+                        <!-- ₹1000 - ₹2000 -->
+                        <a href="/shop?minPrice=1000&maxPrice=2000<%= buildQueryParams({ minPrice: true, maxPrice: true }) ? '&' + buildQueryParams({ minPrice: true, maxPrice: true }) : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 1000 && maxPrice == 2000 ? 'active' : '' %>">
+                           ₹1000 - ₹2000
+                        </a>
+
+                        <!-- Above ₹2000 -->
+                        <a href="/shop?minPrice=2000<%= buildQueryParams({ minPrice: true, maxPrice: true }) ? '&' + buildQueryParams({ minPrice: true, maxPrice: true }) : '' %>"
+                           class="list-group-item list-group-item-action <%= minPrice == 2000 && !maxPrice ? 'active' : '' %>">
+                           Above ₹2000
+                        </a>
+
+                        <!-- Clear Price Filter -->
+                        <!-- <% if (minPrice !== undefined || maxPrice !== undefined) { %>
+                            <a href="/shop?<%= buildQueryParams({ minPrice: true, maxPrice: true }) %>"
+                               class="list-group-item list-group-item-action text-primary mt-2">
+                               ✕ Clear Price Filter
+                            </a>
+                        <% } %> -->
+                    </div>
+                </div>
+
+                <!-- Active Filters Display -->
+                <!-- <% 
+                const activeFilters = [];
+                if (search) activeFilters.push(`Search: "${search}"`);
+                if (category) {
+                    const cat = categories.find(c => c._id.toString() === category.toString());
+                    if (cat) activeFilters.push(`Category: ${cat.name}`);
+                }
+                if (minPrice !== undefined || maxPrice !== undefined) {
+                    let priceText = 'Price: ';
+                    if (minPrice !== undefined) priceText += `₹${minPrice}+`;
+                    if (maxPrice !== undefined) priceText += ` to ₹${maxPrice}`;
+                    activeFilters.push(priceText);
+                }
+                if (activeFilters.length > 0) { %>
+                    <div class="card p-3 shadow-sm mt-4">
+                        <h5 class="mb-3">Active Filters</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <% activeFilters.forEach(filter => { %>
+                                <span class="badge bg-primary p-2"><%= filter %></span>
+                            <% }) %>
+                            <a href="/shop" class="badge bg-danger p-2 text-decoration-none">Clear All</a>
+                        </div>
+                    </div>
+                <% } %> -->
+            </aside>
+
+            <!-- Products -->
+            <main class="product-grid">
+                <% if(products.length > 0) { %>
+                    <% products.forEach(product => {%>
+                        <div class="product-card">
+                            <div class="product-img-wrapper">
+                                
+                                <a href="/productDetails?id=<%= product._id %>">
+                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                                </a>
+                             
+                                <button class="wishlist-icon" onclick="toggleWishlist(this, '<%= product._id %>')"
+                                    data-active="<%= wishlistIds.includes(product._id.toString()) %>">
+                                    <i class="<%= wishlistIds.includes(product._id.toString()) ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart' %>"></i>
+                                </button>
+
+
+
+                                <!-- Badges -->
+                                 <%if(product.discountValue > 0){%>
+                                <div class="product-badges position-absolute top-0 start-0 p-3">
+                                    <span class="badge bg-danger fs-6 px-3 py-2 shadow"><%= product.discountValue%>%</span>
+                                </div>
+                                <%}%>
+
+                            </div>
+                            <h5><%= product.productName %></h5>
+                            <p class="price">₹<%= product.price %></p>
+                            <% if(product.quantity <= 0) { %>
+                                <button type="button" class="btn btn-buy btn-secondary" disabled style="opacity:0.6; cursor:not-allowed;">
+                                    Out of Stock
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn btn-buy" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
+                            <% } %>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12 text-center py-5">
+                        <h4>No products found</h4>
+                        <!-- <p>Try adjusting your filters or search term</p>
+                        <a href="/shop" class="btn btn-primary">Clear All Filters</a> -->
+                    </div>
+                <% } %>
+            </main>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages > 1) { %>
+            <div class="container mt-3 pagination-container">
+                <nav aria-label="Page Navigation">
+                    <ul class="pagination justify-content-center mb-20">
+                        <% for(let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
+                                <a class="page-link" 
+                                   href="?page=<%= i %><%= buildQueryParams({ page: true }) ? '&' + buildQueryParams({ page: true }) : '' %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
+        <% } %>
+    </div>
+</section>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script>
+
+    /* ---------------- Search functionality ---------------- */
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearch');
+    const searchForm = document.getElementById('searchForm');
+
+    if (searchInput) {
         searchInput.addEventListener('input', () => {
             clearBtn.style.display = searchInput.value ? 'block' : 'none';
         });
 
-        // Trigger search on Enter
         searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                window.location.href = `/shop?search=${encodeURIComponent(query)}&page=1`;
+                e.preventDefault();
+                searchForm.submit();
             }
         });
 
         // Clear search
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
-            clearBtn.style.display = 'none';
-            window.location.href = '/shop'; // Reload full list
+            searchForm.submit();
         });
 
-        // Initialize clear button on page load
         if (searchInput.value) {
             clearBtn.style.display = 'block';
         }
+    }
 
 
 
 
+   function toggleWishlist(button, productId) { 
+    const isActive = button.dataset.active === "true";
+    if (!isActive) {
+        addToWishlist(productId,button);
+    } else {
+        removeFromWishlist(productId,button);
+    }
+    }
+
+
+    /* ---------------- Add to Wishlist ---------------- */
+    async function addToWishlist(productId,button){
+        try {
+            const response = await fetch(`/add-to-wishlist/${productId}`,{
+                method:'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            });
+            const result = await response.json();
+            if(!response.ok){
+                if(response.status === 401){
+                    Swal.fire({
+                        icon:'warning',
+                        title:'Login Required',
+                        text:result.message,
+                        showCancelButton:true,
+                        confirmButtonText:'Go to Login',
+                        cancelButtonText:'Cancel',
+                        confirmButtonColor:'#7f7f7f',
+                        cancelButtonColor:'#7f7f7f',
+                        buttonStyling:false,
+                        customClass:{
+                            confirmButton:'swal-btn',
+                            cancelButton:'swal-btn'
+                        }
+                    }).then((alertResult) => {
+                        if(alertResult.isConfirmed){
+                            window.location.href = '/login'
+                        }
+                        
+                    });
+                }else{
+                    Swal.fire({
+                        icon:'error',
+                        title:'Error',
+                        text:result.message || 'Something went wrong'
+                    });
+                }
+                return;
+            }
+
+            //Toggle heart ONLY after success
+            const icon = button.querySelector("i");
+            icon.classList.replace("fa-regular", "fa-solid");
+            icon.classList.add("text-danger");
+            button.dataset.active = "true";
+
+            Swal.fire({
+                icon:'success',
+                title:'Added to Wishlist',
+                text:result.message,
+                showConfirmButton:false,
+                timer:500
+            });
+        } catch (error) {
+            Swal.fire({
+                icon:'error',
+                title:'Oops!',
+                text:'Something went wrong while adding to wishlist'
+            });
+        }
+    }
+
+
+
+    /* ---------------- Remove from Wishlist ---------------- */
+    async function removeFromWishlist(productId,button) {
+        try {
+            const response = await fetch(`/deleteFromWishlist/${productId}`,{
+                method:'DELETE',
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            });
+            const result = await response.json();
+            if(!response.ok){
+                if(response.status === 401){
+                    Swal.fire({
+                        icon:'warning',
+                        title:'Login Required',
+                        text:result.message,
+                        confirmButtonText:'Go to Login',
+                        confirmButtonColor:'#d4a373'
+                    }).then(() => {
+                        window.location.href = '/login'
+                    });
+                }else{
+                    Swal.fire({
+                        icon:'error',
+                        title:'Error',
+                        text:result.message || 'Something went wrong'
+                    });
+                }
+                return;
+            }
+
+            // toggle heart
+            const icon = button.querySelector("i");
+            icon.classList.replace("fa-solid", "fa-regular");
+            icon.classList.remove("text-danger");
+            button.dataset.active = "false";
+
+            Swal.fire({
+                icon:'success',
+                title:'Removed',
+                text:result.message,
+                showConfirmButton:false,
+                timer:500
+            });
+        } catch (error) {
+            Swal.fire({
+                icon:'error',
+                title:'Oops!',
+                text:'Something went wrong while removing from wishlist'
+            });
+        }
+        
+    }
 
 
 
 
-
-        // async function addToCart(productId) {
-        //     try {
-        //         const response = await fetch(`/add-to-cart/${productId}`, {
-        //             method: "POST",
-        //             headers: {
-        //                 "Content-Type": "application/json"
-        //             }
-        //         });
-
-        //         const result = await response.json();
-
-        //         if (result.message) {
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Added to Cart',
-        //                 text: result.message,
-        //                 showConfirmButton: false,
-        //                 timer: 2000
-        //             });
-        //         }
-        //     } catch (error) {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Oops!',
-        //             text: 'Something went wrong while adding to cart.'
-        //         });
-        //     }
-        // }
+    
 
 
-        async function addToCart(productId) {
+
+
+    /* ---------------- Add to Cart ---------------- */
+    async function addToCart(productId) {
         try {
             const response = await fetch(`/add-to-cart/${productId}`, {
                 method: "POST",
@@ -273,7 +441,6 @@
             const result = await response.json();
 
             if (!response.ok) {
-                // If status is 401 (not logged in)
                 if (response.status === 401) {
                     Swal.fire({
                         icon: 'warning',
@@ -281,10 +448,9 @@
                         text: result.message,
                         confirmButtonText: 'Go to Login'
                     }).then(() => {
-                        window.location.href = '/login'; // redirect after OK
+                        window.location.href = '/login';
                     });
                 } else {
-                    // Other errors (404, 400, 500, etc.)
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -294,7 +460,6 @@
                 return;
             }
 
-            // ✅ Success
             Swal.fire({
                 icon: 'success',
                 title: 'Added to Cart',
@@ -311,11 +476,7 @@
             });
         }
     }
+</script>
 
-
-
-        
-
-    </script>
 
     <%-include("../../views/partials/user/footer")%>

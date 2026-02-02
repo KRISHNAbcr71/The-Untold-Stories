@@ -1,41 +1,85 @@
-const Product = require('../../models/productSchema')
-const Category = require('../../models/categorySchema')
-const User = require('../../models/userSchema')
+const Product = require("../../models/productSchema");
+const Offer = require("../../models/offerSchema");
+const User = require("../../models/userSchema");
 
+const loadProductDetailsPage = async (req, res) => {
+  try {
+    const userId = req.session.user;
+    const userData = await User.findById(userId);
+    const productId = req.query.id;
+    const product = await Product.findOne({
+      _id: productId,
+      isListed: true,
+    }).populate("category");
 
-const loadProductDetailsPage = async(req,res)=>{
-    try {
-        const userId = req.session.user 
-        const userData = await User.findById(userId)
-        const productId = req.query.id 
-        //const product= await Product.findById(productId).populate('category')
-        const product = await Product.findOne({_id:productId, isListed: true}).populate('category')
-        
-
-        if(!product || product.isDeleted){
-            return res.redirect('/shop')
-        }
-
-        if(!product.category || !product.category.isListed || product.category.isDeleted) return res.redirect('/shop')
-
-        const findCategory = product.category
-
-        const relatedProducts = await Product.find({ category: product.category._id, _id: { $ne: productId } }).limit(4);
-
-        res.render('product-details',{
-            user: userData,
-            product,
-            category: findCategory,
-            relatedProducts
-        })
-    } catch (error) {
-        console.error('[Error for fetching product details]',error)
-        res.redirect('/pageNotFound')
-        
+    if (!product || product.isDeleted) {
+      return res.redirect("/shop");
     }
-}
 
+    if (
+      !product.category ||
+      !product.category.isListed ||
+      product.category.isDeleted
+    )
+      return res.redirect("/shop");
+
+    const relatedProducts = await Product.find({
+      category: product.category._id,
+      _id: { $ne: productId },
+    }).limit(4);
+
+    const now = new Date();
+    const activeOffers = await Offer.find({
+      isDeleted: false,
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+    });
+
+    let productDiscount = 0;
+    let categoryDiscount = 0;
+
+    activeOffers.forEach((offer) => {
+      // Product-level offer
+      if (
+        offer.appliesTo === "product" &&
+        offer.targetIds.some((id) => id.toString() === product._id.toString())
+      ) {
+        productDiscount = Math.max(productDiscount, offer.discountValue);
+      }
+
+      // Category-level offer
+      if (
+        offer.appliesTo === "category" &&
+        offer.targetIds.some(
+          (id) => id.toString() === product.category._id.toString(),
+        )
+      ) {
+        categoryDiscount = Math.max(categoryDiscount, offer.discountValue);
+      }
+    });
+
+    const discountValue = Math.max(productDiscount, categoryDiscount);
+
+    const offerPrice =
+      discountValue > 0
+        ? Math.round(product.price - (product.price * discountValue) / 100)
+        : product.price;
+
+    res.render("product-details", {
+      user: userData,
+      product,
+      category: product.category,
+      relatedProducts,
+      discountValue,
+      offerPrice,
+    });
+  } catch (error) {
+    console.error("[Error for fetching product details]", error);
+    res.redirect("/pageNotFound");
+  }
+};
 
 module.exports = {
-    loadProductDetailsPage
-}
+  loadProductDetailsPage,
+};

@@ -18,7 +18,7 @@
   <link rel="stylesheet" type="text/css"
     href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
@@ -34,12 +34,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
   <!-- SweetAlert2 CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 
 
@@ -97,12 +97,12 @@
     }
 
     .top-bar .top-link:hover {
-      color: #fca311;
+      color: #d4a373;
     }
 
     /* Sign in link */
     .sign-in-link {
-      color: #fca311;
+      color: #d4a373;
       font-weight: 600;
       text-decoration: none;
       padding: 8px 12px;
@@ -144,7 +144,7 @@
     }
 
     .dropdown-content a:hover {
-      background-color: #fca311;
+      background-color: #d4a373;
       color: white;
     }
 
@@ -192,7 +192,7 @@
     }
 
     .nav-link:hover {
-      color: #fca311;
+      color: #d4a373;
     }
 
     .search-input {
@@ -252,7 +252,7 @@
       position: absolute;
       top: -8px;
       right: -12px;
-      background-color: #fca311;
+      background-color: #d4a373;
       color: white;
       font-size: 12px;
       padding: 2px 6px;
@@ -278,12 +278,34 @@
       position: absolute;
       top: -8px;
       right: -12px;
-      background-color: #fca311;
+      background-color: #d4a373;
       color: white;
       font-size: 12px;
       padding: 2px 6px;
       border-radius: 50%;
       font-weight: bold;
+    }
+
+
+
+
+    /* Website name  */
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
+
+    .logo-text {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #f2c98d;
+      text-decoration: none;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(242, 201, 141, 0.4);
+      transition: 0.4s ease;
+    }
+
+    .logo-text:hover {
+      color: #fae3c0;
+      text-shadow: 0 0 20px rgba(250, 227, 192, 0.7);
+      transform: scale(1.03);
     }
   </style>
 
@@ -297,7 +319,7 @@
       <!-- Left: Site Title -->
 
       <div class="site-title">
-        <a href="#" onclick="scrollToTop()" style="text-decoration: none; color: white;">The Untold Stories</a>
+        <a href="#" onclick="scrollToTop()" class="logo-text">The Untold Stories</a>
       </div>
 
       <!-- Center: Home & Shop -->
@@ -308,7 +330,7 @@
 
       <!-- Right: Account, Cart, Wishlist, Search -->
       <div class="right-nav d-flex align-items-center flex-wrap">
-        <a href="/account" class="nav-link">Account</a>
+        <!-- <a href="/account" class="nav-link">Account</a> -->
         <div class="cart-container">
           <a href="/cart" class="cart-icon">
             <i class="fas fa-shopping-cart"></i>
@@ -328,10 +350,10 @@
         </form> -->
 
         <!-- 🔐 Auth Options -->
-        <% if (typeof user !== 'undefined' && user) { %>
+        <% if (typeof user !=='undefined' && user) { %>
           <div class="dropdown ms-3">
             <a href="#" class="sign-in-link">
-              <%= user.name %> <i class="fas fa-caret-down ms-1"></i>
+              <%= user ? user.name : 'NO USER' %><i class="fas fa-caret-down ms-1"></i>
             </a>
             <div class="dropdown-content">
               <a href="/userProfile">Profile</a>
@@ -340,8 +362,8 @@
           </div>
           <% } else { %>
             <a href="/login" class="top-link me-2 ms-3">Login</a>
-            <a href="/signup" class="btn btn-sm" style="background-color: #fca311; color: white;">Create Account</a>
-            <% } %> 
+            <a href="/signup" class="btn btn-sm" style="background-color: #d4a373; color: white;">Create Account</a>
+            <% } %>
       </div>
     </div>
   </div>
@@ -351,13 +373,13 @@
 
 
 
-  
+
   <script>
 
     function scrollToTop() {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth' 
+        behavior: 'smooth'
       });
     }
 
@@ -371,7 +393,7 @@
         const wishRes = await fetch('/wishlist-count')
         const wishData = await wishRes.json()
         document.querySelector('.wishlist-count').textContent = wishData.count
-        
+
       } catch (error) {
         console.error('Error fetching counts:', error);
       }

@@ -1,7 +1,6 @@
-
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #f9f9f9;
 }
 
@@ -19,14 +18,14 @@ body {
   border-radius: 16px;
   text-align: center;
   width: 420px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .check-icon {
   width: 80px;
   height: 80px;
   margin: 0 auto 20px;
-  background: #fca311; /* updated */
+  background: #d4a373; /* updated */
   color: white;
   border-radius: 50%;
   display: flex;
@@ -64,22 +63,22 @@ body {
 }
 
 .view-order {
-  border: 2px solid #fca311; /* updated */
-  color: #fca311;           /* updated */
+  border: 2px solid #d4a373; /* updated */
+  color: #d4a373; /* updated */
   background: #fff;
 }
 
 .view-order:hover {
-  background: #fca311; /* updated */
+  background: #d4a373; /* updated */
   color: #fff;
 }
 
 .continue-shopping {
-  background: #fca311; /* updated */
+  background: #d4a373; /* updated */
   color: #fff;
   border: none;
 }
 
 .continue-shopping:hover {
-  background: #e59500; /* slightly darker shade of #fca311 */
+  background: #e59500;
 }

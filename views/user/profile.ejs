@@ -9,13 +9,13 @@
       <a href="/userProfile" class="nav-link">My Profile</a>
       <a href="/address" class="nav-link">Address</a>
       <a href="/my-order" class="nav-link">Orders</a>
-      <a href="#" class="nav-link">Wishlist</a>
-      <a href="#" class="nav-link">Wallet</a>
+      <!-- <a href="#" class="nav-link">Wishlist</a> -->
+      <a href="/wallet" class="nav-link">Wallet</a>
     </div>
 
     <!-- Profile Card -->
     <div class="col-md-9 d-flex flex-column align-items-center p-5">
-      <h2 class="text-center mb-4">My Profile</h2>
+      <h2 class="text-center mb-4 fw-bold">My Profile</h2>
       <div class="profile-card w-100">
 
         
@@ -51,19 +51,26 @@
         </div>
 
         <div class="referral-box mt-4">
-          Your Referral Code: <span id="referralCode">ABC123</span>
+          Your Referral Code: <span id="referralCode"><%= user.referralCode %></span>
+          <!-- <button onclick="copyReferralCode()">Copy</button> -->
+           <span class="copy-icon" onclick="copyReferralCode()" title="Copy">📋</span>
         </div>
       </div>
     </div>
   </div>
 </div>
+<%-include("../../views/partials/user/footer")%>
 
 
 <script>
 
-  
+  function copyReferralCode() {
+    const code = "<%= user.referralCode %>"
+    navigator.clipboard.writeText(code)
+  }
 
-  document.getElementById('fileInput').addEventListener('change', async function(event) {
+
+ document.getElementById('fileInput').addEventListener('change', async function(event) {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -79,14 +86,30 @@
 
     const result = await response.json();
 
-    if (result.success) {
+    if (!result.success) {
+      Swal.fire({
+        icon:'error',
+        title:'Upload failed',
+        text:result.message || 'Something went wrong'
+      })
+    } else {
       const profileDiv = document.getElementById('profileImage');
       profileDiv.innerHTML = `<img src="/${result.filename}" />`;
-    } else {
-      console.error("Upload failed:", result.message);
+      Swal.fire({
+        icon:'success',
+        title:'Updated',
+        text:'Profile image updated successfully',
+        timer:1500,
+        showConfirmButton:false
+      })
     }
   } catch (error) {
     console.error("Error uploading file:", error);
+    Swal.fire({
+      icon:'error',
+      title:'Upload failed',
+      text:'Server error. Please try again.'
+    })
   }
 });
 

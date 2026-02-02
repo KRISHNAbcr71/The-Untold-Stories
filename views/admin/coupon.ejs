@@ -34,6 +34,11 @@
                 </tr>
             </thead>
             <tbody>
+                <%if(noResults){%>
+                    <tr>
+                        <td colspan="8" class="text-muted">No coupons currently</td>
+                    </tr>
+                <%}else{%>
                 <% coupons.forEach(coupon => {%>
                 <tr>
                     <td><%= coupon.code %></td>
@@ -59,6 +64,7 @@
                     </td>
                 </tr>
                 <%})%>
+                <%}%>
             </tbody>
         </table>
     </div>

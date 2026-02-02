@@ -1,9 +1,10 @@
-
 const User = require('../../models/userSchema');
 const Category = require('../../models/categorySchema');
 const Product = require('../../models/productSchema');
 const fs = require('fs');
 const path = require('path');
+
+
 
 
 
@@ -65,9 +66,6 @@ const productInfo = async (req, res) => {
 
 
 
-
-
-
 const loadAddProduct = async (req, res) => {
   try {
     const [categories, products] = await Promise.all([
@@ -88,9 +86,6 @@ const loadAddProduct = async (req, res) => {
     res.redirect("/pageerror");
   }
 };
-
-
-
 
 
 
@@ -166,6 +161,8 @@ const getListProduct = async(req,res)=>{
 
 
 
+
+
 const getUnlistProduct = async(req,res)=>{
   try {
     const id = req.query.id
@@ -175,8 +172,6 @@ const getUnlistProduct = async(req,res)=>{
     res.status(500).json({success:false, error: 'Product unlisting failed'})
   }
 }
-
-
 
 
 
@@ -196,12 +191,12 @@ const getEditProduct = async (req, res) => {
       product: product,
       cat: categories,
     });
+
   } catch (error) {
     console.error("Error fetching product data:", error);
     res.redirect("/admin/pageError");
   }
 };
-
 
 
 
@@ -263,16 +258,9 @@ const editProduct = async (req, res) => {
 
 
 
-
-
-
-
-
-
 const deleteSingleImage = async (req, res) => {
   try {
     const { imageName, productId } = req.params;
-
 
     if (!imageName || !productId) {
       return res
@@ -310,12 +298,12 @@ const deleteSingleImage = async (req, res) => {
     }
 
     res.send({ status: true });
+
   } catch (error) {
     console.error("Error while deleting image:", error);
     res.redirect("/admin/pageerror");
   }
 };
-
 
 
 
@@ -337,7 +325,6 @@ const deleteProduct = async(req,res)=>{
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
-
 
 
 
@@ -371,12 +358,12 @@ const trashProduct = async(req,res)=>{
             search,
             noResults: deletedProducts.length === 0
         })
+
     } catch (error) {
         console.error("Error loading trash:", error);
         res.status(500).send("Internal Server Error");
     }
 }
-
 
 
 
@@ -397,6 +384,8 @@ const restoreProduct = async(req,res)=>{
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
+
+
 
 
 

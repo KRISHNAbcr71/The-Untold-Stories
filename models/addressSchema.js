@@ -8,11 +8,6 @@ const addressSchema = new Schema({
         required: true
     },
     address: [{
-        // addressType: {
-        //     type: String,
-        //     required: true,
-        //     enum: ['Home','Work','Other']
-        // },
         name: {
             type: String,
             required: true
@@ -40,6 +35,10 @@ const addressSchema = new Schema({
         altPhone: {
             type: String,
             // required: true
+        },
+        isDefault:{
+            type:Boolean,
+            default:false
         }
     }]
 })

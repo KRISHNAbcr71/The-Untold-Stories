@@ -1,0 +1,37 @@
+/* Failure-specific styling */
+.failed-icon {
+  background: #ff4d4d; /* red background for failed icon */
+}
+
+.failed-icon i {
+  color: #fff;
+}
+
+.view-order {
+  border: 2px solid #ff4d4d;
+  color: #ff4d4d;
+}
+
+.view-order:hover {
+  background: #ff4d4d;
+  color: #fff;
+}
+
+.continue-shopping {
+  background: #ff4d4d;
+  color: #fff;
+}
+
+.continue-shopping:hover {
+  background: #e04343; /* slightly darker red */
+}
+
+.retry-payment {
+  border: 2px solid #ff4d4d;
+  color: #ff4d4d;
+}
+
+.retry-payment:hover {
+  background: #ff4d4d;
+  color: #fff;
+}

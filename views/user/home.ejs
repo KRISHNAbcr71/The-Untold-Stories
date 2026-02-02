@@ -1,86 +1,67 @@
 <%-include("../../views/partials/user/header")%>
-
   <link rel="stylesheet" href="/css/home.css">
 
-  <!-- Banner -->
-  <!-- <div class="main-slider">
-     Slide 1 
-    <div class="slider-item">
-      <div class="banner-content">
-        <h2 class="banner-title">Life of the Wild</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim
-          pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis urna, a eu.
-        </p>
-        <a href="#" class="btn">Read More</a>
-      </div>
-      <img src="images/main-banner1.jpg" alt="banner" class="banner-image" />
-    </div>
-     Slide 2 
-    <div class="slider-item">
-      <div class="banner-content">
-        <h2 class="banner-title">Birds gonna be Happy</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim pharetra hac.
-        </p>
-        <a href="#" class="btn">Read More</a>
-      </div>
-      <img src="images/main-banner2.jpg" alt="banner" class="banner-image" />
-    </div>
-  </div> -->
 
 
 
 
-
-
-
-
-
-
-
-
-  <!-- Featured Books -->
+  
+  <!-- New Arrivals -->
   <section id="featured-books" class="py-5 my-5">
     <div class="container">
       <div class="text-center mb-5">
         <h2 class="section-heading">New Arrivals</h2>
       </div>
-
       <div class="row g-4">
         <!-- Book Card -->
-         <%if(products.length>0){%>
-         <% products.forEach(product => { %>
-        <div class="col-md-3 col-sm-6">
-          <div class="book-card">
-            <div class="image-wrapper">
-              <!-- <button class="wishlist-btn"><i class="icon-heart"></i></button> -->
-              
-              <a href="/productDetails?id=<%=product._id%>">
-              <img src="/<%=product.productImage[0]%>" alt="<%=product.productName%>" class="book-image">
-              </a>
+        <%if(products.length>0){%>
+          <% products.forEach(product=> { %>
+            <div class="col-md-3 col-sm-6">
+              <div class="book-card">
+                <!-- Book image -->
+                <div class="image-wrapper">
+                  <a href="/productDetails?id=<%=product._id%>">
+                    <img src="/<%=product.productImage[0]%>" alt="<%=product.productName%>" class="book-image">
+                  </a>
+                  <button class="wishlist-icon" onclick="toggleWishlist(this, '<%= product._id %>')"
+                    data-active="<%= wishlistIds.includes(product._id.toString()) %>">
+                    <i
+                      class="<%= wishlistIds.includes(product._id.toString()) ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart' %>"></i>
+                  </button>
+                </div>
+                <!-- Book info -->
+                <div class="book-info">
+                  <h5 class="book-title">
+                    <%=product.productName%>
+                  </h5>
+                  <p class="book-author">
+                    <%=product.author%>
+                  </p>
+                  <p class="book-price">
+                    <%=product.price%>
+                  </p>
+                  <% if(product.quantity<=0){%>
+                    <button type="button" class="btn btn-buy btn-secondary" disabled
+                      style="opacity:0.6; cursor:not-allowed;">
+                      Out of Stock
+                    </button>
+                    <% } else{ %>
+                      <button type="button" class="btn btn-buy" onclick="addToCart('<%= product._id %>')">
+                        Add to Cart
+                      </button>
+                      <%}%>
+                </div>
+              </div>
             </div>
-            <div class="book-info">
-              <h5 class="book-title"><%=product.productName%></h5>
-              <p class="book-author"><%=product.author%></p>
-              <p class="book-price"><%=product.price%></p>
-               <button type="button" class="btn btn-buy"
-                                            onclick="addToCart('<%= product._id %>')">
-                                            Add to Cart
-                                        </button>
-            </div>
-          </div>
-        </div>
-        <%})%>
-        <%}else{%>
-          <p class="text-center">No new arrivals right now. Check back later!</p>
-        <%}%>
+            <%})%>
+              <%}else{%>
+                <p class="text-center">No new arrivals right now. Check back later!</p>
+                <%}%>
       </div>
-
       <div class="row">
         <div class="col-md-12 ">
           <a href="/shop" class="btn view-all-btn"
-            style="border: 2px solid #fca311; color: #fca311; background-color: transparent; text-decoration: none; padding: 6px 16px; border-radius: 4px;">View
+            style="border: 2px solid #d4a373; color: #d4a373; background-color: transparent; text-decoration: none; padding: 6px 16px; border-radius: 4px;">View
             All Products
             <i class="icon icon-ns-arrow-right"></i>
           </a>
@@ -90,193 +71,291 @@
   </section>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   <!-- Best selling book -->
-  <section id="best-selling" class="leaf-pattern-overlay">
-    <div class="corner-pattern-overlay"></div>
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="row">
-            <div class="col-md-6">
-              <figure class="products-thumb">
-                <img src="images/single-image.jpg" alt="book" class="single-image">
-              </figure>
-            </div>
-
-            <div class="col-md-6">
-              <div class="product-entry">
-                <h2 class="section-title divider">Best Selling Book</h2>
-                <div class="products-content">
-                  <div class="author-name">By Timbur Hood</div>
-                  <h3 class="item-title">Birds gonna be happy</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet,
-                    libero ipsum enim pharetra hac.</p>
-                  <div class="item-price">$ 45.00</div>
-                  <div class="btn-wrap">
-                    <button class="btn btn-buy" style="font-size: 1.1rem;">Shop it now <i
-                        class="icon icon-ns-arrow-right"></i></button>
+  <% if (bestSellingProducts && bestSellingProducts.length> 0) { %>
+    <section id="best-selling" class="leaf-pattern-overlay my-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center">
+            <h2 class="section-title divider mb-4">
+              Best Selling Books
+            </h2>
+          </div>
+        </div>
+        <div id="bestSellingCarousel" class="carousel slide" data-bs-ride="carousel">
+          <!-- Indicators -->
+          <div class="carousel-indicators">
+            <% bestSellingProducts.forEach((item, index)=> { %>
+              <button type="button" data-bs-target="#bestSellingCarousel" data-bs-slide-to="<%= index %>"
+                class="<%= index === 0 ? 'active' : '' %>">
+              </button>
+              <% }) %>
+          </div>
+          <!-- Slides -->
+          <div class="carousel-inner">
+            <% bestSellingProducts.forEach((item, index)=> { %>
+              <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                <div class="row align-items-center">
+                  <!-- Image -->
+                  <div class="col-md-6 text-center">
+                    <img src="/<%= item.product.productImage[0] %>" class="img-fluid rounded"
+                      alt="<%= item.product.productName %>" style="max-height: 420px; object-fit: contain;">
+                  </div>
+                  <!-- Content -->
+                  <div class="col-md-6">
+                    <div class="product-entry">
+                      <div class="author-name mb-2">
+                        By <%= item.product.author %>
+                      </div>
+                      <h3 class="item-title mb-3">
+                        <%= item.product.productName %>
+                      </h3>
+                      <p class="mb-3">
+                        <%= item.product.description.substring(0, 150) %>...
+                      </p>
+                      <div class="item-price fs-4 fw-bold mb-4">
+                        ₹ <%= item.product.price %>
+                      </div>
+                      <a href="/productDetails?id=<%=item.product._id%>" class="btn btn-lg shop-btn">
+                        Shop it now →
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <% }) %>
           </div>
-          <!-- / row -->
+          <!-- Controls -->
+          <button class="carousel-control-prev carousel-dark" type="button" data-bs-target="#bestSellingCarousel"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next carousel-dark" type="button" data-bs-target="#bestSellingCarousel"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+          </button>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Books with offer -->
-  <section id="special-offer" class="py-5">
-    <div class="container">
-      <div class="text-center mb-5">
-        <span class="subtitle">Grab your opportunity</span>
-        <h2 class="section-title">Books with Offer</h2>
-      </div>
-
-      <div class="row g-4">
-        <!-- Book Item -->
-        <div class="col-md-3 col-sm-6">
-          <div class="offer-card">
-            <div class="offer-thumb">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item5.jpg" alt="Simple way of peace life">
-            </div>
-            <div class="offer-info">
-              <h5>Simple way of peace life</h5>
-              <p>Armor Ramsey</p>
-              <p class="price">
-                <span class="old-price">$50.00</span>
-                $40.00
-              </p>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-          <div class="offer-card">
-            <div class="offer-thumb">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item6.jpg" alt="Great travel at desert">
-            </div>
-            <div class="offer-info">
-              <h5>Great travel at desert</h5>
-              <p>Sanchit Howdy</p>
-              <p class="price">
-                <span class="old-price">$30.00</span>
-                $38.00
-              </p>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-          <div class="offer-card">
-            <div class="offer-thumb">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item7.jpg" alt="The lady beauty Scarlett">
-            </div>
-            <div class="offer-info">
-              <h5>The lady beauty Scarlett</h5>
-              <p>Arthur Doyle</p>
-              <p class="price">
-                <span class="old-price">$35.00</span>
-                $45.00
-              </p>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-          <div class="offer-card">
-            <div class="offer-thumb">
-              <button class="wishlist-btn"><i class="icon-heart"></i></button>
-              <img src="images/product-item8.jpg" alt="Once upon a time">
-            </div>
-            <div class="offer-info">
-              <h5>Once upon a time</h5>
-              <p>Klien Marry</p>
-              <p class="price">
-                <span class="old-price">$25.00</span>
-                $35.00
-              </p>
-              <button class="btn-add">Add to Cart</button>
-               
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+    <% } %>
 
 
-  <script>
 
-    async function addToCart(productId) {
-        try {
-            const response = await fetch(`/add-to-cart/${productId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+
+        function toggleWishlist(button, productId) {
+          const isActive = button.dataset.active === "true";
+          if (!isActive) {
+            addToWishlist(productId, button);
+          } else {
+            removeFromWishlist(productId, button);
+          }
+        }
+
+        /* ---------------- Add to Wishlist ---------------- */
+        async function addToWishlist(productId, button) {
+          try {
+            const response = await fetch(`/add-to-wishlist/${productId}`, {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json"
+              }
             });
-
             const result = await response.json();
-
             if (!response.ok) {
-                // If status is 401 (not logged in)
-                if (response.status === 401) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Login Required',
-                        text: result.message,
-                        confirmButtonText: 'Go to Login'
-                    }).then(() => {
-                        window.location.href = '/login'; // redirect after OK
-                    });
-                } else {
-                    // Other errors (404, 400, 500, etc.)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: result.message || 'Something went wrong'
-                    });
-                }
-                return;
+              if (response.status === 401) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Login Required',
+                  showCancelButton: true,
+                  text: result.message,
+                  confirmButtonText: 'Go to Login',
+                  cancelButtonText: 'Cancel',
+                  confirmButtonColor: '#7f7f7f',
+                  cancelButtonColor: '#7f7f7f',
+                  buttonStyling: false,
+                  customClass: {
+                    confirmButton: 'swal-btn',
+                    cancelButton: 'swal-btn'
+                  }
+                }).then((alertResult) => {
+                  if (alertResult.isConfirmed) {
+                    window.location.href = '/login'
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: result.message || 'Something went wrong'
+                });
+              }
+              return;
             }
 
-            // ✅ Success
+            // Toggle heart ONLY after success
+            const icon = button.querySelector("i");
+            icon.classList.replace("fa-regular", "fa-solid");
+            icon.classList.add("text-danger");
+            button.dataset.active = "true";
+
             Swal.fire({
-                icon: 'success',
-                title: 'Added to Cart',
-                text: result.message,
-                showConfirmButton: false,
-                timer: 500
+              icon: 'success',
+              title: 'Added to Wishlist',
+              text: result.message,
+              showConfirmButton: false,
+              timer: 500
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Something went wrong while adding to wishlist'
+            });
+          }
+        }
+
+
+        /* ---------------- Remove from Wishlist ---------------- */
+        async function removeFromWishlist(productId, button) {
+          try {
+            const response = await fetch(`/deleteFromWishlist/${productId}`, {
+              method: 'DELETE',
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+            const result = await response.json();
+            if (!response.ok) {
+              if (response.status === 401) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Login Required',
+                  text: result.message,
+                  confirmButtonText: 'Go to Login',
+                  confirmButtonColor: '#7f7f7f'
+                }).then(() => {
+                  window.location.href = '/login'
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: result.message || 'Something went wrong'
+                });
+              }
+              return;
+            }
+
+            // toggle heart
+            const icon = button.querySelector("i");
+            icon.classList.replace("fa-solid", "fa-regular");
+            icon.classList.remove("text-danger");
+            button.dataset.active = "false";
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Removed',
+              text: result.message,
+              showConfirmButton: false,
+              timer: 500
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Something went wrong while removing from wishlist'
+            });
+          }
+
+        }
+
+
+        /* ---------------- Add to Cart ---------------- */
+        async function addToCart(productId) {
+          try {
+            const response = await fetch(`/add-to-cart/${productId}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+            const result = await response.json();
+            if (!response.ok) {
+              if (response.status === 401) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Login Required',
+                  text: result.message,
+                  showCancelButton: true,
+                  cancelButtonText: 'Cancel',
+                  confirmButtonText: 'Go to Login',
+                  cancelButtonColor: '#7f7f7f',
+                  confirmButtonColor: '#7f7f7f',
+                  buttonStyling: false,
+                  customClass: {
+                    confirmButton: 'swal-btn',
+                    cancelButton: 'swal-btn'
+                  }
+                }).then((alertResult) => {
+                  if (alertResult.isConfirmed) {
+                    window.location.href = '/login';
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: result.message || 'Something went wrong'
+                });
+              }
+              return;
+            }
+
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Added to Cart',
+              text: result.message,
+              showConfirmButton: false,
+              timer: 500
             });
 
-        } catch (error) {
+          } catch (error) {
             Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: 'Something went wrong while adding to cart.'
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Something went wrong while adding to cart.'
             });
+          }
         }
-    }
-  </script>
-  <%-include("../../views/partials/user/footer")%>
+
+
+      </script>
+
+      <%-include("../../views/partials/user/footer")%>

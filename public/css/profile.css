@@ -1,132 +1,122 @@
 body {
-    background: #f8f9fa;
-    font-family: 'Segoe UI', sans-serif;
+  background: #f8f9fa;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .sidebar {
-    background: #e5e5e5;
-    color: white;
-    height: 100vh;
-    padding: 30px 20px;
+  background: #e5e5e5;
+  color: white;
+  height: 100vh;
+  padding: 30px 20px;
 }
 
 .sidebar h2 {
-    color: black;
-    font-weight: bold;
-    margin-bottom: 40px;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 40px;
 }
 
 .sidebar .nav-link {
-    color: black;
-    font-size: 16px;
-    margin: 10px 0;
-    padding: 12px;
-    border-radius: 12px;
-    transition: background 0.3s;
+  color: black;
+  font-size: 16px;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 12px;
+  transition: background 0.3s;
 }
 
 .sidebar .nav-link:hover {
-    background: #fca311;
-    color: white;
+  background: #d4a373;
+  color: white;
 }
 
 .profile-card {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
 }
 
-
-
 .profile-img-wrapper {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 15px;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 15px;
 }
 
 /* Always round */
 .profile-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    /* border: 4px solid #fca311; */
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    color: #666;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* border: 4px solid #fca311; */
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: #666;
 }
 
 .profile-img img {
   width: 100%;
   height: 100%;
   border-radius: 50%; /* makes the actual image round */
-  object-fit: cover;  /* prevents stretching */
-  display: block;     /* avoids inline gaps */
+  object-fit: cover; /* prevents stretching */
+  display: block; /* avoids inline gaps */
 }
-
 
 .profile-img i {
-  font-size: 48px;   /* bigger so it looks balanced */
-  color: #555;       /* softer grey */
-  display: block;    /* ensures it aligns properly */
+  font-size: 48px; /* bigger so it looks balanced */
+  color: #555; /* softer grey */
+  display: block; /* ensures it aligns properly */
 }
-
 
 /* Upload button */
 .upload-icon {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: grey;
-    color: white;
-    border-radius: 50%;
-    padding: 8px;
-    cursor: pointer;
-    border: 2px solid white;
-    font-size: 18px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: grey;
+  color: white;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  border: 2px solid white;
+  font-size: 18px;
 }
 
 input[type="file"] {
-    display: none;
+  display: none;
 }
 
-
-
-
-
-
-
-
 .btn-custom {
-    background: #fca311;
-    color: white;
-    font-weight: 500;
-    border-radius: 12px;
-    padding: 10px 20px;
-    margin: 5px 0;
+  background: #d4a373;
+  color: white;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 10px 20px;
+  margin: 5px 0;
 }
 
 .btn-custom:hover {
-    background: #e5920f;
-    color: white;
+  background: #e5920f;
+  color: white;
 }
 
 .referral-box {
-    border: 2px dashed #fca311;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: 500;
-    color: #333;
-    margin-top: 20px;
+  border: 2px dashed #d4a373;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+  margin-top: 20px;
 }
 
-/* input[type="file"] {
-      display: none;
-    } */
+.copy-icon {
+  cursor: pointer;
+  font-size: 18px;
+}

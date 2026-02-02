@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 
 
 
+
 const loadErrorPage = async(req,res)=>{
     try {
         res.status(500).render('error-page')
@@ -12,6 +13,9 @@ const loadErrorPage = async(req,res)=>{
         res.status(500).send('Something went while loading the error page.')
     }
 }
+
+
+
 
 
 // Controller to load the admin login page
@@ -23,12 +27,16 @@ const loadLogin = async (req, res) => {
         const message = req.session.message || null
         req.session.message = null
         res.render('admin-login', { message })
+
     } catch (error) {
         console.error('[Load login error]',error)
         res.redirect('/admin/pageError')
 
     }
 };
+
+
+
 
 
 // Controller to handle admin login form submission
@@ -48,8 +56,9 @@ const login = async (req,res)=>{
             return res.redirect('/admin/login')
         }
 
-        req.session.admin = true
+        req.session.admin = admin._id
         return res.redirect('/admin/dashboard')
+
     } catch (error) {
         console.error('[Login error]', error)
          return res.redirect('/admin/pageError')
@@ -57,18 +66,9 @@ const login = async (req,res)=>{
 }
 
 
-// Controller to load the admin dashboard page
-const loadDashboard = async (req, res) => {
-    try {
-        if (req.session.admin) {
-            res.render('dashboard')
-        } else {
-            return res.redirect('/admin/login')
-        }
-    } catch (error) {
 
-    }
-}
+
+
 
 
 // Controller to handle admin logout
@@ -82,6 +82,7 @@ const logout = async(req,res)=>{
             res.clearCookie('connect.sid');
             res.redirect('/admin/login')
         })
+        
     } catch (error) {
         console.error('[Unexpected error during logout]',error)
         res.redirect('/pageError')
@@ -89,10 +90,12 @@ const logout = async(req,res)=>{
 }
 
 
+
+
+
 module.exports = {
     loadErrorPage,
     loadLogin,
     login,
-    loadDashboard,
     logout
 };

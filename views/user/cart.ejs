@@ -1,152 +1,214 @@
 <%-include("../../views/partials/user/header")%>
-<link rel="stylesheet" href="/css/cart.css">
+  <link rel="stylesheet" href="/css/cart.css">
 
+  <div class="page-wrapper">
+    
+    <main class="content">
+      <div class="cart-card">
+        <% if (cart.items.length> 0) { %>
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Details</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cart.items.forEach(item=> { %>
+                <tr class="cart-item" data-product-id="<%= item.productId._id %>">
+                  <!-- Image -->
+                  <td>
+                    <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>"
+                      class="cart-img" />
+                  </td>
+                  <!-- Product details -->
+                  <td>
+                    <strong>
+                      <%= item.productId.productName %>
+                    </strong><br>
+                    <small>by <%= item.productId.author %></small><br>
+                    <small class="text-muted">
+                      <%= item.productId.category.name %>
+                    </small>
+                  </td>
+                  <!-- Quantity -->
+                  <td>
+                    <% if (item.productId.quantity <=0) { %>
+                      <span class="out-of-stock">Out of Stock</span>
+                      <% } else { %>
+                        <div class="qty-box">
+                          <button class="decrease-btn">−</button>
+                          <span>
+                            <%= item.quantity %>
+                          </span>
+                          <button class="increase-btn">+</button>
+                        </div>
+                        <% } %>
+                  </td>
+                  <!-- Price -->
+                  <td>
+                    <% if (item.offerPercentage> 0) { %>
+                      <div class="final-price fw-bold">
+                        ₹<%= item.finalPrice.toFixed(2) %>
+                      </div>
+                      <span class="badge bg-success ms-2">
+                        <%= item.offerPercentage %>% OFF
+                      </span>
+                      <div class="original-price">
+                        <small class="text-muted text-decoration-line-through">
+                          ₹<%= item.price.toFixed(2) %>
+                        </small>
+                      </div>
+                      <div class="savings">
+                        <small class="text-success">
+                          Save: ₹<%= item.discountAmount.toFixed(2) %>
+                        </small>
+                      </div>
+                      <% } else { %>
+                        <div class="regular-price fw-bold">
+                          ₹<%= item.price.toFixed(2) %>
+                        </div>
+                        <% } %>
+                  </td>
+                  <!-- Remove -->
+                  <td>
+                    <button class="delete-btn delete-icon">✕</button>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
 
+          <% const hasOutOfStock=cart.items.some( item=> item.productId.quantity <= 0 ); %>
+              <!-- Subtotal -->
+              <div class="subtotal-section">
+                <!-- Price Summary -->
+                <div class="price-summary">
+                  <% if (totalSavings> 0) { %>
+                    <div class="original-subtotal mb-2">
+                      <small class="text-muted">
+                        Original: <del>₹<%= originalSubtotal %></del>
+                      </small>
+                    </div>
+                    <div class="savings-amount mb-2">
+                      <small class="text-success">
+                        Total Savings: -₹<%= totalSavings %>
+                      </small>
+                    </div>
+                    <% } %>
+                      <div class="subtotal-badge">
+                        Subtotal (<%= cart.items.length %> item<%= cart.items.length> 1 ? 's' : '' %>) :
+                            ₹<%= subtotal %>
+                      </div>
+                </div>
+                <% if (hasOutOfStock) { %>
+                  <button class="checkout-btn" disabled>Proceed to Buy</button>
+                  <% } else { %>
+                    <a href="/checkout" class="checkout-btn">Proceed to Buy</a>
+                    <% } %>
+              </div>
+              <% } else { %>
+                <div class="empty-cart">
+                  <div class="empty-icon">🛒</div>
+                  <h4>Your cart is empty</h4>
+                  <p>Looks like you haven’t added anything yet.</p>
+                  <a href="/shop" class="empty-cart-btn">Continue Shopping</a>
+                </div>
+                <% } %>
 
-
-<div class="container">
-  <h2 style="text-align: center;margin-top: 10px;font-weight: bold;">MY CART</h2>
-
-  <div class="cart-card">
-    <!-- Cart Item -->
-     
-
-     <%if(cart.items.length > 0){%>
-      <p class="above-head">Price</p>
-      <%cart.items.forEach(item => {%>
-    <div class="cart-item" data-product-id="<%= item.productId._id%>">
-      <div class="item-left">
-        <img src="/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
       </div>
-
-      <!-- Product details -->
-      <div class="item-middle">
-        <h4><strong><%= item.productId.productName %></strong></h4>
-        <p>by <%= item.productId.author %></p>
-        <p><%= item.productId.category.name%></p>
-        
-        <div class="quantity-controls">
-          <button class="decrease-btn">-</button>
-          <span><%= item.quantity %></span>
-          <button class="increase-btn">+</button>
-          <button class="delete-btn">Delete</button>
-        </div>
-      </div>
-      <div class="item-right">
-        <!-- <h4><strong>Price</strong></h4> -->
-         
-        ₹ <%= item.price %>
-      </div>
-    </div>
-    <%})%>
-
-
-    <!-- Subtotal and Checkout -->
-    <div class="subtotal-section">
-      <!-- <h5>Subtotal (<%= cart.items.length %> item): <strong>₹<%= subtotal %></strong> </h3> -->
-        <h5>Subtotal (<%= cart.items.length %> item<%= cart.items.length > 1 ? 's' : '' %>): <strong>₹<%= subtotal %></strong> </h3>
-      <a href="/checkout" class="checkout-btn">Proceed to Buy</a>
-    </div>
-    <%}else{%>
-      <p>Cart is empty</p>
-     <%}%> 
+    </main>
+    <%-include("../../views/partials/user/footer")%>
   </div>
 
 
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-
-  // Handle increase quantity
-  document.querySelectorAll('.increase-btn').forEach(btn => {
-    btn.addEventListener('click', async(e) =>{
-      const cartItem = e.target.closest('.cart-item')
-      const productId = cartItem.dataset.productId
-
-      try {
-        const response = await fetch(`/increase/${productId}`, {
-          method: 'POST',
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ action: "increase" })
-        })
-        const result = await response.json();
-        if(response.ok){
-          location.reload()
-        }else {
-          Swal.fire({
-            icon: "warning",
-            title: "Oops",
-            text: result.message || "Something went wrong"
-          });
-        }
-        
-      } catch (error) {
-        console.error(error)
-      }
-
-    });
-  });
-
-
-  // Handle decrease quantity
-  document.querySelectorAll('.decrease-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const cartItem = e.target.closest('.cart-item');
-      const productId = cartItem.dataset.productId;
-      const quantityElement = cartItem.querySelector('span')
-      const currentQuantity = parseInt(quantityElement.textContent) 
-
-      if(currentQuantity <= 1){
-        return
-      }
-
-      try {
-        const res = await fetch(`/decrease/${productId}`, {
-          method: 'POST',
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ action: "decrease" })
-        });
-        location.reload()
-      } catch(err) {
-        console.error(err);
-      }
-    });
-  });
 
 
 
-  // Handle delete with SweetAlert confirmation
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const cartItem = e.target.closest('.cart-item');
-      const productId = cartItem.dataset.productId;
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
 
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you want to remove this item from cart?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, remove it!'
-      }).then(async (result) => {
-        if(result.isConfirmed){
-          try {
-            const res = await fetch(`/deleteFromCart/${productId}`, { method: 'DELETE' });
-            const data = await res.json();
-            if(data.message) Swal.fire('Removed!', data.message, 'success').then(()=> location.reload());
-          } catch(err) {
-            console.error(err);
+    // Handle increase quantity
+    document.querySelectorAll('.increase-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const cartItem = e.target.closest('.cart-item')
+        const productId = cartItem.dataset.productId
+        try {
+          const response = await fetch(`/increase/${productId}`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "increase" })
+          })
+          const result = await response.json();
+          if (response.ok) {
+            location.reload()
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Oops",
+              text: result.message || "Something went wrong"
+            });
           }
+        } catch (error) {
+          console.error(error)
         }
       });
     });
-  });
 
 
-</script>
+    // Handle decrease quantity
+    document.querySelectorAll('.decrease-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const cartItem = e.target.closest('.cart-item');
+        const productId = cartItem.dataset.productId;
+        const quantityElement = cartItem.querySelector('span')
+        const currentQuantity = parseInt(quantityElement.textContent)
+        if (currentQuantity <= 1) {
+          return
+        }
+        try {
+          const res = await fetch(`/decrease/${productId}`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "decrease" })
+          });
+          location.reload()
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    });
 
 
 
+    // Handle delete with SweetAlert confirmation
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const cartItem = e.target.closest('.cart-item');
+        const productId = cartItem.dataset.productId;
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "Do you want to remove this item from cart?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, remove it!'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const res = await fetch(`/deleteFromCart/${productId}`, { method: 'DELETE' });
+              const data = await res.json();
+              if (data.message) Swal.fire('Removed!', data.message, 'success').then(() => location.reload());
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        });
+      });
+    });
 
+  </script>
 
+  

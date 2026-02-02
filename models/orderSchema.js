@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const orderSchema = new Schema({
     orderId: {
         type: String,
-        default: () => uuidv4(),
+        default: () => `ORD-${Date.now()}-${Math.floor(Math.random()*1000)}`,
         required: true
     },
     user: {
@@ -23,9 +23,25 @@ const orderSchema = new Schema({
             type: Number,
             required: true
         },
+        // original price
         price: {
             type: Number,
             default: 0
+        },
+        // price after offer applied
+        finalPrice: {
+            type: Number,
+            default:0
+        },
+        // offer in percentage
+        offerDiscount:{
+            type:Number,
+            default:0
+        },
+        // offer price
+        offerDiscountAmount: {
+            type:Number,
+            default:0
         },
         // each product status
         itemStatus: {                     
@@ -48,6 +64,7 @@ const orderSchema = new Schema({
         default: null 
     }
     }],
+    //sum of item finalPrice (after offer, before coupon)
     subtotal: {
         type: Number,
         required: true
@@ -61,22 +78,22 @@ const orderSchema = new Schema({
         type: Number,
         default: 0
     },
+    // minimum value to apply coupon
     minValue: {
         type: Number,
         default: 0
     },
+    // coupon discount value
     discountAmount: {
         type: Number,
         default: 0
     },
+    deliveryCharge: { type: Number, default: 50 },
+    // final payable by user
     finalAmount: {
         type: Number,
         required: true
     },
-    // address: {
-    //     type: Schema.Types.ObjectId,
-    //     required: true
-    // },
     // Store the snapshot of the address
     selectedAddress: {
         name: String,
@@ -88,9 +105,9 @@ const orderSchema = new Schema({
         altPhone: String
     },
     invoiceDate: {
-        type: Date
+        type: Date,
+        default: Date.now()
     },
-    deliveryCharge: { type: Number, default: 50 },
     // Order status
     status: {                     
         type: String,
@@ -109,12 +126,12 @@ const orderSchema = new Schema({
     },
     paymentStatus: {
         type: String,
-        enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
+        enum: ['Pending', 'Paid', 'Failed', 'Refunded','Cancelled'],
         default: 'Pending'
     },
     paymentMethod: {
         type: String,
-        enum: ['cod', 'razor', 'wallet'],
+        enum: ['cod', 'online', 'wallet'],
         default: 'cod'
     },
     orderCancellationReason: {
@@ -137,6 +154,10 @@ const orderSchema = new Schema({
         type: Boolean, 
         default: false 
     },
+    razorpayOrderId: {
+        type: String,
+        default: null
+    }
 }, { timestamps: true })
 
 const Order = mongoose.model('Order', orderSchema)

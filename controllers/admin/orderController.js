@@ -4,6 +4,9 @@ const Order = require('../../models/orderSchema')
 const Product = require('../../models/productSchema')
 
 
+
+
+
 const getOrderPage = async (req, res) => {
     try {
         const search = req.query.search || ''
@@ -28,12 +31,12 @@ const getOrderPage = async (req, res) => {
             }
         }
 
-        // 🎯 Filter by status
+        // Filter by status
         if (statusFilter) {
-            query.status = new RegExp(`^${statusFilter}$`, 'i'); // case-insensitive
+            query.status = new RegExp(`^${statusFilter}$`, 'i');
         }
 
-        // 📌 Sorting
+        // Sorting
         let sortQuery = {}
         switch (sortOption) {
             case 'date_asc': sortQuery = { createdAt: 1 }; break
@@ -43,19 +46,24 @@ const getOrderPage = async (req, res) => {
             default: sortQuery = { createdAt: -1 }
         }
 
-
         const totalOrders = await Order.countDocuments(query)
         const totalPages = Math.ceil(totalOrders / limit)
 
         const orders = await Order.find(query)
             .populate("orderItems.product", "productName price productImage")
-            .populate("user", "name email") // populate user info
+            .populate("user", "name email")
             .limit(limit)
             .skip((page - 1) * limit)
             .sort(sortQuery)
             .lean()
 
         const noResults = orders.length === 0
+
+        //Build query string for pagination
+        let queryString = ''
+        if(search) queryString += `&search=${encodeURIComponent(search)}`
+        if(statusFilter) queryString += `&status=${encodeURIComponent(statusFilter)}`
+        if(sortOption) queryString += `&sort=${encodeURIComponent(sortOption)}`
 
         res.render('orders', {
             order: orders,
@@ -65,6 +73,7 @@ const getOrderPage = async (req, res) => {
             statusFilter,
             sortOption,
             noResults,
+            queryString
         })
 
     } catch (error) {
@@ -72,8 +81,6 @@ const getOrderPage = async (req, res) => {
         res.redirect('/pageError')
     }
 }
-
-
 
 
 
@@ -88,10 +95,23 @@ const updateStatus = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Status is required' });
         }
 
-        // Find order first
         const order = await Order.findById(orderId);
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        const lockedStatuses = [
+            "Cancelled",
+            "Return Requested",
+            "Return Approved",
+            "Return Rejected"
+        ]
+
+        if (lockedStatuses.includes(order.status)) {
+            return res.status(400).json({
+                success: false,
+                message: `Order status cannot be changed after ${order.status}`
+            });
         }
 
         const validStatuses = ["Pending", "Shipped", "Out for Delivery", "Delivered", "Cancelled"];
@@ -107,10 +127,22 @@ const updateStatus = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid status" });
         }
 
-        // Update main order status
         order.status = newStatus;
 
-        // Update each product itemStatus except cancelled/return requested
+        if (order.paymentMethod === "cod") {
+            const hasActiveItems = order.orderItems.some(
+                item => item.itemStatus !== "Cancelled"
+            );
+
+            if (!hasActiveItems) {
+                order.paymentStatus = "Failed";
+            } else if (newStatus === "Delivered") {
+                order.paymentStatus = "Paid";
+            } else {
+                order.paymentStatus = "Pending";
+            }
+        }
+
         order.orderItems.forEach(item => {
             if (
                 item.itemStatus !== "Cancelled" &&
@@ -121,8 +153,6 @@ const updateStatus = async (req, res) => {
                 item.itemStatus = newStatus;
             }
         });
-
-        
 
         await order.save();
 
@@ -146,6 +176,7 @@ const viewOrderDetails = async (req, res) => {
             .populate('orderItems.product', 'productName price')
             .lean();
         if (!order) return res.status(404).json({ error: "Order not found" });
+
         res.json(order)
 
     } catch (error) {
@@ -158,45 +189,86 @@ const viewOrderDetails = async (req, res) => {
 
 
 
+
 const acceptReturnRequest = async (req, res) => {
     try {
         const { orderId } = req.params;
 
-        // find order by its MongoDB _id
-        const order = await Order.findById(orderId).populate('user');
-
+        const order = await Order.findById(orderId);
         if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Order not found' 
+            });
         }
 
+        // Check if order is in return requested status
+        if (order.status !== "Return Requested") {
+            return res.status(400).json({
+                success: false,
+                message: 'Order is not in "Return Requested" status'
+            });
+        }
+
+        const refundAmount = order.finalAmount
+        await User.findByIdAndUpdate(order.user._id,{
+            $inc:{'wallet.balance':refundAmount},
+            $push:{
+                'wallet.transactions':{
+                    type:'refund',
+                    amount:refundAmount,
+                    description:`Refund for order ${order.orderId}`,
+                    orderId:order._id,
+                    status:'completed'
+                }
+            }
+        })
+
         // Update return details
-        order.status = "Return Approved";   // ✅ update status
+        order.status = "Return Approved";
         order.returnVerified = true;
         order.returnRequested = false;
         order.paymentStatus = "Refunded";
         order.returnDate = new Date();
 
-        // Add refund to wallet
-        order.user.wallet = (order.user.wallet || 0) + order.finalAmount;
-        await order.user.save();
+        // Update each item's status
+        order.orderItems.forEach(item => {
+            if (item.itemStatus === "Return Requested") {
+                item.itemStatus = "Return Approved";
+            }
+        });
 
-        // 6. Increase product stock for each item
+        // Increase product stock for each item
         for (const item of order.orderItems) {
-            await Product.findByIdAndUpdate(item.product, { $inc: { quantity: item.quantity } });
+            if (item.itemStatus === "Return Approved") {
+                await Product.findByIdAndUpdate(
+                    item.product, 
+                    { $inc: { quantity: item.quantity } }
+                );
+            }
         }
-
 
         await order.save();
 
-        res.json({ success: true, message: "Return approved & refunded" });
+        res.json({ 
+            success: true, 
+            message: "Return approved successfully. Product stock has been restored.",
+            data: {
+                orderId: order.orderId,
+                status: order.status,
+                returnDate: order.returnDate
+            }
+        });
 
     } catch (error) {
         console.error('[Error in accepting return request]', error);
-        res.status(500).json({ success: false, message: "Server error" });
+        res.status(500).json({ 
+            success: false, 
+            message: "Server error while accepting return request",
+            error: error.message 
+        });
     }
 };
-
-
 
 
 
@@ -205,20 +277,53 @@ const rejectReturnRequest = async (req, res) => {
         const { orderId } = req.params;
 
         const order = await Order.findById(orderId);
-        if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
+        if (!order) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Order not found' 
+            });
+        }
 
-        // Mark return as rejected
-        order.status = "Return Rejected"; 
+        // Check if order is in return requested status
+        if (order.status !== "Return Requested") {
+            return res.status(400).json({
+                success: false,
+                message: 'Order is not in "Return Requested" status'
+            });
+        }
+
+        // Update return details
+        order.status = "Return Rejected";
+        order.returnVerified = false;
         order.returnRequested = false;
-        order.returnVerified = false; // optional
+        order.paymentStatus = "Paid";
+        order.returnDate = new Date();
+
+        // Update each item's status
+        order.orderItems.forEach(item => {
+            if (item.itemStatus === "Return Requested") {
+                item.itemStatus = "Return Rejected";
+            }
+        });
+
         await order.save();
 
-        res.json({ success: true, message: "Return request rejected successfully."});
+        res.json({ 
+            success: true, 
+            message: "Return request rejected successfully"
+        });
+
     } catch (error) {
-        console.error('[Error in rejecting return request]');
-        return res.status(500).json({ success: false, message: 'Something went wrong while rejecting return request.'});
+        console.error('[Error rejecting return request:]', error);
+        res.status(500).json({ 
+            success: false, 
+            message: "Server error while rejecting return request",
+            error: error.message 
+        });
     }
-}
+};
+
+
 
 module.exports = {
     getOrderPage,

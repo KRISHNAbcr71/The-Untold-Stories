@@ -81,7 +81,7 @@
     .btn-submit {
       width: 100%;
       padding: 12px;
-      background-color: #fca311;
+      background-color: #d4a373;
       color: white;
       font-size: 16px;
       border: none;
@@ -91,7 +91,7 @@
     }
 
     .btn-submit:hover {
-      background-color: #e18e0e;
+      background-color: #d4a373;
     }
 
     .or-divider {
@@ -105,7 +105,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background-color: #db4437;
+      background-color: #ccd5ae;
       color: white;
       text-decoration: none;
       font-size: 15px;
@@ -117,7 +117,7 @@
     }
 
     .google-signin:hover {
-      background-color: #c23321;
+      background-color: #ccd5ae;
     }
 
     .google-signin img {
@@ -131,7 +131,7 @@
     }
 
     .login-link a {
-      color: #fca311;
+      color: #d4a373;
       text-decoration: none;
     }
 
@@ -194,13 +194,18 @@
             <div id="error5" class="error"></div>
           </div>
 
+          <div class="form-group">
+            <label for="referral">Referral Code<small> (Optional)</small></label>
+            <input type="text" name="referralCode" id="referral">
+          </div>
+
           <button type="submit" class="btn-submit">Sign Up</button>
     </form>
 
     <div class="or-divider">OR</div>
     <!-- <button class="btn-google">Sign Up with Google</button> -->
     <a href="/auth/google" id="g_id_onload" class="google-signin">
-      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20" class="me-2">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" width="20" class="me-2">
       Sign Up with Google
     </a>
 

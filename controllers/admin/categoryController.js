@@ -3,6 +3,9 @@ const Category = require('../../models/categorySchema')
 const { default: mongoose } = require('mongoose')
 
 
+
+
+
 // This controller handles displaying the category management page in the admin panel.
 const categoryInfo = async (req, res) => {
   try {
@@ -54,11 +57,6 @@ const categoryInfo = async (req, res) => {
 
 
 
-
-
-
-
-
 // This controller is used to render the "Add Category" page in the admin panel.
 const loadAddCategory = async (req, res) => {
     try {
@@ -68,6 +66,8 @@ const loadAddCategory = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 }
+
+
 
 
 
@@ -92,6 +92,7 @@ const addCategory = async (req, res) => {
         await newCategory.save()
 
         return res.json({ message: "Category added successfully." })
+
     } catch (error) {
         console.error("Error Saving Category:", error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -107,6 +108,7 @@ const getListCategory = async (req, res) => {
         let id = req.query.id
         await Category.updateOne({ _id: id }, { $set: { isListed: true } })
         res.status(200).json({ success: true })
+
     } catch (error) {
         res.status(500).json({ success: false, error: 'Category listing failed' });
     }
@@ -121,12 +123,11 @@ const getUnlistCategory = async (req, res) => {
         let id = req.query.id
         await Category.updateOne({ _id: id }, { $set: { isListed: false } })
         res.status(200).json({ success: true })
+
     } catch (error) {
         res.status(500).json({ success: false, error: 'Category unlisting failed' });
     }
 }
-
-
 
 
 
@@ -145,11 +146,15 @@ const getEditCategory = async (req, res) => {
             return res.redirect('/pageError')
         }
         res.render('edit-category', { category })
+
     } catch (error) {
         console.error('Error in getEditCategory:', error.message);
         res.redirect('/pageError')
     }
 }
+
+
+
 
 
 const editCategory = async (req, res) => {
@@ -180,6 +185,7 @@ const editCategory = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+
 
 
 
@@ -223,7 +229,7 @@ const trashCategory = async(req,res)=>{
         const count = await Category.countDocuments({
             name:{$regex: ".*" + search + ".*", $options: "i"},
             isDeleted:true
-        })
+        });
 
         res.render('trash-category',{
             cat: deletedCategories,
@@ -231,12 +237,14 @@ const trashCategory = async(req,res)=>{
             currentPage: page,
             search,
             noResults: deletedCategories.length === 0
-        })
+        });
+
     } catch (error) {
         console.error("Error loading trash:", error);
         res.status(500).send("Internal Server Error");
     }
 }
+
 
 
 
@@ -255,6 +263,9 @@ const restoreCategory = async(req,res)=>{
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
+
+
+
 
 
 module.exports = {

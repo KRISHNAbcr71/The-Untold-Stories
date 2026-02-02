@@ -1,12 +1,40 @@
 <!-- footer -->
+ <!-- <style>
+  .site-title {
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: #fff;
+      margin: 0;
+    }
+.logo-text {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #f2c98d;
+      text-decoration: none !important;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(242, 201, 141, 0.4);
+      transition: 0.4s ease;
+    }
+
+    .logo-text:hover {
+      color: #fae3c0;
+      text-shadow: 0 0 20px rgba(250, 227, 192, 0.7);
+      transform: scale(1.03);
+    }
+ </style>
+
 <footer id="footer" class="bg-dark text-white pt-5 pb-4">
   <div class="container">
     <div class="row g-4">
 
       <div class="col-lg-4 col-md-6">
-        <h4 class="mb-3 fw-bold">The Untold Stories</h4>
+         <div class="site-title">
+        <a href="#" onclick="scrollToTop()" class="logo-text">The Untold Stories</a>
+      </div>
         <p class="text-light-50">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed ptibus libero lectus non et posuere.
+          A space created for those who love books, where stories, ideas, and knowledge come together. 
+          Discover and choose from a wide range of books across many genres, and enjoy a comfortable, 
+          pleasant journey from selection to delivery.
         </p>
       </div>
 
@@ -60,11 +88,19 @@
 </footer>
 
 
-<!-- jQuery + Slick JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <script>
+
+  function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+
   $(document).ready(function () {
     $('.main-slider').slick({
       dots: true,
@@ -79,4 +115,180 @@
 
 </body>
 
+</html> -->
+
+
+
+<!-- footer -->
+<style>
+  /* Make footer styles more specific */
+  #footer .site-title {
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: #fff;
+      margin: 0;
+    }
+  
+  #footer .logo-text {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #f2c98d !important; /* Add !important to override */
+      text-decoration: none !important; /* Add !important to override */
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(242, 201, 141, 0.4);
+      transition: 0.4s ease;
+      display: inline-block; /* Add this */
+    }
+
+    #footer .logo-text:hover {
+      color: #fae3c0 !important;
+      text-shadow: 0 0 20px rgba(250, 227, 192, 0.7);
+      transform: scale(1.03);
+      text-decoration: none !important;
+    }
+
+    /* Footer link styles - make them more specific */
+    #footer .footer-links li a {
+      color: #b8b8b8 !important;
+      text-decoration: none !important;
+      transition: color 0.3s ease;
+      display: block;
+      padding: 3px 0;
+    }
+
+    #footer .footer-links li a:hover {
+      color: #f2c98d !important;
+      text-decoration: none !important;
+      transform: translateX(5px);
+    }
+
+    /* Ensure all text colors in footer are correct */
+    #footer .text-light-50 {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Footer heading styles */
+    #footer h5 {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      position: relative;
+      padding-bottom: 8px;
+    }
+
+    #footer h5:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 40px;
+      height: 2px;
+      background: #f2c98d;
+    }
+
+    /* Remove default link styles from all footer links */
+    #footer a {
+      text-decoration: none !important;
+    }
+</style>
+
+<footer id="footer" class="bg-dark text-white pt-5 pb-4">
+  <div class="container">
+    <div class="row g-4">
+
+      <div class="col-lg-4 col-md-6">
+        <div class="site-title">
+          <a href="#" onclick="scrollToTop(); return false;" class="logo-text">The Untold Stories</a>
+        </div>
+        <p class="text-light-50">
+          A space created for those who love books, where stories, ideas, and knowledge come together. 
+          Discover and choose from a wide range of books across many genres, and enjoy a comfortable, 
+          pleasant journey from selection to delivery.
+        </p>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="mb-3">About Us</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="/about">Vision</a></li>
+          <li><a href="/articles">Articles</a></li>
+          <li><a href="/careers">Careers</a></li>
+          <li><a href="/terms">Service Terms</a></li>
+          <li><a href="/donate">Donate</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="mb-3">Discover</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Books</a></li>
+          <li><a href="/authors">Authors</a></li>
+          <li><a href="/categories">Subjects</a></li>
+          <li><a href="/search">Advanced Search</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="mb-3">My Account</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="/login">Sign In</a></li>
+          <li><a href="/cart">View Cart</a></li>
+          <li><a href="/wishlist">My Wishlist</a></li>
+          <li><a href="/orders">Track My Order</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="mb-3">Help</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="/help">Help Center</a></li>
+          <li><a href="/report">Report a Problem</a></li>
+          <li><a href="/suggestions">Suggesting Edits</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="text-center mt-4 text-light-50 small">
+      &copy; 2025 The Untold Stories. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+
+<!-- jQuery + Slick JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    return false; // Prevent default anchor behavior
+  }
+
+  $(document).ready(function () {
+    // Initialize slick only if the slider exists on the page
+    if ($('.main-slider').length) {
+      $('.main-slider').slick({
+        dots: true,
+        arrows: true,
+        autoplay: true,
+        autoplaySpeed: 4000,
+        prevArrow: '<button type="button" class="slick-prev">‹</button>',
+        nextArrow: '<button type="button" class="slick-next">›</button>',
+      });
+    }
+    
+    // Add click handlers for footer links to prevent default if they're # links
+    $('#footer a[href="#"]').on('click', function(e) {
+      e.preventDefault();
+    });
+  });
+</script>
+</body>
 </html>

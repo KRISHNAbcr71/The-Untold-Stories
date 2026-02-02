@@ -8,7 +8,7 @@
       <div class="card-body p-4">
 
         <!-- Coupon Form -->
-        <form action="/admin/addCoupon" method="POST" id="couponForm" onsubmit="return handleFormSubmit(event)">
+        <form id="couponForm" onsubmit="return handleFormSubmit(event)">
 
           <!-- Coupon Code -->
           <div class="mb-3">
@@ -65,6 +65,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
 
     function setDefaultStartDate() {
@@ -125,80 +126,41 @@
 
 
     function validateForm() {
-      clearErrorMessages()
       const code = document.getElementById('code').value.trim()
       const start = document.getElementById('startDate').value.trim()
       const end = document.getElementById('endDate').value.trim()
       const discount = document.getElementById('discountValue').value.trim()
       const minimum = document.getElementById('minValue').value.trim()
-      let isValid = true
 
-      if (code === '') {
-        displayErrorMessage('code-error', 'Please enter coupon code')
-        isValid = false
-      }
-
-      if (start === '') {
-        displayErrorMessage('startDate-error', 'Please select a start date')
-        isValid = false
-      }
-
-      if (end === '') {
-        displayErrorMessage('endDate-error', 'Please select an end date')
-        isValid = false
-      }
-
-
-      if (new Date(start) < new Date(new Date().toISOString().split('T')[0])) {
-        displayErrorMessage("startDate-error", "Start date cannot be in the past!");
-        isValid = false;
-      }
-
-      if (new Date(end) <= new Date(start)) {
-        displayErrorMessage("endDate-error", "End date must be greater than start date.");
-        isValid = false;
-      }
-
-
-      if (discount === '') {
-        displayErrorMessage('discountValue-error', 'Please enter the discount amount')
-        isValid = false
-      }
-
-      if (isNaN(discount) || Number(discount) <= 0) {
-        displayErrorMessage('discountValue-error', 'Discount must be a positive number')
-        isValid = false
-      }
-
-      if (minimum === '') {
-        displayErrorMessage('minValue-error', 'Please enter the minimum order value')
-        isValid = false
-      }
-
-      if (minimum && (isNaN(minimum) || Number(minimum) < 0)) {
-        displayErrorMessage('minValue-error', 'Minimum value must be 0 or greater')
-        isValid = false
-      }
-
-      return isValid
-
+      if(!code || !start || !end || !discount || !minimum){
+      Swal.fire('Error','All fields are required','error')
+      return false
     }
 
-    function displayErrorMessage(elementId, message) {
-      let errorElement = document.getElementById(elementId)
-      errorElement.innerText = message
-      errorElement.style.display = 'block'
-
+    if (new Date(start) < new Date(new Date().toISOString().split('T')[0])) {
+      Swal.fire('Error','Start date cannot be in the past!','error')
+      return false
     }
 
-    function clearErrorMessages() {
-      let errorElements = document.getElementsByClassName('error-message')
-      Array.from(errorElements).forEach(element => {
-        element.innerText = ''
-        element.style.display = 'none'
-      });
+    if (new Date(end) <= new Date(start)) {
+      Swal.fire('Error','End date must be greater than start date','error')
+      return false
+    }
 
-      function attachInputListeners() {
+
+    if (isNaN(discount) || Number(discount) <= 0) {
+      Swal.fire('Error','Discount must be a positive number','error')
+      return false
+    }
+
+    if (minimum && (isNaN(minimum) || Number(minimum) < 0)) {
+      Swal.fire('Error','Minimum value must be 0 or greater','error')
+      return false
+    }
+      return true
+    }
+
+    function attachInputListeners() {
         const fields = ['code', 'startDate', 'endDate', 'discountValue', 'minValue'];
         fields.forEach(fieldId => {
           const input = document.getElementById(fieldId);
@@ -211,8 +173,6 @@
       }
 
       attachInputListeners();
-
-    }
   </script>
 
 

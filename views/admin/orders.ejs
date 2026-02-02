@@ -126,11 +126,13 @@
                       <td>
                         <% if (order.returnRequested && !order.returnVerified) { %>
                           <span class="text-warning">Requested</span>
-                          <% } else if (order.returnVerified) { %>
+                          <% } else if (order.status === 'Return Approved') { %>
                             <span class="text-success">Verified</span>
-                            <% } else { %>
-                              -
-                              <% } %>
+                            <% } else if (order.status === 'Return Rejected') { %>
+                              <span class="text-danger">Rejected</span>
+                              <% } else { %>
+                                -
+                                <% } %>
                       </td>
                       <td>
                         <a href="#" class="btn btn-sm btn-outline-primary view-order" data-bs-toggle="viewOrderModal"
@@ -196,16 +198,13 @@
 
 
 
-
-
-
-
   <div class="container mt-3 pagination-container">
     <nav aria-label="Page Navigation">
         <ul class="pagination justify-content-center mb-20">
         <% for(let i=1; i <=totalPages; i++) { %>
           <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
-            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+            <a class="page-link" href="?page=<%= i %><%= queryString%>">
+              <%= i %></a>
           </li>
         <% } %>
         </ul>
@@ -240,7 +239,7 @@
           if (data.success) {
             Swal.fire('Success', `Status updated to ${data.status}`, 'success')
           } else {
-            Swal.fire('Error', 'Failed to update status', 'error')
+            Swal.fire('Error', data.message || 'Failed to update status', 'error')
           }
         } catch (error) {
           console.error(error)
@@ -252,17 +251,82 @@
 
 
 
+    // document.querySelectorAll('.view-order').forEach(btn => {
+    //   btn.addEventListener('click', async function (e) {
+    //     e.preventDefault();
+    //     const orderId = this.dataset.orderId;
+    //     const container = document.getElementById('orderDetailsContainer');
+
+    //     try {
+    //       const res = await fetch(`/admin/details/${orderId}`);
+    //       const order = await res.json();
+
+    //       let html = `
+    //     <h6>Order Information</h6>
+    //     <ul class="list-group mb-3">
+    //       <li class="list-group-item"><strong>Order ID:</strong> ${order.orderId}</li>
+    //       <li class="list-group-item"><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString("en-IN")}</li>
+    //       <li class="list-group-item"><strong>Status:</strong> ${order.status}</li>
+    //       <li class="list-group-item"><strong>Payment Method:</strong> ${order.paymentMethod}</li>
+    //       <li class="list-group-item"><strong>Payment Status:</strong> ${order.paymentStatus}</li>
+    //     </ul>
+
+    //     <h6>Customer Details</h6>
+    //     <ul class="list-group mb-3">
+    //       <li class="list-group-item"><strong>Name:</strong> ${order.user?.name || "Unknown"}</li>
+    //       <li class="list-group-item"><strong>Email:</strong> ${order.user?.email || ""}</li>
+    //       <li class="list-group-item"><strong>Address:</strong> ${order.selectedAddress?.fullAddress || ""}</li>
+    //     </ul>
+
+    //     <h6>Products</h6>
+    //     <table class="table table-sm table-bordered">
+    //       <thead>
+    //         <tr>
+    //           <th>Product Name</th>
+    //           <th>Price (₹)</th>
+    //           <th>Qty</th>
+    //           <th>Total (₹)</th>
+    //         </tr>
+    //       </thead>
+    //       <tbody>
+    //         ${order.orderItems.map(item => `
+    //           <tr>
+    //             <td>${item.product?.productName || "Deleted Product"}</td>
+    //             <td>${item.price}</td>
+    //             <td>${item.quantity}</td>
+    //             <td>${item.price * item.quantity}</td>
+    //           </tr>
+    //         `).join('')}
+    //       </tbody>
+    //     </table>
+
+    //     <div class="text-end mt-3"><strong>Final Amount: ₹${order.finalAmount}</strong></div>
+    //   `;
+
+    //       container.innerHTML = html;
+
+    //       // ✅ Open the modal AFTER setting content
+    //       var viewOrderModal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+    //       viewOrderModal.show();
+
+    //     } catch (err) {
+    //       console.error(err);
+    //       container.innerHTML = '<p class="text-danger">Failed to load order details.</p>';
+    //     }
+    //   });
+    // });
     document.querySelectorAll('.view-order').forEach(btn => {
-      btn.addEventListener('click', async function (e) {
-        e.preventDefault();
-        const orderId = this.dataset.orderId;
-        const container = document.getElementById('orderDetailsContainer');
+  btn.addEventListener('click', async function (e) {
+    e.preventDefault();
 
-        try {
-          const res = await fetch(`/admin/details/${orderId}`);
-          const order = await res.json();
+    const orderId = this.dataset.orderId;
+    const container = document.getElementById('orderDetailsContainer');
 
-          let html = `
+    try {
+      const res = await fetch(`/admin/details/${orderId}`);
+      const order = await res.json();
+
+      let html = `
         <h6>Order Information</h6>
         <ul class="list-group mb-3">
           <li class="list-group-item"><strong>Order ID:</strong> ${order.orderId}</li>
@@ -275,8 +339,8 @@
         <h6>Customer Details</h6>
         <ul class="list-group mb-3">
           <li class="list-group-item"><strong>Name:</strong> ${order.user?.name || "Unknown"}</li>
-          <li class="list-group-item"><strong>Email:</strong> ${order.user?.email || ""}</li>
-          <li class="list-group-item"><strong>Address:</strong> ${order.selectedAddress?.fullAddress || ""}</li>
+          <li class="list-group-item"><strong>Email:</strong> ${order.user?.email || "-"}</li>
+          <li class="list-group-item"><strong>Address:</strong> ${order.selectedAddress?.fullAddress || "-"}</li>
         </ul>
 
         <h6>Products</h6>
@@ -287,35 +351,57 @@
               <th>Price (₹)</th>
               <th>Qty</th>
               <th>Total (₹)</th>
+              <th>Offer Discount (₹)</th>
+              <th>Coupon Discount (₹)</th>
             </tr>
           </thead>
           <tbody>
-            ${order.orderItems.map(item => `
-              <tr>
-                <td>${item.product?.productName || "Deleted Product"}</td>
-                <td>${item.price}</td>
-                <td>${item.quantity}</td>
-                <td>${item.price * item.quantity}</td>
-              </tr>
-            `).join('')}
+            ${order.orderItems.map((item, index) => {
+              const offerDiscount =
+                item.finalPrice
+                  ? (item.price - item.finalPrice) * item.quantity
+                  : 0;
+
+              const couponDiscount =
+                index === 0 ? order.discountAmount || 0 : 0;
+
+              return `
+                <tr>
+                  <td>${item.product?.productName || "Deleted Product"}</td>
+                  <td>${item.price}</td>
+                  <td>${item.quantity}</td>
+                  <td>${item.price * item.quantity}</td>
+                  <td>-₹${offerDiscount}</td>
+                  <td>
+                    ${couponDiscount > 0 ? `-₹${couponDiscount}` : '—'}
+                  </td>
+                </tr>
+              `;
+            }).join('')}
           </tbody>
         </table>
 
-        <div class="text-end mt-3"><strong>Final Amount: ₹${order.finalAmount}</strong></div>
+        <div class="text-end mt-2">
+          <strong>Final Amount: ₹${order.finalAmount}</strong>
+        </div>
       `;
 
-          container.innerHTML = html;
+      container.innerHTML = html;
 
-          // ✅ Open the modal AFTER setting content
-          var viewOrderModal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
-          viewOrderModal.show();
+      const viewOrderModal = new bootstrap.Modal(
+        document.getElementById('viewOrderModal')
+      );
+      viewOrderModal.show();
 
-        } catch (err) {
-          console.error(err);
-          container.innerHTML = '<p class="text-danger">Failed to load order details.</p>';
-        }
-      });
-    });
+    } catch (err) {
+      console.error(err);
+      container.innerHTML =
+        '<p class="text-danger">Failed to load order details.</p>';
+    }
+  });
+});
+
+
 
 
 

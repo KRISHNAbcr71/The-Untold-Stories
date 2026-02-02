@@ -4,12 +4,22 @@ const User = require('../models/userSchema');
 require('dotenv').config();
 
 
+
+
+
+// Google AUTH Strategy
+// --------------------
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: 'http://localhost:7000/auth/google/callback'
 },
 
+
+
+
+
+// Google Callback Function
 async (accessToken, refreshToken, profile, done)=>{
     try {
         let user = await User.findOne({googleId:profile.id})
@@ -34,14 +44,23 @@ async (accessToken, refreshToken, profile, done)=>{
 }
 ));
 
-//serialize
-//storing user details in session
+
+
+
+
+// Serialize User
+// ------------  storing user details in session
 passport.serializeUser((user,done)=>{
     done(null,user._id)
 });
 
-//deserialize
-//fetch user from DB using id
+
+
+
+
+
+// Deserialize User
+// ----------  fetch user from DB using id
 passport.deserializeUser((id, done) => {
     User.findById(id)
         .then(user => {
@@ -51,26 +70,8 @@ passport.deserializeUser((id, done) => {
 });
 
 
+
+
+
 module.exports = passport;
 
-
-
-
-
-
-
-
-
-
-
-//deserialize
-//fetch user details from session
-// passport.deserializeUser((id,done)=>{
-//     User.findById(id)
-//     .then(user=>{
-//         done(null,user)
-//     })
-//     .catch(err=>{
-//         done(err,null)
-//     })
-// });

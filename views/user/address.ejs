@@ -8,12 +8,12 @@
                 <a href="/userProfile" class="nav-link">My Profile</a>
                 <a href="/address" class="nav-link">Address</a>
                 <a href="/my-order" class="nav-link">Orders</a>
-                <a href="#" class="nav-link">Wishlist</a>
-                <a href="#" class="nav-link">Wallet</a>
+                <!-- <a href="#" class="nav-link">Wishlist</a> -->
+                <a href="/wallet" class="nav-link">Wallet</a>
             </div>
 
             <div class="col-md-9 p-5">
-                <h2 class="text-center mb-4">My Addresses</h2>
+                <h2 class="text-center mb-4 fw-bold">My Addresses</h2>
 
                 <!-- Add New Address Card -->
                 <div class="col-md-4 mb-3">
@@ -72,7 +72,7 @@
                                 </p>
                                 <!-- <p>Phone: 1234567899 | Alt: 9876543210</p> -->
                                 <div class="address-actions">
-                                    <a href="/edit-address?id=<%=address._id%>" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="/edit-address?id=<%=address._id%>" class="btn btn-sm btn-success">Edit</a>
                                     <a href="#" class="btn btn-sm btn-danger delete-btn"
                                         data-id='<%=address._id%>'>Delete</a>
                                 </div>
@@ -102,6 +102,8 @@
         </div>
 
     </div>
+
+    <%-include("../../views/partials/user/footer")%>
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

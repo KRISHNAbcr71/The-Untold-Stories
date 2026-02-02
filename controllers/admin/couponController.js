@@ -1,6 +1,10 @@
 const User = require('../../models/userSchema')
 const Coupon = require('../../models/couponSchema')
 
+
+
+
+
 const getCouponPage = async (req, res) => {
     try {
         const search = req.query.search || ''
@@ -11,7 +15,7 @@ const getCouponPage = async (req, res) => {
             ...(
                 search ? { code: { $regex: search, $options: 'i' } } : {}
             ),
-            isDeleted: { $ne: true } // exclude soft-deleted coupons
+            isDeleted: { $ne: true }
         };
 
         const totalCoupons = await Coupon.countDocuments(query);
@@ -57,6 +61,8 @@ const getCouponPage = async (req, res) => {
 
 
 
+
+
 const getAddCouponPage = async (req, res) => {
     try {
         res.render('add-coupon')
@@ -65,6 +71,8 @@ const getAddCouponPage = async (req, res) => {
         res.redirect('/pageError');
     }
 }
+
+
 
 
 
@@ -78,7 +86,6 @@ const addCoupon = async (req, res) => {
         if (existingCoupon)
             return res.status(400).json({ message: "Coupon already exists!" })
 
-
         const newCoupon = new Coupon({
             code: code.trim().toUpperCase(),
             startDate: new Date(startDate),
@@ -89,11 +96,15 @@ const addCoupon = async (req, res) => {
 
         await newCoupon.save()
         return res.json({ message: "Coupon added successfully" })
+
     } catch (error) {
         console.error('[Error in adding coupon]', error)
         res.redirect('/pageError')
     }
 }
+
+
+
 
 
 const getEditCoupon = async (req, res) => {
@@ -113,6 +124,8 @@ const getEditCoupon = async (req, res) => {
 
     }
 }
+
+
 
 
 
@@ -145,6 +158,8 @@ const editCoupon = async (req, res) => {
 
 
 
+
+
 const deleteCoupon = async (req, res) => {
     try {
         const { id } = req.params
@@ -163,6 +178,10 @@ const deleteCoupon = async (req, res) => {
 
     }
 }
+
+
+
+
 
 module.exports = {
     getCouponPage,

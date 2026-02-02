@@ -8,7 +8,6 @@ body {
   margin-bottom: 20px;
   margin-top: 20px;
   margin-right: 40px;
-  
 }
 
 .search-container input {
@@ -32,7 +31,6 @@ body {
   font-size: 1.2rem;
 }
 
-
 .table td,
 .table th {
   vertical-align: middle;
@@ -46,16 +44,16 @@ body {
 
 .pagination-container {
   position: absolute;
-  bottom: 10px; 
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-} 
+}
 .page-item .page-link {
-  color: black !important;  /* blue for all page numbers */
+  color: black !important; /* blue for all page numbers */
 }
 
 .page-item.active .page-link {
   background-color: #343a40; /* dark background for current page */
   border-color: #343a40;
-  color: white !important;  /* white text for current page */
+  color: white !important; /* white text for current page */
 }

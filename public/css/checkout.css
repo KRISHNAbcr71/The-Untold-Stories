@@ -31,7 +31,9 @@ body {
   border-radius: 8px;
   padding: 12px;
   cursor: pointer;
-  transition: box-shadow .12s ease, border-color .12s ease;
+  transition:
+    box-shadow 0.12s ease,
+    border-color 0.12s ease;
 }
 
 /* header: radio + name on left, edit on right */
@@ -84,14 +86,9 @@ body {
   color: #333;
 }
 
-
-
-
-
-
 .add-address-btn {
   padding: 10px 20px;
-  background: #fca311;
+  background: #d4a373;
   border: none;
   color: #fff;
   border-radius: 4px;
@@ -138,7 +135,7 @@ body {
 
 .coupon-box button {
   padding: 8px 15px;
-  background: #fca311;
+  background: #d4a373;
   border: none;
   color: #fff;
   border-radius: 0 4px 4px 0;
@@ -214,12 +211,78 @@ body {
 }
 
 .btn-apply {
-  background: #fca311;
+  background: #d4a373;
 }
 
 .btn-apply:hover,
 .btn-apply:active,
 .btn-apply:focus {
-  background: #fca311 !important;
+  background: #d4a373 !important;
 }
 
+.price-info {
+  text-align: right;
+}
+
+.final-price {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.original-price {
+  font-size: 13px;
+  color: #888;
+  text-decoration: line-through;
+}
+
+.offer-badge {
+  background: #28a745;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.price-details .row span:last-child {
+  text-align: right;
+  min-width: 100px; /* keeps prices aligned vertically */
+}
+
+.price-details .total {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.price-details .text-success {
+  color: #28a745;
+}
+
+.price-details .savings {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.price-details .row span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+
+.price-details .price-row {
+  display: grid;
+  grid-template-columns: 1fr auto; /* left grows, right fits content */
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.price-details .label {
+  white-space: nowrap;
+}
+
+.price-details .value {
+  text-align: right;
+  white-space: nowrap; /* 🚨 this stops line breaks */
+  font-variant-numeric: tabular-nums;
+}

@@ -1,5 +1,5 @@
 body {
-    background: #f8f9fa;
+  background: #f8f9fa;
 }
 
 .search-container {
@@ -22,48 +22,86 @@ body {
   cursor: pointer;
 }
 
-
 .sidebar {
-    background: #e5e5e5;
-    color: white;
-    height: 100vh;
-    padding: 30px 20px;
+  background: #e5e5e5;
+  color: white;
+  min-height: 100vh;
+  padding: 30px 20px;
 }
 
 .sidebar h2 {
-    color: black;
-    font-weight: bold;
-    margin-bottom: 40px;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 40px;
 }
 
 .sidebar .nav-link {
-    color: black;
-    font-size: 16px;
-    margin: 10px 0;
-    padding: 12px;
-    border-radius: 12px;
-    transition: background 0.3s;
+  color: black;
+  font-size: 16px;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 12px;
+  transition: background 0.3s;
 }
 
 .sidebar .nav-link:hover {
-    background: #fca311;
-    color: white;
+  background: #d4a373;
+  color: white;
 }
 
 .order-card {
-    border-radius: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .order-header {
-    background-color: #fca311;
-    color: white;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    padding: 10px 15px;
+  background-color: #d4a373;
+  color: white;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  padding: 10px 15px;
 }
 
 .order-actions button {
-    margin-right: 8px;
+  margin-right: 8px;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancelled-product {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  pointer-events: none;
+}
+
+.cancelled-product strong,
+.cancelled-product p {
+  color: #777;
+}
+
+.cancelled-product img {
+  opacity: 0.6;
+}
+
+
+
+
+
+.page-item .page-link {
+  color: black !important; /* blue for all page numbers */
+}
+
+.page-item.active .page-link {
+  background-color: #343a40; /* dark background for current page */
+  border-color: #343a40;
+  color: white !important; /* white text for current page */
+}
+
+.pagination {
+  margin-bottom: 0 !important;
 }

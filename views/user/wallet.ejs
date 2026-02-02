@@ -1,0 +1,663 @@
+<%-include("../../views/partials/user/header")%>
+    <link rel="stylesheet" href="/css/wallet.css">
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 sidebar">
+                <h2>
+                    <%= user.name %>
+                </h2>
+                <a href="/userProfile" class="nav-link">My Profile</a>
+                <a href="/address" class="nav-link">Address</a>
+                <a href="/my-order" class="nav-link">Orders</a>
+                <a href="/wallet" class="nav-link">Wallet</a>
+            </div>
+
+            <div class="col-md-9">
+                <div class="container mt-4">
+                    <!-- Wallet Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">My Wallet</h2>
+                    </div>
+
+                    <!-- Wallet Balance Card -->
+                    <div class="row justify-content-center mb-4">
+                        <div class="col-md-6">
+                            <div class="card wallet-card text-center">
+                                <div class="card-body">
+                                    <h5 class="text-muted">Available Balance</h5>
+                                    <h2 class="fw-bold text-success">₹ <%= user.wallet?.balance || 0 %>
+                                    </h2>
+
+                                    <div class="d-flex justify-content-center gap-3 mt-3">
+                                        <button class="btn btn-success fw-bold" data-bs-toggle="modal"
+                                            data-bs-target="#addMoneyModal">
+                                            Add Money
+                                        </button>
+                                        <button class="btn btn-danger fw-bold" data-bs-toggle="modal"
+                                            data-bs-target="#withdrawModal">
+                                            Withdraw
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History -->
+                    <div class="card">
+                        <div class="card-header fw-bold d-flex justify-content-between align-items-center">
+                            <span>Transaction History</span>
+                            <!-- <a href="#" class="btn btn-sm view-btn">View All</a> -->
+                        </div>
+                        <!-- <h6 class="text-center fw-bold">Transaction History</h6> -->
+
+                        <div class="table-responsive">
+                            <% if (transactions && transactions.length> 0) { %>
+                                <table class="table table-bordered table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Amount</th>
+                                            <th>Description</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% transactions.forEach(transaction=> { %>
+                                            <tr>
+                                                <td>₹ <%= transaction.amount %>
+                                                </td>
+                                                <td>
+                                                    <%= transaction.description %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(transaction.createdAt).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-<%= 
+                                                    transaction.status === 'completed' ? 'success' : 
+                                                    transaction.status === 'pending' ? 'warning' : 
+                                                    transaction.status === 'failed' ? 'danger' : 'secondary'
+                                                %>">
+                                                        <%= transaction.status %>
+                                                    </span>
+                                                </td>
+                                                <td class="fw-bold <%= 
+                                                transaction.type === 'credit' || transaction.type === 'refund' ? 
+                                                'text-success' : 'text-danger'
+                                            %>">
+                                                    <%= transaction.type.charAt(0).toUpperCase() +
+                                                        transaction.type.slice(1) %>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table>
+                                <% } else { %>
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">No transactions yet</p>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="container pagination-container mt-4">
+                    <nav aria-label="Page Navigation">
+                        <ul class="pagination justify-content-center mb-20">
+                            <% for(let i=1; i <=totalPages; i++) { %>
+                                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                                <% } %>
+                        </ul>
+                    </nav>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Money Modal -->
+    <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMoneyModalLabel">Add Money to Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Quick Amount Options -->
+                    <div class="mb-4">
+                        <p class="text-muted mb-2">Select Amount (₹)</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn amount-btn" data-amount="100">₹100</button>
+                            <button type="button" class="btn amount-btn" data-amount="500">₹500</button>
+                            <button type="button" class="btn amount-btn" data-amount="1000">₹1000</button>
+                            <button type="button" class="btn amount-btn" data-amount="2000">₹2000</button>
+                            <button type="button" class="btn amount-btn" data-amount="5000">₹5000</button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Amount -->
+                    <div class="mb-3">
+                        <label for="customAmount" class="form-label">Or Enter Custom Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="customAmount" min="10" max="10000"
+                                placeholder="Enter amount between 10 and 10000">
+                        </div>
+                        <div class="form-text">Minimum: ₹10, Maximum: ₹10,000</div>
+                    </div>
+
+
+                    <!-- Current Balance -->
+                    <div class="alert alert-info">
+                        <div class="d-flex justify-content-between">
+                            <span>Current Balance:</span>
+                            <strong>₹ <%= user.wallet?.balance || 0 %></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn" style="background-color: #d4a373;" id="proceedToAddMoney">Proceed
+                        to Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Withdraw Modal -->
+    <div class="modal fade" id="withdrawModal" tabindex="-1" data-available-balance="<%= user.wallet?.balance || 0 %>">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Withdraw Money</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Available Balance -->
+                    <div class="text-center mb-4">
+                        <small class="text-muted">Available Balance</small>
+                        <h3 class="text-success fw-bold">₹<span id="availableBalance">
+                                <%= user.wallet?.balance || 0 %>
+                            </span></h3>
+                    </div>
+
+                    <!-- Amount Input -->
+                    <div class="mb-3">
+                        <label for="withdrawAmount" class="form-label fw-bold">Amount to Withdraw</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white">₹</span>
+                            <input type="number" class="form-control" id="withdrawAmount" min="100"
+                                max="<%= user.wallet?.balance || 0 %>" placeholder="Enter amount" required>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Minimum: ₹100</small>
+                            <small class="text-danger float-end" id="amountError"></small>
+                        </div>
+                    </div>
+
+                    <!-- Quick Amount Buttons -->
+                    <div class="mb-4">
+                        <small class="text-muted mb-2 d-block">Quick Select</small>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
+                                data-amount="100">₹100</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
+                                data-amount="500">₹500</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
+                                data-amount="1000">₹1,000</button>
+                            <!-- <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
+                                data-amount="half">50%</button> -->
+                            <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
+                                data-amount="full">All</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn" id="submitWithdrawal" style="background-color: #d4a373;">
+                        <i class="fas fa-paper-plane me-1"></i> Withdraw
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal Template -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 id="successTitle"></h4>
+                    <p id="successMessage"></p>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal Template -->
+    <div class="modal fade" id="errorModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 id="errorTitle"></h4>
+                    <p id="errorMessage"></p>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <%-include("../../views/partials/user/footer")%>
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+        <script>
+            // ==================== ADD MONEY FUNCTIONALITY ====================
+            let selectedAmount = 0;
+            let activeAmountBtn = null;
+
+            document.querySelectorAll('#addMoneyModal .amount-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedAmount = parseInt(btn.dataset.amount);
+                    document.getElementById('customAmount').value = selectedAmount;
+
+                    if (activeAmountBtn) {
+                        activeAmountBtn.classList.remove('btn-primary');
+                        activeAmountBtn.classList.add('btn-outline-primary');
+                    }
+                    btn.classList.remove('btn-outline-primary');
+                    btn.classList.add('btn-primary');
+                    activeAmountBtn = btn;
+                });
+            });
+
+            document.getElementById('customAmount').addEventListener('input', (e) => {
+                selectedAmount = parseInt(e.target.value) || 0;
+
+                if (activeAmountBtn) {
+                    activeAmountBtn.classList.remove('btn-primary');
+                    activeAmountBtn.classList.add('btn-outline-primary');
+                    activeAmountBtn = null;
+                }
+            });
+
+            document.getElementById('proceedToAddMoney').addEventListener('click', async () => {
+                if (!selectedAmount || selectedAmount < 10 || selectedAmount > 10000) {
+                    showErrorAlert('Invalid Amount', 'Please enter amount between ₹10 and ₹10,000');
+                    return;
+                }
+
+                const proceedBtn = document.getElementById('proceedToAddMoney');
+                const originalText = proceedBtn.innerHTML;
+                proceedBtn.disabled = true;
+                proceedBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+                try {
+                    const response = await fetch('/add-money-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: selectedAmount })
+                    });
+
+                    const data = await response.json();
+
+                    if (!data.success) {
+                        showErrorAlert('Error', data.message || 'Failed to create payment order');
+                        proceedBtn.disabled = false;
+                        proceedBtn.innerHTML = originalText;
+                        return;
+                    }
+
+                    // Close the modal
+                    const addMoneyModal = bootstrap.Modal.getInstance(document.getElementById('addMoneyModal'));
+                    if (addMoneyModal) {
+                        addMoneyModal.hide();
+                    }
+
+                    // Open Razorpay Checkout
+                    const options = {
+                        key: "<%= razorpayKeyId %>",
+                        amount: data.amount,
+                        currency: data.currency || "INR",
+                        order_id: data.orderId,
+                        name: "Add Money to Wallet",
+                        description: `Add ₹${selectedAmount} to your wallet`,
+                        prefill: {
+                            name: "<%= user.name %>",
+                            email: "<%= user.email %>",
+                            contact: "<%= user.phone || '' %>"
+                        },
+                        theme: { color: "#3399cc" },
+
+                        handler: async function (response) {
+                            try {
+                                const verifyResponse = await fetch('/add-money-verify', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_signature: response.razorpay_signature,
+                                        orderId: data.orderId
+                                    })
+                                });
+
+                                const verifyData = await verifyResponse.json();
+
+                                if (verifyData.success) {
+                                    showSuccessAlert('Success!', verifyData.message || 'Money added to wallet successfully');
+                                    setTimeout(() => location.reload(), 2000);
+                                } else {
+                                    await markPaymentFailed(data.orderId);
+                                    showErrorAlert('Verification Failed', verifyData.message || 'Payment verification failed');
+                                }
+                            } catch (verifyError) {
+                                console.error('Verification error:', verifyError);
+                                await markPaymentFailed(data.orderId);
+                                showErrorAlert('Error', 'Payment verification failed. Please contact support.');
+                            }
+                        },
+
+                        modal: {
+                            ondismiss: async function () {
+                                await markPaymentFailed(data.orderId);
+                                showErrorAlert('Payment Cancelled', 'You cancelled the payment.');
+                            }
+                        }
+                    };
+
+                    const rzp = new Razorpay(options);
+
+
+                    rzp.on('payment.failed', async function (response) {
+
+                        try {
+                            rzp.close();
+                        } catch (e) {
+                            console.log('Error closing Razorpay:', e);
+                        }
+
+
+                        setTimeout(() => {
+                            const razorpayElements = document.querySelectorAll('.razorpay-container, iframe[src*="razorpay"]');
+                            razorpayElements.forEach(el => el.remove());
+                        }, 100);
+
+
+                        await markPaymentFailed(data.orderId);
+
+
+                        const error = response.error || {};
+                        let errorMessage = 'Payment failed. ';
+
+                        if (error.code === 'BAD_REQUEST_ERROR') {
+                            errorMessage += 'Invalid payment details.';
+                        } else if (error.code === 'PAYMENT_CANCELLED') {
+                            errorMessage += 'Payment was cancelled.';
+                        } else if (error.source === 'bank') {
+                            errorMessage += 'Bank declined the transaction.';
+                        } else {
+                            errorMessage += error.description || 'Please try again.';
+                        }
+
+
+                        setTimeout(() => {
+                            showErrorAlert('Payment Failed', errorMessage);
+                        }, 300);
+                    });
+
+                    rzp.open();
+
+
+                    proceedBtn.disabled = false;
+                    proceedBtn.innerHTML = originalText;
+
+                } catch (error) {
+                    console.error('Add money error:', error);
+                    showErrorAlert('Error', 'Something went wrong. Please try again.');
+                    proceedBtn.disabled = false;
+                    proceedBtn.innerHTML = originalText;
+                }
+            });
+
+
+            async function markPaymentFailed(orderId) {
+                try {
+                    const response = await fetch('/wallet/payment-failed', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            razorpayOrderId: orderId
+                        })
+                    });
+
+                    return await response.json();
+                } catch (err) {
+                    console.error('Error marking payment as failed:', err);
+                    return { success: false };
+                }
+            }
+
+            // ==================== WITHDRAW MONEY FUNCTIONALITY ====================
+            document.addEventListener('DOMContentLoaded', function () {
+                const withdrawAmountInput = document.getElementById('withdrawAmount');
+                const amountError = document.getElementById('amountError');
+                const availableBalanceElement = document.getElementById('availableBalance');
+                const quickAmountButtons = document.querySelectorAll('.quick-amount');
+                const submitWithdrawalBtn = document.getElementById('submitWithdrawal');
+
+                const availableBalance = parseFloat(availableBalanceElement.textContent) || 0;
+
+                quickAmountButtons.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        let amount = 0;
+                        const dataAmount = this.dataset.amount;
+
+                        if (dataAmount === 'half') {
+                            amount = Math.floor(availableBalance / 2);
+                        } else if (dataAmount === 'full') {
+                            amount = availableBalance;
+                        } else {
+                            amount = parseInt(dataAmount);
+                        }
+
+                        if (amount < 100) {
+                            showErrorAlert('Invalid Amount', 'Minimum withdrawal is ₹100');
+                            return;
+                        }
+
+                        if (amount > availableBalance) {
+                            showErrorAlert('Insufficient Balance', `You only have ₹${availableBalance} available`);
+                            return;
+                        }
+
+                        withdrawAmountInput.value = amount;
+
+                        quickAmountButtons.forEach(b => {
+                            b.classList.remove('btn-danger', 'text-white');
+                            b.classList.add('btn-outline-secondary');
+                        });
+                        this.classList.remove('btn-outline-secondary');
+                        this.classList.add('btn-danger', 'text-white');
+
+                        amountError.textContent = '';
+                        amountError.classList.remove('text-danger', 'text-success');
+                    });
+                });
+
+                withdrawAmountInput.addEventListener('input', function () {
+                    const amount = parseFloat(this.value) || 0;
+
+                    quickAmountButtons.forEach(b => {
+                        b.classList.remove('btn-danger', 'text-white');
+                        b.classList.add('btn-outline-secondary');
+                    });
+
+                    if (amount < 100) {
+                        amountError.textContent = 'Minimum ₹100 required';
+                        amountError.classList.add('text-danger');
+                        amountError.classList.remove('text-success');
+                    } else if (amount > availableBalance) {
+                        amountError.textContent = `Exceeds balance (₹${availableBalance})`;
+                        amountError.classList.add('text-danger');
+                        amountError.classList.remove('text-success');
+                    } else {
+                        amountError.textContent = '✓ Valid amount';
+                        amountError.classList.remove('text-danger');
+                        amountError.classList.add('text-success');
+                    }
+                });
+
+                submitWithdrawalBtn.addEventListener('click', async function () {
+                    const withdrawAmount = parseFloat(withdrawAmountInput.value);
+
+                    if (!withdrawAmount || withdrawAmount < 100) {
+                        showErrorAlert('Invalid Amount', 'Minimum withdrawal amount is ₹100');
+                        return;
+                    }
+
+                    if (withdrawAmount > availableBalance) {
+                        showErrorAlert('Insufficient Balance', `You only have ₹${availableBalance} available`);
+                        return;
+                    }
+
+                    const submitBtn = this;
+                    const originalText = submitBtn.innerHTML;
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+                    try {
+                        const response = await fetch('/withdraw', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ amount: withdrawAmount })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            const withdrawModal = bootstrap.Modal.getInstance(document.getElementById('withdrawModal'));
+                            withdrawModal.hide();
+
+                            withdrawAmountInput.value = '';
+                            amountError.textContent = '';
+                            quickAmountButtons.forEach(b => {
+                                b.classList.remove('btn-danger', 'text-white');
+                                b.classList.add('btn-outline-secondary');
+                            });
+
+                            showSuccessAlert('Success!', data.message);
+                            setTimeout(() => location.reload(), 2000);
+                        } else {
+                            showErrorAlert('Withdrawal Failed', data.message);
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalText;
+                        }
+                    } catch (error) {
+                        console.error('Withdrawal Error:', error);
+                        showErrorAlert('Error', 'Something went wrong. Please try again.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                });
+
+                document.getElementById('withdrawModal').addEventListener('hidden.bs.modal', function () {
+                    withdrawAmountInput.value = '';
+                    amountError.textContent = '';
+                    quickAmountButtons.forEach(b => {
+                        b.classList.remove('btn-danger', 'text-white');
+                        b.classList.add('btn-outline-secondary');
+                    });
+
+                    submitWithdrawalBtn.disabled = false;
+                    submitWithdrawalBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Withdraw';
+                });
+            });
+
+
+
+
+
+            function showErrorAlert(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message,
+                    confirmButtonColor: '#dc3545',
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    backdrop: true,
+                    didOpen: () => {
+                        const razorpayElements = document.querySelectorAll('.razorpay-container, iframe[src*="razorpay"]');
+                        razorpayElements.forEach(el => {
+                            el.style.display = 'none';
+                            el.style.opacity = '0';
+                        });
+                    }
+                });
+            }
+
+            function showSuccessAlert(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message,
+                    confirmButtonColor: '#28a745',
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    backdrop: true
+                });
+            }
+
+
+            document.getElementById('addMoneyModal').addEventListener('hidden.bs.modal', function () {
+                document.getElementById('customAmount').value = '';
+                selectedAmount = 0;
+                if (activeAmountBtn) {
+                    activeAmountBtn.classList.remove('btn-primary');
+                    activeAmountBtn.classList.add('btn-outline-primary');
+                    activeAmountBtn = null;
+                }
+            });
+
+
+        </script>
