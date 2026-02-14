@@ -1,132 +1,83 @@
 <%-include("../../views/partials/user/header")%>
-    <link rel="stylesheet" href="/css/wallet.css">
+<link rel="stylesheet" href="/css/wallet.css">
 
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-3 sidebar">
-                <h2>
-                    <%= user.name %>
-                </h2>
-                <a href="/userProfile" class="nav-link">My Profile</a>
-                <a href="/address" class="nav-link">Address</a>
-                <a href="/my-order" class="nav-link">Orders</a>
-                <a href="/wallet" class="nav-link">Wallet</a>
-            </div>
-
-            <div class="col-md-9">
-                <div class="container mt-4">
-                    <!-- Wallet Header -->
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold">My Wallet</h2>
-                    </div>
-
-                    <!-- Wallet Balance Card -->
-                    <div class="row justify-content-center mb-4">
-                        <div class="col-md-6">
-                            <div class="card wallet-card text-center">
-                                <div class="card-body">
-                                    <h5 class="text-muted">Available Balance</h5>
-                                    <h2 class="fw-bold text-success">₹ <%= user.wallet?.balance || 0 %>
-                                    </h2>
-
-                                    <div class="d-flex justify-content-center gap-3 mt-3">
-                                        <button class="btn btn-success fw-bold" data-bs-toggle="modal"
-                                            data-bs-target="#addMoneyModal">
-                                            Add Money
-                                        </button>
-                                        <button class="btn btn-danger fw-bold" data-bs-toggle="modal"
-                                            data-bs-target="#withdrawModal">
-                                            Withdraw
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Transaction History -->
-                    <div class="card">
-                        <div class="card-header fw-bold d-flex justify-content-between align-items-center">
-                            <span>Transaction History</span>
-                            <!-- <a href="#" class="btn btn-sm view-btn">View All</a> -->
-                        </div>
-                        <!-- <h6 class="text-center fw-bold">Transaction History</h6> -->
-
-                        <div class="table-responsive">
-                            <% if (transactions && transactions.length> 0) { %>
-                                <table class="table table-bordered table-hover mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Amount</th>
-                                            <th>Description</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Type</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% transactions.forEach(transaction=> { %>
-                                            <tr>
-                                                <td>₹ <%= transaction.amount %>
-                                                </td>
-                                                <td>
-                                                    <%= transaction.description %>
-                                                </td>
-                                                <td>
-                                                    <%= new Date(transaction.createdAt).toLocaleDateString() %>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-<%= 
-                                                    transaction.status === 'completed' ? 'success' : 
-                                                    transaction.status === 'pending' ? 'warning' : 
-                                                    transaction.status === 'failed' ? 'danger' : 'secondary'
-                                                %>">
-                                                        <%= transaction.status %>
-                                                    </span>
-                                                </td>
-                                                <td class="fw-bold <%= 
-                                                transaction.type === 'credit' || transaction.type === 'refund' ? 
-                                                'text-success' : 'text-danger'
-                                            %>">
-                                                    <%= transaction.type.charAt(0).toUpperCase() +
-                                                        transaction.type.slice(1) %>
-                                                </td>
-                                            </tr>
-                                            <% }) %>
-                                    </tbody>
-                                </table>
-                                <% } else { %>
-                                    <div class="text-center py-5">
-                                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">No transactions yet</p>
-                                    </div>
-                                    <% } %>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="container pagination-container mt-4">
-                    <nav aria-label="Page Navigation">
-                        <ul class="pagination justify-content-center mb-20">
-                            <% for(let i=1; i <=totalPages; i++) { %>
-                                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
-                                    <a class="page-link" href="?page=<%= i %>">
-                                        <%= i %>
-                                    </a>
-                                </li>
-                                <% } %>
-                        </ul>
-                    </nav>
-                </div>
-
-
-
-
-            </div>
+<div class="container-fluid">
+    <div class="row g-0">
+        <div class="col-md-3 sidebar">
+            <h2><%= user.name %></h2>
+            <a href="/userProfile" class="nav-link">My Profile</a>
+            <a href="/address" class="nav-link">Address</a>
+            <a href="/my-order" class="nav-link">Orders</a>
+            <a href="/wallet" class="nav-link active">Wallet</a>
         </div>
-    </div>
+
+        <div class="col-md-9 wallet-content-area">
+            <div class="container">
+                <!-- <h2 style="font-family: 'Playfair Display', serif; font-style: italic; color: #1e2a2d;" class="mb-4">My Wallet</h2> -->
+                <h2 class="text-center mb-5 fw-light" style="font-family: 'Cinzel', serif; letter-spacing: 4px;">My Wallet</h2>
+
+                <div class="wallet-card text-center">
+                    <h5 class="text-muted text-uppercase small spacing-2">Available Balance</h5>
+                    <div class="balance-amount">₹ <%= user.wallet?.balance || 0 %></div>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <button class="btn btn-dark px-4 py-2" data-bs-toggle="modal" data-bs-target="#addMoneyModal">Add Money</button>
+                        <button class="btn btn-outline-dark px-4 py-2" data-bs-toggle="modal" data-bs-target="#withdrawModal">Withdraw</button>
+                    </div>
+                </div>
+
+                <div class="transaction-container">
+                    <div class="transaction-header">Transaction History</div>
+                    <div class="table-responsive">
+                        <% if (transactions && transactions.length > 0) { %>
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% transactions.forEach(transaction => { %>
+                                        <tr>
+                                            <td class="fw-bold">₹ <%= transaction.amount %></td>
+                                            <td><%= transaction.description %></td>
+                                            <td><%= new Date(transaction.createdAt).toLocaleDateString() %></td>
+                                            <td>
+                                                <span class="badge bg-<%= transaction.status === 'completed' ? 'success' : 'warning' %>">
+                                                    <%= transaction.status %>
+                                                </span>
+                                            </td>
+                                            <td class="fw-bold <%= transaction.type === 'credit' || transaction.type === 'refund' ? 'text-success' : 'text-danger' %>">
+                                                <%= transaction.type.toUpperCase() %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } else { %>
+                            <div class="text-center py-5">
+                                <p class="text-muted">No transactions yet</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <% if (totalPages > 1) { %>
+                <nav aria-label="Page Navigation">
+                    <ul class="pagination justify-content-center">
+                        <% for(let i=1; i <= totalPages; i++) { %>
+                            <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+                <% } %>
+
+            </div> </div> </div> </div>
 
     <!-- Add Money Modal -->
     <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">

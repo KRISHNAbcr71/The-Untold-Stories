@@ -2,16 +2,19 @@
 <link rel="stylesheet" href="/css/product-details.css">
 
 <!-- Breadcrumb Section -->
-<section class="breadcrumb-section py-4 bg-light">
+<section class="breadcrumb-section py-4">
     <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary">Home</a></li>
-                <li class="breadcrumb-item"><a href="/shop" class="text-decoration-none text-secondary">Shop</a></li>
-                <li class="breadcrumb-item"><a href="/shop?category=<%= product.category._id %>" class="text-decoration-none text-secondary"><%= product.category.name %></a></li>
-                <li class="breadcrumb-item active fw-bold" style="color: #d4a373;" aria-current="page"><%= product.productName %></li>
-            </ol>
-        </nav>
+        <div class="breadcrumb-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+            <nav class="breadcrumb-nav">
+                <a href="/">Home</a>
+                <span class="breadcrumb-separator">>></span>
+                <a href="/shop">Shop</a>
+                <span class="breadcrumb-separator">>></span>
+                <a href="/shop?category=<%= product.category._id %>"><%= product.category.name %></a>
+                <span class="breadcrumb-separator">>></span>
+                <span class="current"><%= product.productName %></span>
+            </nav>
+        </div>
     </div>
 </section>
 
@@ -161,11 +164,24 @@
                             </button>
                         <% } %>
                         
-                        <button class="btn wishlist-action btn-lg px-5 py-3 d-flex align-items-center"
-                                onclick="addToWishlist('<%= product._id %>')">
-                            <i class="bi bi-heart me-3 fs-5"></i>
+                        <!-- <button class="btn wishlist-action btn-lg px-5 py-3 d-flex align-items-center"
+                        data-active="<%= wishlistIds.includes(product._id.toString()) %>"
+                                onclick="toggleWishlist(this, '<%= product._id %>')">
+                            <i class="<%= wishlistIds.includes(product._id.toString()) 
+                                ? 'fa-solid fa-heart' : 'fa-regular fa-heart' %>"></i>
                             Add to Wishlist
-                        </button>
+                        </button> -->
+                        <button class="btn wishlist-action btn-lg px-5 py-3 d-flex align-items-center
+        <%= wishlistIds.includes(product._id.toString()) ? 'wishlist-active' : '' %>"
+        onclick="toggleWishlist(this, '<%= product._id %>')">
+
+    <i class="<%= wishlistIds.includes(product._id.toString()) 
+        ? 'fa-solid fa-heart me-3' 
+        : 'fa-regular fa-heart me-3' %>"></i>
+
+    Add to Wishlist
+</button>
+
                     </div>
                 </div>
             </div>
@@ -245,16 +261,16 @@
                             <div class="card product-card h-100 border-0 shadow-sm hover-shadow transition-all">
                                 <div class="position-relative overflow-hidden">
                                     <img src="/<%= rp.productImage[0] %>" 
-                                         class="card-img-top product-image" 
+                                         class="card-img-top related-product-image" 
                                          alt="<%= rp.productName %>">
                                     <div class="card-img-overlay d-flex flex-column justify-content-between p-3">
                                         <% if (rp.quantity <= 5 && rp.quantity > 0) { %>
                                             <span class="badge bg-danger align-self-start">Low Stock</span>
                                         <% } %>
-                                        <button class="btn btn-light btn-sm rounded-circle align-self-end"
+                                        <!-- <button class="btn btn-light btn-sm rounded-circle align-self-end"
                                                 onclick="addToWishlist('<%= rp._id %>')">
                                             <i class="bi bi-heart"></i>
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -382,51 +398,98 @@
     }
 
     // Add to Wishlist Function
-    async function addToWishlist(productId) {
-        try {
-            const response = await fetch(`/add-to-wishlist/${productId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+    // async function addToWishlist(productId) {
+    //     try {
+    //         const response = await fetch(`/add-to-wishlist/${productId}`, {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             }
+    //         });
 
-            const result = await response.json();
+    //         const result = await response.json();
 
-            if (response.ok) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Added to Wishlist',
-                    text: result.message,
-                    showConfirmButton: false,
-                    timer: 2000,
-                    customClass: {
-                        popup: 'rounded-4'
-                    }
-                });
-                updateWishlistCount();
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Notice',
-                    text: result.message,
-                    showConfirmButton: true,
-                    customClass: {
-                        popup: 'rounded-4'
-                    }
-                });
-            }
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: 'Something went wrong while adding to wishlist.',
-                customClass: {
-                    popup: 'rounded-4'
-                }
-            });
-        }
+    //         if (response.ok) {
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 title: 'Added to Wishlist',
+    //                 text: result.message,
+    //                 showConfirmButton: false,
+    //                 timer: 2000,
+    //                 customClass: {
+    //                     popup: 'rounded-4'
+    //                 }
+    //             });
+    //             updateWishlistCount();
+    //         } else {
+    //             Swal.fire({
+    //                 icon: 'warning',
+    //                 title: 'Notice',
+    //                 text: result.message,
+    //                 showConfirmButton: true,
+    //                 customClass: {
+    //                     popup: 'rounded-4'
+    //                 }
+    //             });
+    //         }
+    //     } catch (error) {
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Oops!',
+    //             text: 'Something went wrong while adding to wishlist.',
+    //             customClass: {
+    //                 popup: 'rounded-4'
+    //             }
+    //         });
+    //     }
+    // }
+    async function toggleWishlist(button, productId) {
+  try {
+    const response = await fetch(`/add-to-wishlist/${productId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const result = await response.json();
+
+    //NOT LOGGED IN
+    if (response.status === 401) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Login required',
+        text: result.message,
+        confirmButtonText: 'Ok',
+      })
+      return;
     }
+
+    // SUCCESS
+    if (response.ok) {
+      const icon = button.querySelector("i");
+
+      button.classList.toggle("wishlist-active");
+      icon.classList.toggle("fa-solid");
+      icon.classList.toggle("fa-regular");
+
+      Swal.fire({
+        icon: 'success',
+        title: result.message,
+        showConfirmButton: false,
+        timer: 1200
+      });
+    }
+
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops!',
+      text: 'Something went wrong.'
+    });
+  }
+}
+
+
+
 
     // Share Product Function
     function shareProduct() {

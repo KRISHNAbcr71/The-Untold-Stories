@@ -17,7 +17,8 @@
       <!-- Main Content -->
       <div class="col-md-9">
         <div class="mt-5 px-4">
-          <h2 class="mb-4 text-center fw-bold">My Orders</h2>
+          <!-- <h2 class="mb-4 text-center fw-bold">My Orders</h2> -->
+           <h2 class="text-center mb-5 fw-light" style="font-family: 'Cinzel', serif; letter-spacing: 4px;">My Orders</h2>
 
           <!-- Search -->
           <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
@@ -105,8 +106,10 @@
                           <button class="btn btn-danger btn-sm cancel-order" data-bs-toggle="modal"
                             data-bs-target="#cancelOrderModal" data-order="<%= order.orderId %>">Cancel Order</button>
                           <%}%>
-                            <a href="/view-order-details/<%= order.orderId %>" class="btn btn-primary btn-sm">View
-                              Details</a>
+                          <%if(order.paymentStatus === 'Failed' && order.paymentMethod !== 'cod' && order.status !== 'Cancelled'){%>
+                            <button class="btn btn-warning btn-sm retry-payment" data-order-id="<%= order.orderId %>">Retry Payment</button>
+                            <%}%>
+                            <a href="/view-order-details/<%= order.orderId %>" class="btn btn-primary btn-sm">View Details</a>
                             <a href="/invoice/<%= order.orderId %>" class="btn btn-success btn-sm">Download Invoice</a>
                       </div>
                 </div>
@@ -236,9 +239,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/your-order-modal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
     <script>
+
+
+
+const currentPath = window.location.pathname;
+ document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+   if(link.getAttribute('href') === currentPath){
+     link.classList.add('active');
+   }
+ });
+
+
       const searchInput = document.getElementById('searchInput');
       const clearBtn = document.getElementById('clearSearch');
 
@@ -267,6 +282,130 @@
 
 
       document.addEventListener('DOMContentLoaded', () => {
+
+        const retryBtns = document.querySelectorAll(".retry-payment");
+  
+  // Check if there are any retry buttons
+  if (retryBtns.length === 0) return;
+
+  // Add event listener to each button
+  retryBtns.forEach(btn => {
+    btn.addEventListener("click", async function (e) {
+      e.preventDefault(); // Prevent default if it's a button in a form or link
+      
+      const orderId = this.dataset.orderId;
+      console.log("Retry payment clicked for order:", orderId); // Debug log
+
+      if (!orderId) {
+        Swal.fire("Error", "Order ID is missing", "error");
+        return;
+      }
+
+      const originalText = this.innerHTML;
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+      try {
+        // 1️⃣ Create Razorpay order again
+        const res = await fetch(`/retry-payment/${orderId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+        });
+
+        const data = await res.json();
+        console.log("Retry response:", data); // Debug log
+
+        if (!data.success) {
+          Swal.fire("Retry Failed", data.message || "Unable to retry payment", "error");
+          this.disabled = false;
+          this.innerHTML = originalText;
+          return;
+        }
+
+        // 2️⃣ Razorpay options
+        const options = {
+          key: "<%= razorpayKeyId %>",
+          amount: data.razorpayOrder.amount,
+          currency: data.razorpayOrder.currency,
+          order_id: data.razorpayOrder.id,
+          name: "The Untold Stories",
+          description: "Retry Order Payment",
+          prefill: {
+            name: "<%= user.name %>",
+            email: "<%= user.email %>",
+            contact: "<%= user.phone || '' %>",
+          },
+          handler: async function (response) {
+            console.log("Payment response:", response); // Debug log
+            
+            try {
+              const verifyRes = await fetch("/verify-payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  orderId: orderId,
+                }),
+              });
+
+              const verifyData = await verifyRes.json();
+              console.log("Verification response:", verifyData); // Debug log
+
+              if (verifyData.success) {
+                window.location.href = "/order-success";
+              } else {
+                window.location.href = `/order-failed/${orderId}`;
+              }
+            } catch (err) {
+              console.error("Verify error:", err);
+              window.location.href = `/order-failed/${orderId}`;
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              window.location.href = `/order-failed/${orderId}`;
+            },
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+
+        // Re-enable button in case Razorpay modal is cancelled
+        this.disabled = false;
+        this.innerHTML = originalText;
+
+        const rzp = new Razorpay(options);
+
+        rzp.on("payment.failed", function (response) {
+          console.error("Payment failed:", response);
+          window.location.href = `/order-failed/${orderId}`;
+        });
+
+        rzp.open();
+      } catch (err) {
+        console.error("Retry payment error:", err);
+        Swal.fire("Error", "Something went wrong. Please try again.", "error");
+        this.disabled = false;
+        this.innerHTML = originalText;
+      }
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
         const cancelLinks = document.querySelectorAll('.cancel-product');
         const cancelOrderIdInput = document.getElementById('cancelOrderId');
         const cancelProductIdInput = document.getElementById('cancelProductId');
@@ -434,6 +573,30 @@
           });
         }
       });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
 
 
 

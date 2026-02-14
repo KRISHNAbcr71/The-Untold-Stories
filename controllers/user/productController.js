@@ -1,11 +1,19 @@
 const Product = require("../../models/productSchema");
 const Offer = require("../../models/offerSchema");
 const User = require("../../models/userSchema");
+const Wishlist = require("../../models/wishlistSchema")
 
 const loadProductDetailsPage = async (req, res) => {
   try {
     const userId = req.session.user;
     const userData = await User.findById(userId);
+
+    let wishlistIds = [];
+        if(userId){
+          const wishlist = await Wishlist.findOne({userId})
+          wishlistIds = wishlist ? wishlist.products.map(p => p.productId.toString()) : []
+        }
+
     const productId = req.query.id;
     const product = await Product.findOne({
       _id: productId,
@@ -66,6 +74,8 @@ const loadProductDetailsPage = async (req, res) => {
         ? Math.round(product.price - (product.price * discountValue) / 100)
         : product.price;
 
+
+
     res.render("product-details", {
       user: userData,
       product,
@@ -73,6 +83,7 @@ const loadProductDetailsPage = async (req, res) => {
       relatedProducts,
       discountValue,
       offerPrice,
+      wishlistIds
     });
   } catch (error) {
     console.error("[Error for fetching product details]", error);

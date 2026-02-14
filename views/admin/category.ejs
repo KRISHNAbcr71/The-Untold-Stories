@@ -2,8 +2,8 @@
     <link rel="stylesheet" href="/css/category.css">
 
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <h2 class="mb-0">Category</h2>
+    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-3">
+        <h2 class="fw-bold mb-0 ps-4">🗂️ Category</h2>
         <div class="search-container position-relative">
             <input type="text" class="form-control" id="searchInput" placeholder="Search categories..."
                 value="<%= search || '' %>">
@@ -16,17 +16,24 @@
         <div class="text-center text-danger mb-3">No results found</div>
         <% } %>
 
-            <div class="d-flex" style="gap: 10px;">
+            <!-- <div class="d-flex" style="gap: 10px;">
                 <a href="/admin/addCategory" class="btn btn-secondary add-cat" style="width: 200px;">Add Category</a>
                 <a href="/admin/trash-category" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
-            </div>
+            </div> -->
+            <div class="d-flex mb-4 ps-4" style="gap: 12px;">
+  <a href="/admin/addCategory" class="btn add-cat-btn">
+    <span class="icon">➕</span>
+    Add Category
+  </a>
+</div>
+
 
 
 
             <div class="table-wrapper">
 
                 <div class="table-responsive container-fluid">
-                    <table class="table table-bordered text-center mt-4">
+                    <table class="table align-middle admin-table">
                         <thead class="table-secondary">
                             <tr>
                                 <th>Number</th>
@@ -80,7 +87,7 @@
 
                 <div class="container mt-3 pagination-container">
                     <nav aria-label="Page Navigation">
-                        <ul class="pagination justify-content-center mb-20">
+                        <ul class="pagination pagination-custom justify-content-center mb-20">
                             <% for(let i=1; i <=totalPages; i++) { %>
                                 <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
                                     <a class="page-link" href="?page=<%= i %>">

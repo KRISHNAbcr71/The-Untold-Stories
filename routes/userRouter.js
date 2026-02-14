@@ -145,7 +145,6 @@ router.post("/place-order", userAuth, orderController.placeOrder);
 router.post("/verify-payment", userAuth, orderController.verifyPayment);
 router.get("/order-success", userAuth, orderController.orderSuccess);
 router.get("/order-failed/:orderId", userAuth, orderController.orderFailed);
-// router.post("/payment-failed", userAuth, orderController.paymentFailed);
 router.post("/retry-payment/:orderId", userAuth, orderController.retryPayment);
 
 

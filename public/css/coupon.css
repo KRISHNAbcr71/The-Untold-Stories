@@ -1,7 +1,45 @@
-body {
-  background-color: #f8f9fa;
+:root {
+  /* Brand */
+  --primary: #d4a373;
+  --primary-dark: #b78b5a;
+  --primary-light: #f5e9d9;
+
+  /* Backgrounds */
+  --bg-body: #fcfaf7;
+  --bg-card: #ffffff;
+
+  /* Text */
+  --text-dark: #2d2a24;
+  --text-muted: #6d6a64;
+
+  /* Status */
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+
+  /* UI */
+  --border-light: #f0ebe4;
+  --radius-lg: 20px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+
+  /* Effects */
+  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 32px rgba(212, 163, 115, 0.12);
+  --transition: all 0.3s ease;
 }
 
+body {
+  background: var(--bg-body);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-dark);
+  min-height: 100vh;
+
+  background-image: 
+    radial-gradient(ellipse at 0% 0%, rgba(212, 163, 115, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(204, 213, 174, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+}
 .search-container {
   position: relative;
   max-width: 400px;
@@ -31,7 +69,52 @@ body {
   font-size: 1.2rem;
 }
 
-.table td,
+
+
+
+
+.add-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 200px;
+  padding: 10px 16px;
+
+  background: linear-gradient(to right, #d4a373, #b78b5a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  border: none;
+  border-radius: 14px;
+
+  box-shadow: 0 6px 18px rgba(212, 163, 115, 0.35);
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+/* Hover */
+.add-cat-btn:hover {
+  background: linear-gradient(to right, #c89a67, #a97a47);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(212, 163, 115, 0.45);
+  color: #fff;
+}
+
+/* Active click */
+.add-cat-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.25);
+}
+
+/* Icon */
+.add-cat-btn .icon {
+  font-size: 1.1rem;
+}
+
+/* .table td,
 .table th {
   vertical-align: middle;
   border: 1px solid black;
@@ -40,20 +123,139 @@ body {
 .table-wrapper {
   position: relative;
   min-height: 450px;
+} */
+ /* ================= ADMIN TABLE STYLE ================= */
+
+.admin-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
 }
 
-.pagination-container {
+/* Header */
+.admin-table thead {
+  background: linear-gradient(to right, var(--primary-light), #f8f6f2);
+}
+
+.admin-table thead th {
+  border: none;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+   background-color: #f8f4e9;
+}
+
+/* Body rows */
+.admin-table tbody tr {
+  transition: all 0.25s ease;
+}
+
+.admin-table tbody tr:hover {
+  background-color: rgba(212, 163, 115, 0.08);
+  transform: scale(1.002);
+}
+
+/* Cells */
+.admin-table td {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+/* First column emphasis */
+.admin-table td:first-child {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Action column */
+.admin-table td:last-child {
+  text-align: center;
+}
+.admin-table th,
+.admin-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+/* Vertical lines */
+.admin-table th,
+.admin-table td {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Remove last column border */
+.admin-table th:last-child,
+.admin-table td:last-child {
+  border-right: none;
+}
+
+.table-wrapper {
+  min-height: 500px;
+}
+
+/* .pagination-container {
   position: absolute;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
 }
 .page-item .page-link {
-  color: black !important; /* blue for all page numbers */
+  color: black !important; 
 }
 
 .page-item.active .page-link {
-  background-color: #343a40; /* dark background for current page */
+  background-color: #343a40; 
   border-color: #343a40;
-  color: white !important; /* white text for current page */
+  color: white !important; 
+} */
+
+
+/* ================= PAGINATION ================= */
+
+.pagination-custom .page-item .page-link {
+  border: none;
+  border-radius: 10px;
+  margin: 0 4px;
+  padding: 8px 14px;
+  color: #6d6a64;
+  background: #f5f0e8;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+/* Hover */
+.pagination-custom .page-item:not(.active):not(.disabled) .page-link:hover {
+  background: #e9dccb;
+  color: #2d2a24;
+}
+
+/* Active page */
+.pagination-custom .page-item.active .page-link {
+  background: linear-gradient(to right, #d4a373, #b78b5a);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
+}
+
+/* Disabled */
+.pagination-custom .page-item.disabled .page-link {
+  background: #f0ede8;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Previous / Next emphasis */
+.pagination-custom .page-item:first-child .page-link,
+.pagination-custom .page-item:last-child .page-link {
+  font-weight: 600;
+}
+
+/* Mobile-friendly */
+@media (max-width: 576px) {
+  .pagination-custom .page-link {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
 }

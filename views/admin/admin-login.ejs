@@ -6,116 +6,255 @@
   <title>Admin Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f3f4f6;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+  :root {
+  --primary: #d4a373;
+  --primary-hover: #c08c5a;
 
-    .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
+  --bg-body: #1f1a14; /* keep dark background */
+  --bg-surface: #ffffff;
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+  --text-main: #1e293b;
+  --text-muted: #6b7280;
 
-    .form-group {
-      margin-bottom: 18px;
-    }
+  --border: #e5e7eb;
 
-    label {
-      display: block;
-      margin-bottom: 6px;
-    }
+  --error-bg: #fef2f2;
+  --error-text: #dc2626;
 
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-    }
+  --grid-color: rgba(212, 163, 115, 0.08);
+}
 
-    .error {
-      color: red;
-      font-size: 13px;
-      margin-top: 4px;
-    }
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    
+    /* Layer 1: The Dark Base */
+    background-color: var(--bg-body);
+    
+    /* Layer 2: The Grid Pattern */
+    background-image: 
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    
+    /* Layer 3: A subtle glow in the center to make the login box "pop" */
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+  }
 
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #fca311;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+  /* Optional: Decorative "Glass" Blur Circles in the background */
+  body::before {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    z-index: -1;
+  }
 
-    button:hover {
-      background-color: #ff9900;
-    }
+  body::after {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+    bottom: -150px;
+    left: -150px;
+    z-index: -1;
+  }
 
-    .alert-danger {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      font-size: 1.2rem;
-      padding: 15px 15px;
-      border-radius: 5px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 20px;
-      margin-bottom: 10px;
-    }
+  /* .login-box {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1;
+  } */
+   .login-box {
+  background: rgba(255, 255, 255, 0.96);
+  padding: 42px;
+  border-radius: 18px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(212, 163, 115, 0.15);
+  width: 100%;
+  max-width: 400px;
+  z-index: 1;
+}
 
-    .password-wrapper {
-      position: relative;
-    }
+  /* h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.025em;
+  } */
+   h2 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  letter-spacing: -0.03em;
+  color: #1e293b;
+}
 
-    .input-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
+h2::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: var(--primary);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
 
-    .input-container input {
-      width: 100%;
-      padding: 10px;
-      padding-right: 40px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-      height: 40px;
-      box-sizing: border-box;
-    }
 
-    .eye-toggle {
-      position: absolute;
-      right: 12px;
-      cursor: pointer;
-      font-size: 18px;
-      user-select: none;
-      width: 24px;
-      text-align: center;
-    }
 
-  </style>
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text-main);
+  }
+
+  .input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="email"],
+  input[type="password"],
+  input[type="text"] {
+    width: 100%;
+    height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    background: #fff;
+    box-sizing: border-box;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.25);
+  }
+
+  /* .eye-toggle {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    filter: grayscale(1);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .eye-toggle:hover {
+    opacity: 1;
+  } */
+   .eye-toggle {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.eye-toggle:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
+
+  .error {
+    color: var(--error-text);
+    font-size: 0.8rem;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+  }
+
+  button:hover {
+    background-color: var(--primary-hover);
+  } */
+   button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary);
+  color: #1e293b;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+
+  /* Redesigned Server Error Message */
+  /* .alert-danger {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid #fee2e2;
+    font-size: 0.9rem;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+  } */
+   .alert-danger {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-left: 4px solid var(--primary);
+  font-size: 0.9rem;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+</style>
 </head>
 
 <body>

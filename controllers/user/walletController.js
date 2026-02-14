@@ -20,7 +20,6 @@ const getWallet = async (req, res) => {
 
     const allTransactions = userData.wallet.transactions
       .sort((a, b) => b.createdAt - a.createdAt)
-      // .slice(0, 20)
 
     const totalTransactions = allTransactions.length
     const totalPages = Math.ceil(totalTransactions/limit)  

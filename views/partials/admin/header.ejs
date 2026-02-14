@@ -1,126 +1,233 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Panel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Admin Panel | The Untold Stories</title>
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&family=Montserrat:wght@400;500;600&family=Cinzel:wght@600&display=swap" rel="stylesheet">
 
   <style>
-    .admin-image {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .nav-link {
-      margin: 0 10px;
-    }
-
-    footer {
-      background-color: #f8f9fa;
-      padding: 10px 0;
-      text-align: center;
-      margin-top: auto;
-    }
-
-    .navbar {
-      background-color: #343a40;
-    }
-
-    .navbar .nav-link,
-    .navbar-brand,
-    .dropdown-toggle {
-      color: white;
-    }
-
-    .navbar .nav-link:hover,
-    .navbar-brand:hover,
-    .dropdown-item:hover {
-      color: #ffc107;
-    }
-
+    /* --- Global & Layout --- */
     body {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      background-color: #f8f9fa;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .content {
       flex: 1;
     }
 
-    main {
-      padding-top: 20px;
+    footer {
+      background-color: #5c492c;
+      padding: 15px 0;
+      text-align: center;
+      border-top: 1px solid #dee2e6;
+    }
+
+    /* --- Admin Header (Luxury Dark Theme) --- */
+    .admin-header {
+      background-color: #5c492c; /* Matching user header background */
+      height: 90px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #28231f;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* --- Editorial Logo (Identical to User Side) --- */
+    .editorial-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none !important;
+      line-height: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .editorial-logo:hover {
+      transform: translateY(-2px);
+    }
+
+    .editorial-logo .top-line {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: #d4a373; /* Gold Accent */
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    .editorial-logo .bottom-line {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    /* --- Admin Navigation Links --- */
+    .admin-nav .nav-link {
+      color: #ffffff !important;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      opacity: 0.7;
+      padding: 10px 15px !important;
+      transition: 0.3s ease;
+    }
+
+    .admin-nav .nav-link:hover {
+      opacity: 1;
+      color: #d4a373 !important;
+    }
+
+    /* --- Admin Profile & Dropdown --- */
+    .admin-image {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid #d4a373;
+      padding: 2px;
+    }
+
+    .dropdown-menu {
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      margin-top: 10px !important;
+    }
+
+    .dropdown-item {
+      color: #ccc;
+      font-size: 0.8rem;
+      padding: 10px 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .dropdown-item:hover {
+      background-color: #d4a373;
+      color: white !important;
+    }
+
+    /* Remove bootstrap default arrow if desired */
+    .dropdown-toggle::after {
+      display: none;
     }
 
 
 
 
 
-    /* Website name  */
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
 
-    .logo-text {
-      font-family: 'Cinzel', serif;
-      font-size: 1.8rem;
-      color: #f2c98d;
-      text-decoration: none;
-      letter-spacing: 1.5px;
-      text-shadow: 0 0 10px rgba(242, 201, 141, 0.4);
-      transition: 0.4s ease;
-    }
 
-    .logo-text:hover {
-      color: #fae3c0;
-      text-shadow: 0 0 20px rgba(250, 227, 192, 0.7);
-      transform: scale(1.02);
-    }
+
+
+    /* --- Active Admin Nav Link --- */
+.admin-nav .nav-link.active {
+  opacity: 1;
+  color: #d4a373 !important;
+  position: relative;
+}
+
+/* Elegant underline */
+.admin-nav .nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 15px;
+  right: 15px;
+  height: 1px;
+  background-color: #d4a373;
+}
+
   </style>
 </head>
 
 <body>
 
-  <!-- Header -->
-  <nav class="navbar navbar-expand-lg navbar-dark px-3">
-    <a href="#" onclick="scrollToTop()" class="navbar-brand logo-text">The Untold Stories</a>
-    <div class="collapse navbar-collapse justify-content-center">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/users">Customers</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/category">Category</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/product">Product</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/offer">Offer</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/coupon">Coupon</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/orders">Orders</a></li>
-      </ul>
-    </div>
-
-    <!-- Admin Dropdown -->
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="adminDropdown"
-        data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="/images/admin-icon.jpg" alt="Admin" class="admin-image">
+  <header class="admin-header shadow-sm">
+    <div class="container-fluid d-flex align-items-center justify-content-between px-4">
+      
+      <a href="/admin/dashboard" class="editorial-logo">
+        <span class="top-line">The Untold</span>
+        <span class="bottom-line">Stories</span>
       </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-      </ul>
+
+      <nav class="admin-nav d-none d-lg-block">
+        <ul class="nav">
+          <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/sales">Sales</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/users">Customers</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/category">Category</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/product">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/offer">Offers</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/coupon">Coupons</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/orders">Orders</a></li>
+        </ul>
+      </nav>
+
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="/images/admin-icon.jpg" alt="Admin" class="admin-image">
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="adminDropdown">
+          <li>
+            <a class="dropdown-item text-danger" href="#" onclick="logout()">
+              <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </nav>
+  </header>
+
+  <main class="content">
+    </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    async function logout() {
+      try {
+        const response = await fetch('/admin/logout', { method: 'GET' });
+        if (response.ok) {
+          window.location.href = '/admin/login';
+        } else {
+          console.error('Logout failed');
+        }
+      } catch (error) {
+        console.error('Error during logout', error);
+      }
+    }
+
+
+    const currentPath = window.location.pathname;
+document.querySelectorAll('.nav-link').forEach(link => {
+  if(link.getAttribute('href') === currentPath){
+    link.classList.add('active');
+  }
+});
+
+  </script>
+</body>
+
+</html>

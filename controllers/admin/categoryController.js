@@ -103,6 +103,7 @@ const addCategory = async (req, res) => {
 
 
 
+
 const getListCategory = async (req, res) => {
     try {
         let id = req.query.id
@@ -113,7 +114,6 @@ const getListCategory = async (req, res) => {
         res.status(500).json({ success: false, error: 'Category listing failed' });
     }
 }
-
 
 
 
@@ -210,64 +210,6 @@ const deleteCategory = async(req,res)=>{
 
 
 
-
-const trashCategory = async(req,res)=>{
-    try {
-        let search = req.query.search || ''
-        let page = parseInt(req.query.page) || 1
-        let limit = 3
-
-        const deletedCategories = await Category.find({
-            name:{$regex: ".*" + search + ".*", $options: "i"},
-            isDeleted:true
-        })
-        .limit(limit)
-        .skip((page-1)*limit)
-        .sort({deletedAt:-1})
-
-
-        const count = await Category.countDocuments({
-            name:{$regex: ".*" + search + ".*", $options: "i"},
-            isDeleted:true
-        });
-
-        res.render('trash-category',{
-            cat: deletedCategories,
-            totalPages: Math.ceil(count/limit),
-            currentPage: page,
-            search,
-            noResults: deletedCategories.length === 0
-        });
-
-    } catch (error) {
-        console.error("Error loading trash:", error);
-        res.status(500).send("Internal Server Error");
-    }
-}
-
-
-
-
-
-const restoreCategory = async(req,res)=>{
-    try {
-        const {id} = req.params
-        const category = await Category.findByIdAndUpdate(id,{isDeleted:false},{new:true})
-        if (!category) {
-            return res.status(404).json({success:false, message:'Category not found'})
-        }
-        return res.status(200).json({ success: true, message: 'Category restored successfully.' });
-
-    } catch (error) {
-        console.error("Error restoring category:", error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
-}
-
-
-
-
-
 module.exports = {
     categoryInfo,
     loadAddCategory,
@@ -277,6 +219,4 @@ module.exports = {
     getEditCategory,
     editCategory,
     deleteCategory,
-    trashCategory,
-    restoreCategory
 }

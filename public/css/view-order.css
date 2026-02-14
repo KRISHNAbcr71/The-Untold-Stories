@@ -1,12 +1,158 @@
-.circle {
+/* .circle {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background-color: #e0e0e0; /* default inactive color */
+  background-color: #e0e0e0; 
   margin: 0 auto;
   transition: background-color 0.3s;
 }
 
 .circle.active {
-  background-color: #d4a373; /* active color */
+  background-color: #d4a373; 
+} */
+
+
+
+
+/* --- Global Theme & Typography --- */
+body {
+    background-color: #f4f1ea;
+    font-family: 'Montserrat', sans-serif;
+    color: #1e2a2d;
 }
+
+/* --- Card Architecture --- */
+.card {
+    background-color: #e9e4d9 !important; /* Warm Sand */
+    border: none !important;
+    border-radius: 15px !important;
+    box-shadow: 15px 15px 40px #dad5cb, -15px -15px 40px #ffffff !important;
+    margin-bottom: 30px !important;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: rgba(30, 42, 45, 0.05) !important;
+    border-bottom: 1px solid rgba(212, 163, 115, 0.2) !important;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    color: #1e2a2d;
+    padding: 15px 25px !important;
+}
+
+/* --- Order Header & Tracker --- */
+h4.text-secondary {
+    font-family: 'Cinzel', serif;
+    color: #1e2a2d !important;
+    letter-spacing: 3px;
+    font-weight: 700 !important;
+}
+
+.circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #dad5cb;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.circle.active {
+    background-color: #d4a373 !important; /* Gold */
+    border-color: #d4a373 !important;
+    box-shadow: 0 0 10px rgba(212, 163, 115, 0.5);
+}
+
+/* Minimalist Status Text */
+.text-center p {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #888;
+    margin-top: 12px !important;
+}
+
+.text-center .active + p {
+    color: #1e2a2d;
+}
+
+/* --- Info Boxes (Dates/Payment) --- */
+.bg-light {
+    background-color: #f4f1ea !important; /* Match page background */
+    border: 1px solid rgba(212, 163, 115, 0.1);
+}
+
+/* --- Product List --- */
+.border-bottom {
+    border-bottom: 1px solid rgba(30, 42, 45, 0.05) !important;
+}
+
+.card-body img {
+    border: 3px solid #fff;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+}
+
+/* --- Buttons --- */
+.btn-success {
+    background-color: #1e2a2d !important; /* Deep Teal */
+    border: none !important;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    padding: 12px 30px !important;
+    font-weight: 600;
+}
+
+.btn-success:hover {
+    background-color: #d4a373 !important; /* Gold */
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background-color: transparent !important;
+    color: #d4a373 !important;
+    border: 1px solid #d4a373 !important;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.btn-warning:hover {
+    background-color: #d4a373 !important;
+    color: #fff !important;
+}
+
+/* --- Summary Details --- */
+.fw-bold span:last-child {
+    color: #1e2a2d;
+    font-size: 1.1rem;
+}
+
+/* --- Modal Styling --- */
+.modal-content {
+    background-color: #e9e4d9 !important;
+    border-radius: 15px !important;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+}
+
+.form-check-input:checked {
+    background-color: #d4a373 !important;
+    border-color: #d4a373 !important;
+}
+
+/* Custom Status Text Colors */
+.text-success { color: #5a7d5a !important; }
+.text-danger { color: #a35d5d !important; }
+.text-warning { color: #d4a373 !important; }

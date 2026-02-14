@@ -4,7 +4,7 @@
 
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <h2 class="mb-0">Offer</h2>
+        <h2 class="fw-bold mb-0 ps-4">🏷️ Offer</h2>
         <div class="search-container position-relative">
             <input type="text" class="form-control" id="searchInput" placeholder="Search offers..."
                 value="<%= search || '' %>">
@@ -12,16 +12,22 @@
         </div>
     </div>
 
-    <div class="d-flex" style="gap: 10px;">
+    <!-- <div class="d-flex" style="gap: 10px;">
         <a href="/admin/addOffer" class="btn btn-secondary add-cat" style="width: 200px;">Add Offer</a>
         <a href="/admin/trashOffer" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
-    </div>
+    </div> -->
+    <div class="d-flex mb-4 ps-4" style="gap: 12px;">
+  <a href="/admin/addOffer" class="btn add-cat-btn">
+    <span class="icon">➕</span>
+    Add Offer
+  </a>
+</div>
 
 
 
     <div class="table-wrapper">
         <div class="table-responsive container-fluid">
-            <table class="table table-bordered text-center mt-4">
+            <table class="table align-middle admin-table">
                 <thead class="table-secondary">
                     <tr>
                         <th>Offer Name</th>
@@ -86,7 +92,7 @@
 
         <div class="container mt-3 pagination-container">
             <nav aria-label="Page Navigation">
-                <ul class="pagination justify-content-center mb-20">
+                <ul class="pagination pagination-custom justify-content-center mb-20">
                     <% for(let i=1; i <=totalPages; i++) { %>
                         <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
                             <a class="page-link" href="?page=<%= i %>">

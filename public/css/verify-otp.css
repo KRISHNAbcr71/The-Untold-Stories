@@ -1,4 +1,4 @@
-.otp-container {
+/* .otp-container {
   max-width: 400px;
   margin: 80px auto;
   padding: 25px;
@@ -17,4 +17,385 @@
   color: black !important;
   margin-top: 10px;
   border: none;
+} */
+
+
+/* --- Global Theme Sync --- */
+body {
+    background-color: #f4f1ea;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- Container Styling --- */
+.otp-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 40px 30px;
+    background-color: #e9e4d9; /* Warm Sand */
+    border-radius: 20px;
+    box-shadow: 20px 20px 60px #dad5cb, -20px -20px 60px #ffffff; /* Neumorphic */
+    text-align: center;
+}
+
+h3 {
+    font-family: 'Cinzel', serif;
+    color: #1e2a2d;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    margin-bottom: 25px !important;
+}
+
+/* --- Input Styling --- */
+.form-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1e2a2d;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form-control {
+    background-color: #f4f1ea !important;
+    border: 1px solid rgba(30, 42, 45, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 4px;
+    text-align: center;
+    font-weight: 600;
+    color: #1e2a2d;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: #d4a373 !important;
+    box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.1) !important;
+    outline: none;
+}
+
+/* --- Timer Styling --- */
+.timer {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4a373; /* Gold color for the countdown */
+    margin: 20px 0;
+    background: #f4f1ea;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: inset 4px 4px 8px #dad5cb, inset -4px -4px 8px #ffffff;
+}
+
+
+.btn-primary-custom {
+    background-color: #1e2a2d !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 12px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    border-radius: 8px !important;
+    transition: 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-primary-custom:hover {
+    background-color: #d4a373 !important; 
+    transform: translateY(-2px);
+}
+
+.custom-btn {
+    background-color: transparent !important;
+    color: #1e2a2d !important;
+    border: 1px solid #1e2a2d !important;
+    padding: 10px !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    margin-top: 15px;
+    opacity: 0.6;
+}
+
+.custom-btn:not(:disabled):hover {
+    background-color: rgba(30, 42, 45, 0.05) !important;
+    opacity: 1;
+}
+
+.custom-btn:disabled {
+    border-color: #ccc !important;
+    color: #999 !important;
+    cursor: not-allowed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- Global Theme Sync --- */
+body {
+    background-color: #f4f1ea;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- Container Styling (Matches Change-Name Card) --- */
+.otp-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background-color: #e9e4d9; /* Warm Sand */
+    border: none;
+    border-radius: 12px;
+    box-shadow: 20px 20px 60px #dad5cb, -20px -20px 60px #ffffff;
+}
+
+h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: #1e2a2d; /* Deep Teal */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+    padding-bottom: 15px;
+    margin-bottom: 25px !important;
+}
+
+/* --- Form Elements --- */
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: #1e2a2d;
+    font-weight: 600;
+}
+
+.form-control {
+    background-color: #f4f1ea !important;
+    border: 1px solid rgba(30, 42, 45, 0.1) !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.form-control:focus {
+    background-color: #fff !important;
+    border-color: #d4a373 !important;
+    box-shadow: 0 0 0 0.2rem rgba(212, 163, 115, 0.15) !important;
+    outline: none;
+}
+
+/* --- Timer Styling --- */
+.timer {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 20px 0;
+    color: #d4a373; /* Gold */
+}
+
+/* --- Buttons (Matched to Change-Name Styles) --- */
+
+/* The "Verify Email" button */
+#form button[type="submit"] {
+    background-color: #1e2a2d !important;
+    color: #fff !important;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    transition: 0.3s ease;
+    width: 100%;
+}
+
+#form button[type="submit"]:hover {
+    background-color: #d4a373 !important; /* Gold hover */
+    transform: translateY(-2px);
+}
+
+/* The "Resend OTP" button */
+#resendBtn {
+    background-color: transparent !important;
+    color: #1e2a2d !important;
+    border: 1px solid #1e2a2d !important;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    border-radius: 4px;
+    transition: 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#resendBtn:hover:not(:disabled) {
+    background-color: rgba(30, 42, 45, 0.05) !important;
+}
+
+#resendBtn:disabled {
+    border-color: #ccc !important;
+    color: #999 !important;
+    opacity: 0.6;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- Global Theme Sync --- */
+body {
+    background-color: #f4f1ea; /* The base page color */
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- The Main Card Container --- */
+.otp-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    /* Matches change-name card color exactly */
+    background-color: #e9e4d9 !important; 
+    border: none;
+    border-radius: 12px;
+    box-shadow: 20px 20px 60px #dad5cb, -20px -20px 60px #ffffff;
+}
+
+h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: #1e2a2d;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+    padding-bottom: 15px;
+    margin-bottom: 25px !important;
+}
+
+/* --- Input Field (Matches Change Name Design) --- */
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: #1e2a2d;
+    font-weight: 600;
+}
+
+.form-control {
+    /* Starts with the page background color */
+    background-color: #f4f1ea !important; 
+    border: 1px solid rgba(30, 42, 45, 0.1) !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+/* Becomes white on click/focus exactly like change-name */
+.form-control:focus {
+    background-color: #ffffff !important;
+    border-color: #d4a373 !important;
+    box-shadow: 0 0 0 0.2rem rgba(212, 163, 115, 0.15) !important;
+    outline: none;
+}
+
+/* --- Minimalistic Timer --- */
+.timer {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e2a2d;
+    margin: 15px 0;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* If the timer is expired, make it subtle */
+.timer:contains("Expired") {
+    color: #d9534f;
+}
+
+/* --- Buttons --- */
+#form button[type="submit"] {
+    background-color: #1e2a2d !important;
+    color: #fff !important;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    transition: 0.3s ease;
+    width: 100%;
+}
+
+#form button[type="submit"]:hover {
+    background-color: #d4a373 !important;
+    transform: translateY(-2px);
+}
+
+#resendBtn {
+    background-color: transparent !important;
+    color: #1e2a2d !important;
+    border: 1px solid #1e2a2d !important;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    border-radius: 4px;
+    transition: 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#resendBtn:disabled {
+    border-color: #ccc !important;
+    color: #999 !important;
+    opacity: 0.5;
 }

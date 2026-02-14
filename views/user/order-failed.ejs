@@ -21,11 +21,11 @@
           </p>
 
           <div class="actions">
-            <% if (order && order.paymentStatus==='Failed' ) { %>
+            <!-- <% if (order && order.paymentStatus==='Failed' ) { %>
               <button class="btn retry-payment" data-order-id="<%= order._id %>">
                 Retry Payment
               </button>
-              <% } %>
+              <% } %> -->
 
                 <a href="/my-order" class="btn view-order">VIEW MY ORDERS</a>
                 <a href="/shop" class="btn continue-shopping">CONTINUE SHOPPING</a>
@@ -33,100 +33,11 @@
     </div>
   </div>
 
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 
- <!-- <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const retryBtn = document.querySelector(".retry-payment");
-    if (!retryBtn) return;
 
-    retryBtn.addEventListener("click", async function () {
-      const orderId = this.dataset.orderId;
-
-      const originalText = this.innerHTML;
-      this.disabled = true;
-      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-      try {
-        const res = await fetch(`/retry-payment/${orderId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "same-origin",
-        });
-
-        const data = await res.json();
-
-        if (!data.success) {
-          Swal.fire({
-            icon: "error",
-            title: "Retry Failed",
-            text: data.message || "Unable to retry payment",
-            confirmButtonColor: "#d33",
-          });
-
-          this.disabled = false;
-          this.innerHTML = originalText;
-          return;
-        }
-
-        const options = {
-          key: "<%= razorpayKeyId %>",
-          amount: data.razorpayOrder.amount,
-          currency: data.razorpayOrder.currency,
-          order_id: data.razorpayOrder.id,
-          name: "The Untold Stories",
-          description: "Retry Order Payment",
-
-          prefill: {
-            name: "<%= user.name %>",
-            email: "<%= user.email %>",
-            contact: "<%= user.phone || '' %>",
-          },
-
-          handler: async function () {
-            window.location.href = `/order-success`;
-          },
-
-          modal: {
-            ondismiss: function () {
-              window.location.href = `/order-failed/${orderId}`;
-            },
-          },
-
-          theme: {
-            color: "#3399cc",
-          },
-        };
-
-        this.disabled = false;
-        this.innerHTML = originalText;
-
-        const rzp = new Razorpay(options);
-
-        rzp.on("payment.failed", function () {
-          window.location.href = `/order-failed/${orderId}`;
-        });
-
-        rzp.open();
-      } catch (err) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Something went wrong. Please try again.",
-          confirmButtonColor: "#d33",
-        });
-
-        this.disabled = false;
-        this.innerHTML = originalText;
-      }
-    });
-  });
-</script> -->
-
-<script>
+<!-- <script>
   document.addEventListener("DOMContentLoaded", () => {
     const retryBtn = document.querySelector(".retry-payment");
     if (!retryBtn) return;
@@ -227,5 +138,5 @@
       }
     });
   });
-</script>
+</script> -->
 

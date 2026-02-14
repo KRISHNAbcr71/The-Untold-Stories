@@ -253,6 +253,19 @@ const placeOrder = async (req, res) => {
         endDate: { $gte: now },
       });
 
+      if (!coupon) {
+        return res.json({ success: false, message: "Invalid coupon" });
+      }
+
+      const alreadyUsed = coupon.usedUsers.includes(userId);
+
+      if (alreadyUsed) {
+        return res.json({
+          success: false,
+          message: "You have already used this coupon",
+        });
+      }
+
       if (coupon && subtotal >= coupon.minValue) {
         discountAmount = Number(
           ((subtotal * coupon.discountValue) / 100).toFixed(2),
@@ -285,6 +298,10 @@ const placeOrder = async (req, res) => {
     }
 
     const selectedAddress = addressDoc.address.id(addressId);
+
+    if(payment === 'cod' && finalAmount > 1000){
+      return res.status(400).json({success:false, message:'Cash on Delivery is not allowed for orders above ₹1000'})
+    }
 
     const order = new Order({
       user: userId,
@@ -325,6 +342,13 @@ const placeOrder = async (req, res) => {
       await order.save();
     }
 
+    if ((payment === "cod" || payment === "wallet") && couponApplied) {
+      await Coupon.findOneAndUpdate(
+        { code: couponApplied },
+        { $addToSet: { usedUsers: userId } },
+      );
+    }
+
     if (payment === "wallet") {
       user.wallet.balance -= finalAmount;
       user.wallet.transactions.push({
@@ -361,10 +385,9 @@ const placeOrder = async (req, res) => {
         razorpayOrderId: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
-        key: process.env.KEY_ID, 
+        key: process.env.KEY_ID,
       });
     }
-
 
     return res.json({
       success: true,
@@ -386,26 +409,20 @@ const placeOrder = async (req, res) => {
   }
 };
 
-
 const verifyPayment = async (req, res) => {
   try {
     const userId = req.session.user;
 
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      orderId,
-    } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
-    if (!userId || !orderId) {
-      return res.status(401).json({
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
         success: false,
-        message: "Unauthorized",
+        message: "Incomplete payment data",
       });
     }
 
-   
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
       .createHmac("sha256", process.env.KEY_SECRET)
@@ -413,7 +430,6 @@ const verifyPayment = async (req, res) => {
       .digest("hex");
 
     const order = await Order.findOne({
-      _id: orderId,
       user: userId,
       razorpayOrderId: razorpay_order_id,
     }).populate("orderItems.product");
@@ -425,10 +441,9 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-  
     if (expectedSignature !== razorpay_signature) {
       order.paymentStatus = "Failed";
-      order.status = "Pending"; 
+      order.status = "Pending";
       await order.save();
 
       return res.status(400).json({
@@ -437,7 +452,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-   
     if (order.paymentStatus === "Paid") {
       return res.json({
         success: true,
@@ -445,7 +459,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    
     for (const item of order.orderItems) {
       if (item.product.quantity < item.quantity) {
         order.paymentStatus = "Failed";
@@ -459,27 +472,28 @@ const verifyPayment = async (req, res) => {
       }
     }
 
-   
     for (const item of order.orderItems) {
       await Product.findByIdAndUpdate(item.product._id, {
         $inc: { quantity: -item.quantity },
       });
     }
 
-    
     order.paymentStatus = "Paid";
-    order.paymentMethod = "online"; 
-    order.status = "Pending"; 
+    order.paymentMethod = "online";
+    order.status = "Pending";
     order.razorpayPaymentId = razorpay_payment_id;
     order.invoiceDate = new Date();
 
     await order.save();
 
+    if (order.couponCode) {
+      await Coupon.findOneAndUpdate(
+        { code: order.couponCode },
+        { $addToSet: { usedUsers: order.user } },
+      );
+    }
 
-    await Cart.updateOne(
-      { userId: order.user },
-      { $set: { items: [] } }
-    );
+    await Cart.updateOne({ userId: order.user }, { $set: { items: [] } });
 
     return res.json({
       success: true,
@@ -494,7 +508,6 @@ const verifyPayment = async (req, res) => {
     });
   }
 };
-
 
 const orderSuccess = async (req, res) => {
   try {
@@ -514,7 +527,6 @@ const orderSuccess = async (req, res) => {
     res.status(500).send("Something went wrong!");
   }
 };
-
 
 const orderFailed = async (req, res) => {
   try {
@@ -549,38 +561,6 @@ const orderFailed = async (req, res) => {
 };
 
 
-
-// const paymentFailed = async (req, res) => {
-//   try {
-//     const { orderId } = req.body;
-
-//     if (!orderId) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Order ID required" });
-//     }
-
-//     const order = await Order.findById(orderId);
-
-//     if (!order) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Order not found" });
-//     }
-
-//     if (order.paymentStatus === "Pending") {
-//       order.paymentStatus = "Failed";
-//       order.status = "Pending";
-//       await order.save();
-//     }
-
-//     res.json({ success: true });
-//   } catch (error) {
-//     console.error("Payment failed update error:", error);
-//     res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
-
 const retryPayment = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -594,7 +574,7 @@ const retryPayment = async (req, res) => {
     }
 
     const order = await Order.findOne({
-      _id: orderId,
+      orderId: orderId,
       user: userId,
     }).populate("orderItems.product");
 
@@ -730,6 +710,7 @@ const getMyOrderPage = async (req, res) => {
       search,
       currentPage: page,
       totalPages: Math.ceil(totalOrders / limit),
+      razorpayKeyId: process.env.KEY_ID,
     });
   } catch (error) {
     console.error("[Error in loading my order page]", error);

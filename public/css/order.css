@@ -41,128 +41,10 @@ body {
   background-attachment: fixed;
 }
 
-
-.search-container {
-  position: relative;
-  max-width: 400px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  margin-right: 40px;
+#searchInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
 }
-
-.search-container input {
-  padding-right: 30px;
-  width: 400px;
-}
-
-.search-container input:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  border-color: black !important;
-}
-
-.search-clear {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #aaa;
-  font-size: 1.2rem;
-}
-
-/* .table td,
-.table th {
-  vertical-align: middle;
-  border: 1px solid black;
-}
-
-.table-wrapper {
-  position: relative;
-  min-height: 500px;
-} */
-
-
-
-
-
-
-
-
-
-
-/* ================= ADMIN TABLE STYLE ================= */
-
-.admin-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
-}
-
-/* Header */
-.admin-table thead {
-  background: linear-gradient(to right, var(--primary-light), #f8f6f2);
-}
-
-.admin-table thead th {
-  border: none;
-  padding: 1rem 1.25rem;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-   background-color: #f8f4e9;
-}
-
-/* Body rows */
-.admin-table tbody tr {
-  transition: all 0.25s ease;
-}
-
-.admin-table tbody tr:hover {
-  background-color: rgba(212, 163, 115, 0.08);
-  transform: scale(1.002);
-}
-
-/* Cells */
-.admin-table td {
-  padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 0.95rem;
-}
-
-/* First column emphasis */
-.admin-table td:first-child {
-  font-weight: 600;
-  color: var(--primary);
-}
-
-/* Action column */
-.admin-table td:last-child {
-  text-align: center;
-}
-.admin-table th,
-.admin-table td {
-  text-align: center;
-  vertical-align: middle;
-}
-/* Vertical lines */
-.admin-table th,
-.admin-table td {
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-/* Remove last column border */
-.admin-table th:last-child,
-.admin-table td:last-child {
-  border-right: none;
-}
-
-.table-wrapper {
-  min-height: 500px;
-}
-
 
 .pagination-custom .page-item .page-link {
   border: none;
@@ -210,3 +92,87 @@ body {
 }
 
 
+
+
+/* ================= ADMIN TABLE STYLE ================= */
+
+.admin-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+/* Header */
+.admin-table thead {
+  background: linear-gradient(to right, var(--primary-light), #f8f6f2);
+}
+
+.admin-table thead th {
+  border: none;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+   background-color: #f8f4e9;
+}
+
+/* Body rows */
+.admin-table tbody tr {
+  transition: all 0.25s ease;
+}
+
+.admin-table tbody tr:hover {
+  background-color: rgba(212, 163, 115, 0.08);
+}
+
+/* Cells */
+.admin-table td {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+/* First column emphasis */
+.admin-table td:first-child {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Action column */
+.admin-table td:last-child {
+  text-align: center;
+}
+.admin-table th,
+.admin-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+/* Vertical lines */
+.admin-table th,
+.admin-table td {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Remove last column border */
+.admin-table th:last-child,
+.admin-table td:last-child {
+  border-right: none;
+}
+
+.table-wrapper {
+  min-height: 500px;
+}
+
+.table-responsive {
+  min-height: 380px;
+}
+
+
+.orders-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;   /* important so body follows curve */
+}

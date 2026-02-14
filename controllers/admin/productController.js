@@ -330,64 +330,6 @@ const deleteProduct = async(req,res)=>{
 
 
 
-const trashProduct = async(req,res)=>{
-    try {
-        let search = req.query.search || ''
-        let page = parseInt(req.query.page) || 1
-        let limit = 3
-
-        const deletedProducts = await Product.find({
-            productName:{$regex: ".*" + search + ".*", $options: "i"},
-            isDeleted:true
-        })
-        .populate("category","name")
-        .limit(limit)
-        .skip((page-1)*limit)
-        .sort({deletedAt:-1})
-
-
-        const count = await Product.countDocuments({
-            productName:{$regex: ".*" + search + ".*", $options: "i"},
-            isDeleted:true
-        })
-
-        res.render('trashProduct',{
-            data: deletedProducts,
-            totalPages: Math.ceil(count/limit),
-            currentPage: page,
-            search,
-            noResults: deletedProducts.length === 0
-        })
-
-    } catch (error) {
-        console.error("Error loading trash:", error);
-        res.status(500).send("Internal Server Error");
-    }
-}
-
-
-
-
-
-const restoreProduct = async(req,res)=>{
-    try {
-        const {id} = req.params
-        const product = await Product.findByIdAndUpdate(id,{isDeleted:false},{new:true})
-        if (!product) {
-            return res.status(404).json({success:false, message:'Product not found'})
-        }
-        
-        return res.status(200).json({ success: true, message: 'Product restored successfully.' });
-
-    } catch (error) {
-        console.error("Error restoring category:", error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
-}
-
-
-
-
 
 module.exports = {
     productInfo,
@@ -400,6 +342,4 @@ module.exports = {
     deleteSingleImage,
     deleteProduct,
     deleteProduct,
-    trashProduct,
-    restoreProduct
 }

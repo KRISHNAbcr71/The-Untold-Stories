@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,401 +11,240 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="format-detection" content="telephone=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="author" content="">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
 
-  <!-- Slick CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-
-  <link rel="stylesheet" type="text/css"
-    href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easyzoom@2.5.0/css/easyzoom.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/easyzoom@2.5.0/dist/easyzoom.min.js"></script>
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-  <!-- SweetAlert2 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-  <!-- SweetAlert2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-
-
-
-  <link rel="stylesheet" type="text/css" href="css/normalize.css">
-  <link rel="stylesheet" type="text/css" href="icomoon/icomoon.css">
-  <link rel="stylesheet" type="text/css" href="css/vendor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 
   <style>
-    /* header */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #fff;
-      margin: 0;
-      padding: 0;
+    /* --- Base Header Layout --- */
+    #main-header {
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #5c492c;
+      border-bottom: 1px solid #28231f;
     }
 
-    .top-link {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      padding: 8px 14px;
-      border-radius: 6px;
-      transition: background-color 0.3s;
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
     }
 
-    .top-link:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+    /* --- Three-Column Logic --- */
+    .nav-left {
+      flex: 1; /* Takes equal space on the left */
+      display: flex;
+      gap: 30px;
     }
 
-    .top-bar .btn {
-      font-size: 0.85rem;
-      padding: 4px 12px;
-      font-weight: 500;
-      border-radius: 4px;
+    .logo-center {
+      flex: 0 0 auto; /* Keeps logo centered between the two flex-1 containers */
+      text-align: center;
     }
 
-    /* Top bar */
-    .top-bar {
-      background-color: #111;
-      padding: 10px 20px;
+    .right-nav {
+      flex: 1; /* Takes equal space on the right */
       display: flex;
       justify-content: flex-end;
       align-items: center;
       gap: 15px;
-      position: relative;
-      z-index: 10;
     }
 
-    .top-bar .top-link {
+    /* --- Typography & Elements --- */
+    .nav-link-aesthetic {
+      font-family: 'Montserrat', sans-serif;
+      color: #fff;
       text-decoration: none;
-      color: #ccc;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      opacity: 0.8;
+      transition: 0.3s;
+    }
+
+    .nav-link-aesthetic:hover {
+      opacity: 1;
+      color: #d4a373;
+    }
+
+    .editorial-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      line-height: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .editorial-logo:hover { transform: translateY(-2px); }
+
+    .editorial-logo .top-line {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: #d4a373;
+      margin-bottom: 2px;
       font-weight: 500;
-      margin-left: 15px;
     }
 
-    .top-bar .top-link:hover {
-      color: #d4a373;
+    .editorial-logo .bottom-line {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      color: #ffffff;
     }
 
-    /* Sign in link */
-    .sign-in-link {
-      color: #d4a373;
-      font-weight: 600;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: background-color 0.3s ease;
-      position: relative;
+    /* --- User Dropdown --- */
+    .user-dropdown { position: relative; }
+
+    .user-dropdown::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 20px; /* Invisible bridge */
     }
 
-    .sign-in-link:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Dropdown wrapper */
-    .dropdown {
-      position: relative;
-    }
-
-    .dropdown-content {
+    .dropdown-menu-custom {
       position: absolute;
       right: 0;
       top: 100%;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      min-width: 140px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 9999;
-      display: none;
-    }
-
-    .dropdown-content a {
-      display: block;
-      padding: 10px 14px;
-      color: #333;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background-color 0.2s ease;
-      border-radius: 6px;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #d4a373;
-      color: white;
-    }
-
-    /* Show dropdown on hover */
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .btn.btn-sm {
-      font-weight: 600;
-      padding: 8px 14px;
-      border-radius: 6px;
-    }
-
-
-
-
-
-
-
-
-    /* Main header */
-    #main-header {
-      background-color: #222;
-      color: #fff;
-      padding: 15px 0;
-
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .site-title {
-      font-size: 1.7rem;
-      font-weight: bold;
-      color: #fff;
-      margin: 0;
-    }
-
-    .nav-link {
-      color: #fff;
-      font-weight: 500;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-
-    .nav-link:hover {
-      color: #d4a373;
-    }
-
-    .search-input {
-      border: none;
-      border-radius: 4px;
-      padding: 6px 8px;
-      width: 180px;
-      margin-bottom: 0 !important;
-    }
-
-    .main-nav-container {
+      margin-top: 15px;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      min-width: 160px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      flex-direction: column;
+      padding: 8px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .nav-center {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+    .user-dropdown:hover .dropdown-menu-custom {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
 
+    .dropdown-item-custom {
+      color: #bbb;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      border-left: 0 solid #d4a373;
+      display: block;
+    }
+
+    .dropdown-item-custom:hover {
+      background-color: #252525;
+      color: #fff !important;
+      padding-left: 25px;
+      border-left: 4px solid #d4a373;
+    }
+
+    /* --- Responsive Hide --- */
     @media (max-width: 768px) {
-      .nav-center {
-        position: static;
-        transform: none;
-        margin-top: 10px;
-      }
-
-      .main-nav-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .right-nav {
-        margin-top: 10px;
-      }
-    }
-
-
-    /* cart */
-    .cart-container {
-      position: relative;
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .cart-icon {
-      position: relative;
-      font-size: 24px;
-      color: white;
-      text-decoration: none;
-    }
-
-    .cart-count {
-      position: absolute;
-      top: -8px;
-      right: -12px;
-      background-color: #d4a373;
-      color: white;
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      font-weight: bold;
-    }
-
-    /* wishlist */
-    .wishlist-container {
-      position: relative;
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .wishlist-icon-header {
-      font-size: 24px;
-      color: white;
-      text-decoration: none;
-      position: relative;
-    }
-
-    .wishlist-count {
-      position: absolute;
-      top: -8px;
-      right: -12px;
-      background-color: #d4a373;
-      color: white;
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      font-weight: bold;
-    }
-
-
-
-
-    /* Website name  */
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
-
-    .logo-text {
-      font-family: 'Cinzel', serif;
-      font-size: 1.8rem;
-      color: #f2c98d;
-      text-decoration: none;
-      letter-spacing: 1.5px;
-      text-shadow: 0 0 10px rgba(242, 201, 141, 0.4);
-      transition: 0.4s ease;
-    }
-
-    .logo-text:hover {
-      color: #fae3c0;
-      text-shadow: 0 0 20px rgba(250, 227, 192, 0.7);
-      transform: scale(1.03);
+      .nav-left { display: none; }
     }
   </style>
-
 </head>
 
 <body>
+  <header id="main-header">
+    <div class="container header-content">
 
-  <!-- 🧭 Main Header -->
-  <div id="main-header">
-    <div class="container position-relative main-nav-container">
-      <!-- Left: Site Title -->
+      <nav class="nav-left d-none d-md-flex">
+        <a href="/" class="nav-link-aesthetic">Home</a>
+        <a href="/shop" class="nav-link-aesthetic">Shop</a>
+      </nav>
 
-      <div class="site-title">
-        <a href="#" onclick="scrollToTop()" class="logo-text">The Untold Stories</a>
+      <div class="logo-center">
+        <a href="#" class="editorial-logo" onclick="scrollToTop()">
+          <span class="top-line">The Untold</span>
+          <span class="bottom-line">Stories</span>
+        </a>
       </div>
 
-      <!-- Center: Home & Shop -->
-      <div class="nav-center d-none d-md-flex">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/shop" class="nav-link">Shop</a>
-      </div>
+      <div class="right-nav">
+        <a href="/cart" class="icon-link position-relative text-white me-2">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="badge-count cart-count">0</span>
+        </a>
 
-      <!-- Right: Account, Cart, Wishlist, Search -->
-      <div class="right-nav d-flex align-items-center flex-wrap">
-        <!-- <a href="/account" class="nav-link">Account</a> -->
-        <div class="cart-container">
-          <a href="/cart" class="cart-icon">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
-          </a>
-        </div>
+        <a href="/wishlist" class="icon-link position-relative text-white me-3">
+          <i class="fas fa-heart"></i>
+          <span class="badge-count wishlist-count">0</span>
+        </a>
 
-        <div class="wishlist-container">
-          <a href="/wishlist" class="wishlist-icon-header">
-            <i class="fas fa-heart"></i>
-            <span class="wishlist-count">0</span>
-          </a>
-        </div>
-
-        <!-- <form class="d-flex align-items-center ms-2">
-          <input class="search-input" type="search" placeholder="Search" />
-        </form> -->
-
-        <!-- 🔐 Auth Options -->
         <% if (typeof user !=='undefined' && user) { %>
-          <div class="dropdown ms-3">
-            <a href="#" class="sign-in-link">
-              <%= user ? user.name : 'NO USER' %><i class="fas fa-caret-down ms-1"></i>
+          <div class="user-dropdown">
+            <a href="#" class="nav-link-aesthetic" style="color: #d4a373;">
+              <%= user.name %> <i class="fas fa-caret-down ms-1"></i>
             </a>
-            <div class="dropdown-content">
-              <a href="/userProfile">Profile</a>
-              <a href="/logout">Logout</a>
+            <div class="dropdown-menu-custom">
+              <a href="/userProfile" class="dropdown-item-custom">Profile</a>
+              <a href="/logout" class="dropdown-item-custom">Logout</a>
             </div>
           </div>
-          <% } else { %>
-            <a href="/login" class="top-link me-2 ms-3">Login</a>
-            <a href="/signup" class="btn btn-sm" style="background-color: #d4a373; color: white;">Create Account</a>
-            <% } %>
+        <% } else { %>
+          <a href="/login" class="nav-link-aesthetic me-2">Login</a>
+          <a href="/signup" class="btn btn-sm" style="background-color: #d4a373; color: white; font-size: 0.7rem; letter-spacing: 1px;">SIGN UP</a>
+        <% } %>
       </div>
+
     </div>
-  </div>
+  </header>
 
-
-
-
-
-
+  <script src="https://cdn.jsdelivr.net/npm/easyzoom@2.5.0/dist/easyzoom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
   <script>
-
     function scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
 
     async function updateCounts() {
       try {
-        const cartRes = await fetch('/cart-count')
-        const cartData = await cartRes.json()
-        document.querySelector('.cart-count').textContent = cartData.count
+        const [cartRes, wishRes] = await Promise.all([
+          fetch('/cart-count'),
+          fetch('/wishlist-count')
+        ]);
+        
+        const cartData = await cartRes.json();
+        const wishData = await wishRes.json();
 
-        const wishRes = await fetch('/wishlist-count')
-        const wishData = await wishRes.json()
-        document.querySelector('.wishlist-count').textContent = wishData.count
+        const cartEl = document.querySelector('.cart-count');
+        const wishEl = document.querySelector('.wishlist-count');
 
+        if (cartEl) cartEl.textContent = cartData.count;
+        if (wishEl) wishEl.textContent = wishData.count;
       } catch (error) {
         console.error('Error fetching counts:', error);
       }
     }
 
-    updateCounts()
-
-    setInterval(updateCounts, 10000)
-
+    updateCounts();
+    setInterval(updateCounts, 10000);
   </script>
+</body>
+</html>

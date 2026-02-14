@@ -20,7 +20,6 @@ const storage = multer.diskStorage({
 
 
 
-
 // Profile Image Storage
 // ---------------------
 const profileStorage = multer.diskStorage({
@@ -63,7 +62,6 @@ const upload = multer({
   { name: "image2", maxCount: 1 },
   { name: "image3", maxCount: 1 },
 ]);
-
 
 
 

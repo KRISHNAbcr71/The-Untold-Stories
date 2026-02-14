@@ -1,361 +1,1083 @@
 <%-include("../../views/partials/user/header")%>
-  <link rel="stylesheet" href="/css/home.css">
 
+<style>
+  :root {
+    --primary: #d4a373;
+    --primary-light: #e8c9a4;
+    --primary-lighter: #f4e7d7;
+    --primary-dark: #b08a5e;
+    --ink-dark: #2c3e50;
+    --ink-light: #7f8c8d;
+    --bg-light: #f5f0e8; /* Darker background color */
+    --white: #ffffff;
+    --card-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+    --card-shadow-hover: 0 20px 50px rgba(212, 163, 115, 0.2);
+  }
 
+  body {
+    min-height: 100vh;
+    /* background-color: var(--bg-light); */
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    position: relative;
 
+    background-color: #f5f0e8;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4a373' stroke-width='1' opacity='0.15'%3E%3Cpath d='M60 20c8 12 20 14 30 6-6 14-2 26 10 30-14 4-18 16-10 30-10-8-22-6-30 6-8-12-20-14-30-6 6-14 2-26-10-30 14-4 18-16 10-30 10 8 22 6 30-6z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
 
+  }
 
-  
-  <!-- New Arrivals -->
-  <section id="featured-books" class="py-5 my-5">
-    <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="section-heading">New Arrivals</h2>
-      </div>
-      <div class="row g-4">
-        <!-- Book Card -->
-        <%if(products.length>0){%>
-          <% products.forEach(product=> { %>
-            <div class="col-md-3 col-sm-6">
-              <div class="book-card">
-                <!-- Book image -->
-                <div class="image-wrapper">
-                  <a href="/productDetails?id=<%=product._id%>">
-                    <img src="/<%=product.productImage[0]%>" alt="<%=product.productName%>" class="book-image">
-                  </a>
-                  <button class="wishlist-icon" onclick="toggleWishlist(this, '<%= product._id %>')"
-                    data-active="<%= wishlistIds.includes(product._id.toString()) %>">
-                    <i
-                      class="<%= wishlistIds.includes(product._id.toString()) ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart' %>"></i>
+  /* Removed background patterns for cleaner look with darker background */
+
+  /* New Arrivals Section */
+  #featured-books {
+    padding: 100px 0 80px; /* Increased padding */
+    background-color: transparent;
+  }
+
+  .section-heading {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.4rem; /* Increased size */
+    font-weight: 300;
+    color: var(--ink-dark);
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--ink-light);
+    font-size: 1rem;
+    font-weight: 300;
+    margin-bottom: 60px; /* Increased margin */
+    letter-spacing: 1.5px;
+  }
+
+  /* ENHANCED BOOK CARD DESIGN - LARGER DIMENSIONS */
+  .book-card {
+    background: var(--white);
+    /* border-radius: 20px;  */
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(212, 163, 115, 0.15);
+    height: 100%;
+    position: relative;
+    margin-bottom: 10px; /* Increased margin */
+    box-shadow: var(--card-shadow);
+    border-top-left-radius: 150px;
+  border-top-right-radius: 150px;
+  }
+
+  .book-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .book-card:hover::before {
+    opacity: 1;
+  }
+
+  /* CURVED IMAGE SECTION HEADER */
+  .image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 220px; /* Increased height */
+    background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--primary-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-bottom: 1px solid rgba(212, 163, 115, 0.1);
+    /* Curved bottom edge */
+    border-radius: 20px 20px 0 0;
+    /* Curve effect */
+    position: relative;
+  }
+
+  .image-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: var(--white);
+    border-radius: 50% 50% 0 0;
+    z-index: 1;
+  }
+
+  /* Make the image cover the entire image area */
+  .image-wrapper a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
+
+  .book-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: brightness(0.98);
+  }
+
+  .book-card:hover .book-image {
+    transform: scale(1.1);
+    filter: brightness(1.05);
+  }
+
+  /* Overlay gradient for better text visibility on image */
+  .image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.15), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* WISHLIST ICON */
+  .wishlist-icon {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(212, 163, 115, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 3;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    backdrop-filter: blur(5px);
+  }
+
+  .wishlist-icon:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(212, 163, 115, 0.4);
+  }
+
+  .wishlist-icon i {
+    font-size: 1.1rem;
+    color: var(--ink-light);
+    transition: all 0.3s ease;
+  }
+
+  .wishlist-icon:hover i {
+    color: var(--white);
+  }
+
+  .wishlist-icon[data-active="true"] {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .wishlist-icon[data-active="true"] i {
+    color: var(--white);
+  }
+
+  /* BOOK INFO WITH BETTER SPACING AND LARGER DIMENSIONS */
+  .book-info {
+    padding: 20px; /* Increased padding */
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    background: var(--white);
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .book-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.15rem; /* Slightly larger */
+    font-weight: 600;
+    color: var(--ink-dark);
+    margin-bottom: 6px;
+    line-height: 1.4;
+   
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 0;
+  }
+
+  .book-category {
+    color: #9aa0a6;
+  }
+
+  .book-author {
+    color: var(--primary);
+    font-size: 0.95rem; /* Slightly larger */
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 0.5px;
+    flex-grow: 0;
+  }
+
+  .book-price {
+    font-size: 1.5rem; /* Larger price */
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 0;
+  }
+
+  .book-price::before {
+    content: '₹';
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+
+  /* COLORED BUTTON WITH BETTER STYLING - LARGER */
+  .btn-buy {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--white);
+    border: none;
+    padding: 12px 18px; /* Larger padding */
+    border-radius: 12px; /* More rounded */
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+    font-size: 1rem; /* Larger font */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-buy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+  }
+
+  .btn-buy:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 163, 115, 0.4);
+  }
+
+  .btn-buy:hover::before {
+    left: 100%;
+  }
+
+  .btn-buy:disabled {
+    background: #e0e0e0;
+    color: #9e9e9e;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-buy:disabled:hover {
+    background: #e0e0e0;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* VIEW ALL BUTTON - LARGER */
+  .view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 40px; /* Larger padding */
+    background: transparent;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1rem; /* Larger font */
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .view-all-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 163, 115, 0.1), transparent);
+    transition: 0.5s;
+  }
+
+  .view-all-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 163, 115, 0.25);
+  }
+
+  .view-all-btn:hover::before {
+    left: 100%;
+  }
+
+  /* Best Selling Section */
+  #best-selling {
+    padding: 100px 0; 
+    /* background: linear-gradient(135deg, #f0ece0 0%, #f5f0e8 100%);  */
+    position: relative;
+    margin-top: 60px; 
+
+    background-color: #f5f0e8;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4a373' stroke-width='1' opacity='0.15'%3E%3Cpath d='M60 20c8 12 20 14 30 6-6 14-2 26 10 30-14 4-18 16-10 30-10-8-22-6-30 6-8-12-20-14-30-6 6-14 2-26-10-30 14-4 18-16 10-30 10 8 22 6 30-6z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  }
+
+  #best-selling::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  }
+
+  .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.4rem; /* Increased size */
+    font-weight: 300;
+    color: var(--ink-dark);
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  }
+
+  /* Carousel Styling - Larger */
+  .carousel-inner {
+    border-radius: 20px; /* More rounded */
+    overflow: hidden;
+    border: 1px solid rgba(212, 163, 115, 0.15);
+    background: var(--white);
+    max-width: 1100px; /* Wider */
+    margin: 0 auto;
+    box-shadow: var(--card-shadow);
+  }
+
+  .carousel-item {
+    padding: 50px; /* More padding */
+    min-height: 420px; /* Taller */
+  }
+
+  .carousel-indicators {
+    margin-bottom: 25px;
+  }
+
+  .carousel-indicators button {
+    width: 12px !important; /* Larger */
+    height: 12px !important;
+    border-radius: 50%;
+    margin: 0 8px;
+    background-color: rgba(212, 163, 115, 0.3);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-indicators button.active {
+    background-color: var(--primary);
+    transform: scale(1.4);
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 60px; /* Larger */
+    height: 60px;
+    background: var(--white);
+    border: 1px solid rgba(212, 163, 115, 0.3);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 25px;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  }
+
+  .carousel-control-prev:hover,
+  .carousel-control-next:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.15);
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    filter: invert(67%) sepia(23%) saturate(589%) hue-rotate(350deg) brightness(90%) contrast(85%);
+  }
+
+  .carousel-control-prev:hover .carousel-control-prev-icon,
+  .carousel-control-next:hover .carousel-control-next-icon {
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+  }
+
+  /* Product Entry - Larger */
+  .product-entry {
+    padding: 25px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .author-name {
+    color: var(--primary);
+    font-size: 0.95rem; /* Larger */
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+  }
+
+  .item-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem; /* Larger */
+    font-weight: 600;
+    color: var(--ink-dark);
+    line-height: 1.3;
+    margin-bottom: 5px;
+  }
+
+  .product-entry p {
+    color: var(--ink-light);
+    line-height: 1.6;
+    font-size: 1.05rem; /* Larger */
+    font-weight: 300;
+    margin-bottom: 10px;
+  }
+
+  .item-category {
+    color: #9aa0a6;
+  }
+
+  .item-price {
+    color: var(--primary-dark);
+    font-size: 1.8rem; /* Larger */
+    font-weight: 700;
+    margin-bottom: 35px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .item-price::before {
+    content: '₹';
+    font-size: 1.3rem;
+    opacity: 0.8;
+  }
+
+  /* Shop Button - Larger */
+  .shop-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--white);
+    border: none;
+    padding: 16px 40px; /* Larger */
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shop-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+  }
+
+  .shop-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 163, 115, 0.4);
+  }
+
+  .shop-btn:hover::before {
+    left: 100%;
+  }
+
+  /* Empty State - Larger */
+  .empty-state {
+    padding: 80px 30px; /* Larger */
+    text-align: center;
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid rgba(212, 163, 115, 0.1);
+    box-shadow: var(--card-shadow);
+  }
+
+  .empty-state i {
+    font-size: 3.5rem; /* Larger */
+    color: var(--primary-light);
+    margin-bottom: 25px;
+    opacity: 0.7;
+  }
+
+  .empty-state h4 {
+    font-weight: 400;
+    color: var(--ink-dark);
+    margin-bottom: 15px;
+    font-size: 1.4rem; /* Larger */
+  }
+
+  .empty-state p {
+    font-weight: 300;
+    color: var(--ink-light);
+    font-size: 1.05rem; /* Larger */
+  }
+
+  /* Fade In Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(25px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .book-card {
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  /* Staggered animation for cards */
+  .book-card:nth-child(1) { animation-delay: 0.1s; }
+  .book-card:nth-child(2) { animation-delay: 0.2s; }
+  .book-card:nth-child(3) { animation-delay: 0.3s; }
+  .book-card:nth-child(4) { animation-delay: 0.4s; }
+
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .book-card {
+      margin-bottom: 25px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .image-wrapper {
+      height: 280px;
+    }
+    
+    .book-info {
+      height: calc(100% - 280px);
+      padding: 25px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #featured-books,
+    #best-selling {
+      padding: 80px 0 60px;
+    }
+
+    .section-heading,
+    .section-title {
+      font-size: 2rem;
+      letter-spacing: 2px;
+    }
+
+    .section-subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 50px;
+    }
+
+    .carousel-item {
+      padding: 40px;
+      min-height: 380px;
+    }
+
+    .item-title {
+      font-size: 1.6rem;
+    }
+
+    .image-wrapper {
+      height: 250px;
+    }
+    
+    .book-info {
+      height: calc(100% - 250px);
+      padding: 22px;
+    }
+
+    .book-title {
+      font-size: 1.1rem;
+    }
+
+    .book-author {
+      font-size: 0.9rem;
+    }
+
+    .book-price {
+      font-size: 1.4rem;
+    }
+
+    .btn-buy,
+    .shop-btn,
+    .view-all-btn {
+      padding: 14px 20px;
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .image-wrapper {
+      height: 220px;
+    }
+    
+    .book-info {
+      height: calc(100% - 220px);
+      padding: 20px;
+    }
+
+    .book-title {
+      font-size: 1rem;
+      min-height: 2.8em;
+    }
+
+    .book-author {
+      font-size: 0.85rem;
+    }
+
+    .book-price {
+      font-size: 1.3rem;
+    }
+
+    .btn-buy,
+    .shop-btn,
+    .view-all-btn {
+      padding: 12px 18px;
+      font-size: 0.9rem;
+    }
+    
+    .wishlist-icon {
+      width: 38px;
+      height: 38px;
+      top: 15px;
+      right: 15px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .image-wrapper {
+      height: 200px;
+    }
+    
+    .book-info {
+      height: calc(100% - 200px);
+      padding: 18px;
+    }
+  }
+</style>
+
+<!-- New Arrivals -->
+<section id="featured-books">
+  <div class="container">
+    <div class="mb-5">
+      <h2 class="section-heading">New Arrivals</h2>
+      <p class="section-subtitle">Discover our latest collection of captivating stories</p>
+    </div>
+    <div class="row g-4">
+      <% if(products.length>0){ %>
+        <% products.forEach(product=> { %>
+          <div class="col-md-3 col-sm-6">
+            <div class="book-card">
+              <div class="image-wrapper">
+                <a href="/productDetails?id=<%=product._id%>">
+                  <img src="/<%=product.productImage[0]%>" alt="<%=product.productName%>" class="book-image">
+                </a>
+                <button class="wishlist-icon" onclick="toggleWishlist(this, '<%= product._id %>')"
+                  data-active="<%= wishlistIds.includes(product._id.toString()) %>">
+                  <i class="<%= wishlistIds.includes(product._id.toString()) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' %>"></i>
+                </button>
+              </div>
+              <div class="book-info">
+                <h5 class="book-title"><%=product.productName%></h5>
+                <p class="book-category"><%= product.category.name %></p>
+                <p class="book-author"><%=product.author%></p>
+                
+                <p class="book-price"><%=product.price%></p>
+                <% if(product.quantity<=0){ %>
+                  <button type="button" class="btn btn-buy" disabled>
+                    Out of Stock
                   </button>
-                </div>
-                <!-- Book info -->
-                <div class="book-info">
-                  <h5 class="book-title">
-                    <%=product.productName%>
-                  </h5>
-                  <p class="book-author">
-                    <%=product.author%>
-                  </p>
-                  <p class="book-price">
-                    <%=product.price%>
-                  </p>
-                  <% if(product.quantity<=0){%>
-                    <button type="button" class="btn btn-buy btn-secondary" disabled
-                      style="opacity:0.6; cursor:not-allowed;">
-                      Out of Stock
-                    </button>
-                    <% } else{ %>
-                      <button type="button" class="btn btn-buy" onclick="addToCart('<%= product._id %>')">
-                        Add to Cart
-                      </button>
-                      <%}%>
-                </div>
+                <% } else { %>
+                  <button type="button" class="btn btn-buy" onclick="addToCart('<%= product._id %>')">
+                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                  </button>
+                <% } %>
               </div>
             </div>
-            <%})%>
-              <%}else{%>
-                <p class="text-center">No new arrivals right now. Check back later!</p>
-                <%}%>
-      </div>
-      <div class="row">
-        <div class="col-md-12 ">
-          <a href="/shop" class="btn view-all-btn"
-            style="border: 2px solid #d4a373; color: #d4a373; background-color: transparent; text-decoration: none; padding: 6px 16px; border-radius: 4px;">View
-            All Products
-            <i class="icon icon-ns-arrow-right"></i>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="empty-state">
+            <i class="fas fa-book-open"></i>
+            <h4>No New Arrivals</h4>
+            <p>Check back soon for exciting new additions to our collection</p>
+          </div>
+        </div>
+      <% } %>
+    </div>
+    <% if(products.length>0){ %>
+      <div class="row mt-5">
+        <div class="col-md-12 text-center">
+          <a href="/shop" class="view-all-btn">
+            <i class="fas fa-arrow-right me-2"></i>View All Products
           </a>
         </div>
       </div>
-    </div>
-  </section>
+    <% } %>
+  </div>
+</section>
 
-
-  <!-- Best selling book -->
-  <% if (bestSellingProducts && bestSellingProducts.length> 0) { %>
-    <section id="best-selling" class="leaf-pattern-overlay my-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-12 text-center">
-            <h2 class="section-title divider mb-4">
-              Best Selling Books
-            </h2>
-          </div>
+<!-- Best Selling Books -->
+<% if (bestSellingProducts && bestSellingProducts.length> 0) { %>
+  <section id="best-selling">
+    <div class="container">
+      <div class="mb-5">
+        <h2 class="section-title">Best Selling</h2>
+        <p class="section-subtitle">Our readers' favorite picks</p>
+      </div>
+      <div id="bestSellingCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <% bestSellingProducts.forEach((item, index)=> { %>
+            <button type="button" data-bs-target="#bestSellingCarousel" data-bs-slide-to="<%= index %>"
+              class="<%= index === 0 ? 'active' : '' %>">
+            </button>
+          <% }) %>
         </div>
-        <div id="bestSellingCarousel" class="carousel slide" data-bs-ride="carousel">
-          <!-- Indicators -->
-          <div class="carousel-indicators">
-            <% bestSellingProducts.forEach((item, index)=> { %>
-              <button type="button" data-bs-target="#bestSellingCarousel" data-bs-slide-to="<%= index %>"
-                class="<%= index === 0 ? 'active' : '' %>">
-              </button>
-              <% }) %>
-          </div>
-          <!-- Slides -->
-          <div class="carousel-inner">
-            <% bestSellingProducts.forEach((item, index)=> { %>
-              <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-                <div class="row align-items-center">
-                  <!-- Image -->
-                  <div class="col-md-6 text-center">
-                    <img src="/<%= item.product.productImage[0] %>" class="img-fluid rounded"
-                      alt="<%= item.product.productName %>" style="max-height: 420px; object-fit: contain;">
-                  </div>
-                  <!-- Content -->
-                  <div class="col-md-6">
-                    <div class="product-entry">
-                      <div class="author-name mb-2">
-                        By <%= item.product.author %>
-                      </div>
-                      <h3 class="item-title mb-3">
-                        <%= item.product.productName %>
-                      </h3>
-                      <p class="mb-3">
-                        <%= item.product.description.substring(0, 150) %>...
-                      </p>
-                      <div class="item-price fs-4 fw-bold mb-4">
-                        ₹ <%= item.product.price %>
-                      </div>
-                      <a href="/productDetails?id=<%=item.product._id%>" class="btn btn-lg shop-btn">
-                        Shop it now →
-                      </a>
-                    </div>
+        <div class="carousel-inner">
+          <% bestSellingProducts.forEach((item, index)=> { %>
+            <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+              <div class="row align-items-center">
+                <div class="col-md-6 text-center">
+                  <img src="/<%= item.product.productImage[0] %>" class="img-fluid rounded shadow-sm"
+                    alt="<%= item.product.productName %>" style="max-height: 350px; object-fit: contain; border-radius: 10px;">
+                </div>
+                <div class="col-md-6">
+                  <div class="product-entry">
+                    <h3 class="item-title"><%= item.product.productName %></h3>
+                    <!-- <p class="disabled item-category"><%= item.category.name %></p> -->
+                    <h6 class="item-category"><%= item.category.name %></h6>
+                    <div class="author-name">By <%= item.product.author %></div>
+                    <p><%= item.product.description.substring(0, 150) %>...</p>
+                    <div class="item-price"><%= item.product.price %></div>
+                    <a href="/productDetails?id=<%=item.product._id%>" class="shop-btn">
+                      <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                    </a>
                   </div>
                 </div>
               </div>
-              <% }) %>
-          </div>
-          <!-- Controls -->
-          <button class="carousel-control-prev carousel-dark" type="button" data-bs-target="#bestSellingCarousel"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-          </button>
-          <button class="carousel-control-next carousel-dark" type="button" data-bs-target="#bestSellingCarousel"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-          </button>
+            </div>
+          <% }) %>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bestSellingCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bestSellingCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
       </div>
-    </section>
-    <% } %>
+    </div>
+  </section>
+<% } %>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // All your existing JavaScript functions remain exactly the same
+  // Initialize tooltips
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
 
+  // Wishlist toggle function
+  function toggleWishlist(button, productId) {
+    const isActive = button.dataset.active === "true";
+    if (!isActive) {
+      addToWishlist(productId, button);
+    } else {
+      removeFromWishlist(productId, button);
+    }
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-      <script>
-
-        function toggleWishlist(button, productId) {
-          const isActive = button.dataset.active === "true";
-          if (!isActive) {
-            addToWishlist(productId, button);
-          } else {
-            removeFromWishlist(productId, button);
-          }
+  /* ---------------- Add to Wishlist ---------------- */
+  async function addToWishlist(productId, button) {
+    try {
+      const response = await fetch(`/add-to-wishlist/${productId}`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
         }
-
-        /* ---------------- Add to Wishlist ---------------- */
-        async function addToWishlist(productId, button) {
-          try {
-            const response = await fetch(`/add-to-wishlist/${productId}`, {
-              method: 'POST',
-              headers: {
-                "Content-Type": "application/json"
-              }
-            });
-            const result = await response.json();
-            if (!response.ok) {
-              if (response.status === 401) {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'Login Required',
-                  showCancelButton: true,
-                  text: result.message,
-                  confirmButtonText: 'Go to Login',
-                  cancelButtonText: 'Cancel',
-                  confirmButtonColor: '#7f7f7f',
-                  cancelButtonColor: '#7f7f7f',
-                  buttonStyling: false,
-                  customClass: {
-                    confirmButton: 'swal-btn',
-                    cancelButton: 'swal-btn'
-                  }
-                }).then((alertResult) => {
-                  if (alertResult.isConfirmed) {
-                    window.location.href = '/login'
-                  }
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: result.message || 'Something went wrong'
-                });
-              }
-              return;
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Login Required',
+            showCancelButton: true,
+            text: result.message,
+            confirmButtonText: 'Go to Login',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#d4a373',
+            cancelButtonColor: '#7f8c8d',
+          }).then((alertResult) => {
+            if (alertResult.isConfirmed) {
+              window.location.href = '/login'
             }
-
-            // Toggle heart ONLY after success
-            const icon = button.querySelector("i");
-            icon.classList.replace("fa-regular", "fa-solid");
-            icon.classList.add("text-danger");
-            button.dataset.active = "true";
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Added to Wishlist',
-              text: result.message,
-              showConfirmButton: false,
-              timer: 500
-            });
-          } catch (error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops!',
-              text: 'Something went wrong while adding to wishlist'
-            });
-          }
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Something went wrong'
+          });
         }
+        return;
+      }
 
+      // Toggle heart ONLY after success
+      const icon = button.querySelector("i");
+      icon.classList.replace("fa-regular", "fa-solid");
+      button.dataset.active = "true";
+      button.style.background = '#d4a373';
+      button.style.borderColor = '#d4a373';
 
-        /* ---------------- Remove from Wishlist ---------------- */
-        async function removeFromWishlist(productId, button) {
-          try {
-            const response = await fetch(`/deleteFromWishlist/${productId}`, {
-              method: 'DELETE',
-              headers: {
-                "Content-Type": "application/json"
-              }
-            });
-            const result = await response.json();
-            if (!response.ok) {
-              if (response.status === 401) {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'Login Required',
-                  text: result.message,
-                  confirmButtonText: 'Go to Login',
-                  confirmButtonColor: '#7f7f7f'
-                }).then(() => {
-                  window.location.href = '/login'
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: result.message || 'Something went wrong'
-                });
-              }
-              return;
+      // Add animation
+      button.style.transform = 'scale(1.2)';
+      setTimeout(() => {
+        button.style.transform = 'scale(1)';
+      }, 300);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Added to Wishlist',
+        text: result.message,
+        showConfirmButton: false,
+        timer: 1000,
+        background: '#f9f7f4'
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: 'Something went wrong while adding to wishlist'
+      });
+    }
+  }
+
+  /* ---------------- Remove from Wishlist ---------------- */
+  async function removeFromWishlist(productId, button) {
+    try {
+      const response = await fetch(`/deleteFromWishlist/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Login Required',
+            text: result.message,
+            confirmButtonText: 'Go to Login',
+            confirmButtonColor: '#d4a373'
+          }).then(() => {
+            window.location.href = '/login'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Something went wrong'
+          });
+        }
+        return;
+      }
+
+      // toggle heart
+      const icon = button.querySelector("i");
+      icon.classList.replace("fa-solid", "fa-regular");
+      button.dataset.active = "false";
+      button.style.background = '';
+      button.style.borderColor = 'rgba(212, 163, 115, 0.3)';
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Removed',
+        text: result.message,
+        showConfirmButton: false,
+        timer: 1000,
+        background: '#f9f7f4'
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: 'Something went wrong while removing from wishlist'
+      });
+    }
+  }
+
+  /* ---------------- Add to Cart ---------------- */
+  async function addToCart(productId) {
+    const button = event.target;
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+    
+    try {
+      const response = await fetch(`/add-to-cart/${productId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Login Required',
+            text: result.message,
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Go to Login',
+            cancelButtonColor: '#7f8c8d',
+            confirmButtonColor: '#d4a373',
+          }).then((alertResult) => {
+            if (alertResult.isConfirmed) {
+              window.location.href = '/login';
             }
-
-            // toggle heart
-            const icon = button.querySelector("i");
-            icon.classList.replace("fa-solid", "fa-regular");
-            icon.classList.remove("text-danger");
-            button.dataset.active = "false";
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Removed',
-              text: result.message,
-              showConfirmButton: false,
-              timer: 500
-            });
-          } catch (error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops!',
-              text: 'Something went wrong while removing from wishlist'
-            });
-          }
-
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Something went wrong'
+          });
         }
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Add to Cart';
+        return;
+      }
 
+      // Button animation
+      button.innerHTML = '<i class="fas fa-check me-2"></i>Added to Cart';
+      button.style.background = '#2ecc71';
+      button.style.borderColor = '#2ecc71';
+      
+      setTimeout(() => {
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Add to Cart';
+        button.style.background = 'linear-gradient(135deg, #d4a373, #b08a5e)';
+        button.style.borderColor = 'transparent';
+      }, 1500);
 
-        /* ---------------- Add to Cart ---------------- */
-        async function addToCart(productId) {
-          try {
-            const response = await fetch(`/add-to-cart/${productId}`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              }
-            });
-            const result = await response.json();
-            if (!response.ok) {
-              if (response.status === 401) {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'Login Required',
-                  text: result.message,
-                  showCancelButton: true,
-                  cancelButtonText: 'Cancel',
-                  confirmButtonText: 'Go to Login',
-                  cancelButtonColor: '#7f7f7f',
-                  confirmButtonColor: '#7f7f7f',
-                  buttonStyling: false,
-                  customClass: {
-                    confirmButton: 'swal-btn',
-                    cancelButton: 'swal-btn'
-                  }
-                }).then((alertResult) => {
-                  if (alertResult.isConfirmed) {
-                    window.location.href = '/login';
-                  }
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: result.message || 'Something went wrong'
-                });
-              }
-              return;
-            }
+      Swal.fire({
+        icon: 'success',
+        title: 'Added to Cart',
+        text: result.message,
+        showConfirmButton: false,
+        timer: 1000,
+        background: '#f9f7f4'
+      });
 
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: 'Something went wrong while adding to cart.'
+      });
+      button.disabled = false;
+      button.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Add to Cart';
+    }
+  }
+</script>
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Added to Cart',
-              text: result.message,
-              showConfirmButton: false,
-              timer: 500
-            });
-
-          } catch (error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops!',
-              text: 'Something went wrong while adding to cart.'
-            });
-          }
-        }
-
-
-      </script>
-
-      <%-include("../../views/partials/user/footer")%>
+<%-include("../../views/partials/user/footer")%>

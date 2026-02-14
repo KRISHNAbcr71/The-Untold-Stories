@@ -26,6 +26,8 @@ router.get("/login", adminController.loadLogin);
 router.post("/login", adminController.login);
 router.get("/logout", adminAuth, adminController.logout);
 
+router.get("/dashboard",adminAuth,adminController.loadDashboard)
+
 
 
 
@@ -48,8 +50,8 @@ router.get("/unlistCategory", adminAuth, categoryController.getUnlistCategory);
 router.get("/editCategory", adminAuth, categoryController.getEditCategory);
 router.put("/editCategory/:id", adminAuth, categoryController.editCategory);
 router.delete("/deleteCategory/:id",adminAuth,categoryController.deleteCategory,);
-router.get("/trash-category", adminAuth, categoryController.trashCategory);
-router.patch("/restore-category/:id",adminAuth,categoryController.restoreCategory);
+// router.get("/trash-category", adminAuth, categoryController.trashCategory);
+// router.patch("/restore-category/:id",adminAuth,categoryController.restoreCategory);
 
 // Product management
 // -----------------
@@ -62,8 +64,8 @@ router.get("/editProduct", adminAuth, productController.getEditProduct);
 router.post("/editProduct/:id",adminAuth,upload,productController.editProduct);
 router.delete("/deleteImage/:productId/:imageName",adminAuth,productController.deleteSingleImage,);
 router.delete("/deleteProduct/:id", adminAuth, productController.deleteProduct);
-router.get("/trashProduct", adminAuth, productController.trashProduct);
-router.patch("/restoreProduct/:id",adminAuth,productController.restoreProduct);
+// router.get("/trashProduct", adminAuth, productController.trashProduct);
+// router.patch("/restoreProduct/:id",adminAuth,productController.restoreProduct);
 
 
 
@@ -103,8 +105,9 @@ router.post("/rejectReturn/:orderId",adminAuth,orderController.rejectReturnReque
 
 // Sales report
 // ------------
-router.get("/dashboard", adminAuth, salesController.getSalesReport);
+router.get("/sales", adminAuth, salesController.getSalesReport);
 router.get("/downloadSalesReportPDF",adminAuth,salesController.downloadSalesReportPDF);
+router.get("/downloadSalesReportExcel",adminAuth,salesController.downloadSalesReportExcel)
 
 
 

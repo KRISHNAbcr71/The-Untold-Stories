@@ -1,4 +1,4 @@
-body {
+/* body {
   background: #f8f9fa;
   font-family: "Segoe UI", sans-serif;
 }
@@ -34,7 +34,6 @@ body {
   border: none;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   background: #d4a373;
   color: white;
 }
@@ -72,7 +71,6 @@ body {
   border-color: #d4a373;
 }
 
-/* Withdraw Modal Styles */
 #withdrawModal .modal-content {
   border-radius: 12px;
 }
@@ -101,7 +99,6 @@ body {
   border-color: #d4a373;
 }
 
-/* Success/Error Modal Styles */
 #successModal .modal-content,
 #errorModal .modal-content {
   border-radius: 15px;
@@ -126,4 +123,296 @@ body {
   .col-md-9 {
     padding: 1rem !important;
   }
+} */
+
+
+
+
+/* --- Global Theme & Sidebar Sync --- */
+body {
+    background-color: #f4f1ea;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove the gap between sidebar and content */
+.container-fluid {
+    padding: 0 !important;
+}
+
+.row.g-0 {
+    margin: 0;
+}
+
+.sidebar {
+    background-color: #1e2a2d;
+    min-height: 100vh;
+    padding: 50px 30px;
+    color: #fff;
+}
+
+.sidebar h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: #d4a373;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background-color: rgba(212, 163, 115, 0.15);
+    color: #d4a373;
+    padding-left: 25px;
+}
+
+/* --- Wallet Balance Card (Neumorphic) --- */
+.wallet-card {
+    background-color: #e9e4d9;
+    border: none;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 20px 20px 60px #dad5cb, -20px -20px 60px #ffffff;
+    margin-bottom: 40px;
+}
+
+.wallet-card h5 {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: #666;
+}
+
+.wallet-card .balance-amount {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3rem;
+    color: #1e2a2d;
+    margin: 15px 0;
+}
+
+/* --- Transaction Table --- */
+.transaction-container {
+    background-color: #e9e4d9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 10px 10px 20px #dad5cb, -10px -10px 20px #ffffff;
+}
+
+.transaction-header {
+    background-color: #1e2a2d;
+    color: #d4a373;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 15px 25px;
+}
+
+.table {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+}
+
+.table thead th {
+    background-color: rgba(30, 42, 45, 0.05);
+    color: #1e2a2d;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 15px;
+}
+
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    color: #555;
+    border-color: rgba(0,0,0,0.03);
+}
+
+/* --- Status Badges --- */
+.badge {
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+}
+
+/* --- Custom Buttons --- */
+.btn-wallet-add {
+    background-color: #1e2a2d;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-wallet-add:hover {
+    background-color: #d4a373;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-wallet-withdraw {
+    background-color: transparent;
+    border: 1px solid #1e2a2d;
+    color: #1e2a2d;
+    padding: 12px 25px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-wallet-withdraw:hover {
+    background-color: rgba(30, 42, 45, 0.05);
+}
+
+/* --- Modal Stylings --- */
+.modal-content {
+    background-color: #f4f1ea;
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(30, 42, 45, 0.1);
+    font-family: 'Playfair Display', serif;
+}
+
+.amount-btn {
+    border: 1px solid #d4a373;
+    color: #1e2a2d;
+    font-size: 0.8rem;
+    transition: 0.3s;
+}
+
+.amount-btn:hover, .amount-btn.active {
+    background-color: #d4a373;
+    color: white;
+}
+
+.pagination .page-link {
+    background-color: #e9e4d9;
+    color: #1e2a2d;
+    border: none;
+    margin: 0 3px;
+    border-radius: 4px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #d4a373;
+}
+
+
+/* --- Content Area --- */
+.wallet-content-area {
+    background-color: #f4f1ea;
+    padding: 40px;
+    min-height: 100vh;
+}
+
+/* --- Wallet Balance Card (Neumorphic) --- */
+.wallet-card {
+    background-color: #e9e4d9;
+    border: none;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 15px 15px 35px #dad5cb, -15px -15px 35px #ffffff;
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.balance-amount {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3rem;
+    color: #1e2a2d;
+    margin: 15px 0;
+}
+
+/* --- Transaction Table --- */
+.transaction-container {
+    background-color: #e9e4d9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 10px 10px 20px #dad5cb, -10px -10px 20px #ffffff;
+    margin-bottom: 50px; /* Space before footer */
+}
+
+.transaction-header {
+    background-color: #1e2a2d;
+    color: #d4a373;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 18px 25px;
+}
+
+/* --- Pagination Style --- */
+.pagination {
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.pagination .page-link {
+    background-color: #e9e4d9;
+    border: 1px solid rgba(30, 42, 45, 0.1);
+    color: #1e2a2d;
+    padding: 10px 18px;
+    transition: 0.3s;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #d4a373;
+    border-color: #d4a373;
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: #1e2a2d;
+    color: #d4a373;
+}
+
+/* --- Modal Stylings --- */
+.modal-content {
+    background-color: #f4f1ea;
+    border: none;
+    border-radius: 12px;
+}
+
+.btn-custom-gold {
+    background-color: #d4a373;
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-custom-gold:hover {
+    background-color: #1e2a2d;
+    color: white;
 }

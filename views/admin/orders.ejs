@@ -1,29 +1,18 @@
 <%-include("../../views/partials/admin/header")%>
+  <link rel="stylesheet" href="/css/order.css">
 
-<style>
-  #searchInput::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-}
-.page-item .page-link {
-  color: black !important;  /* blue for all page numbers */
-}
+ 
 
-.page-item.active .page-link {
-  background-color: #343a40; /* dark background for current page */
-  border-color: #343a40;
-  color: white !important;  /* white text for current page */
-}
 
-</style>
   <div class="container">
-    <div class="card shadow-sm">
+    <h2 class="fw-bold mb-4 mt-4">🛍️ Orders</h2>
+    <div class="card orders-card shadow-sm">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 class="mb-0">Orders</h4>
-          <div>
+          <!-- <div>
             <span class="badge bg-info wallet-badge" id="walletBadge">Wallet: ₹0</span>
-          </div>
+          </div> -->
         </div>
 
         <!-- Controls -->
@@ -34,12 +23,7 @@
           </div>
           <div class="col-md-2">
             <select id="statusFilter" class="form-select" onchange="applyFilters()">
-              <!-- <option value="">All Statuses</option>
-              <option>pending</option>
-              <option>shipped</option>
-              <option>out for delivery</option>
-              <option>delivered</option>
-              <option>cancelled</option> -->
+
               <option value="" <%=!statusFilter ? 'selected' : '' %>>All Statuses</option>
               <option value="pending" <%=statusFilter==='pending' ? 'selected' : '' %>>Pending</option>
               <option value="shipped" <%=statusFilter==='shipped' ? 'selected' : '' %>>Shipped</option>
@@ -51,10 +35,6 @@
           </div>
           <div class="col-md-2">
             <select id="sortSelect" class="form-select" onchange="applyFilters()">
-              <!-- <option value="date_desc">Date: Newest first</option>
-              <option value="date_asc">Date: Oldest first</option>
-              <option value="amount_desc">Amount: High → Low</option>
-              <option value="amount_asc">Amount: Low → High</option> -->
               <option value="date_desc" <%=sortOption==='date_desc' ? 'selected' : '' %>>Date: Newest first</option>
               <option value="date_asc" <%=sortOption==='date_asc' ? 'selected' : '' %>>Date: Oldest first</option>
               <option value="amount_desc" <%=sortOption==='amount_desc' ? 'selected' : '' %>>Amount: High → Low</option>
@@ -68,7 +48,7 @@
 
         <!-- Orders Table -->
         <div class="table-responsive">
-          <table class="table table-hover table-bordered align-middle" id="ordersTable">
+          <table class="table align-middle admin-table" id="ordersTable">
             <thead class="table-light">
               <tr>
                 <th>Order ID</th>
@@ -126,9 +106,9 @@
                       <td>
                         <% if (order.returnRequested && !order.returnVerified) { %>
                           <span class="text-warning">Requested</span>
-                          <% } else if (order.status === 'Return Approved') { %>
+                          <% } else if (order.status==='Return Approved' ) { %>
                             <span class="text-success">Verified</span>
-                            <% } else if (order.status === 'Return Rejected') { %>
+                            <% } else if (order.status==='Return Rejected' ) { %>
                               <span class="text-danger">Rejected</span>
                               <% } else { %>
                                 -
@@ -200,14 +180,15 @@
 
   <div class="container mt-3 pagination-container">
     <nav aria-label="Page Navigation">
-        <ul class="pagination justify-content-center mb-20">
+      <ul class="pagination pagination-custom justify-content-center mb-20">
         <% for(let i=1; i <=totalPages; i++) { %>
           <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
             <a class="page-link" href="?page=<%= i %><%= queryString%>">
-              <%= i %></a>
+              <%= i %>
+            </a>
           </li>
-        <% } %>
-        </ul>
+          <% } %>
+      </ul>
     </nav>
   </div>
 
@@ -250,83 +231,18 @@
 
 
 
-
-    // document.querySelectorAll('.view-order').forEach(btn => {
-    //   btn.addEventListener('click', async function (e) {
-    //     e.preventDefault();
-    //     const orderId = this.dataset.orderId;
-    //     const container = document.getElementById('orderDetailsContainer');
-
-    //     try {
-    //       const res = await fetch(`/admin/details/${orderId}`);
-    //       const order = await res.json();
-
-    //       let html = `
-    //     <h6>Order Information</h6>
-    //     <ul class="list-group mb-3">
-    //       <li class="list-group-item"><strong>Order ID:</strong> ${order.orderId}</li>
-    //       <li class="list-group-item"><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString("en-IN")}</li>
-    //       <li class="list-group-item"><strong>Status:</strong> ${order.status}</li>
-    //       <li class="list-group-item"><strong>Payment Method:</strong> ${order.paymentMethod}</li>
-    //       <li class="list-group-item"><strong>Payment Status:</strong> ${order.paymentStatus}</li>
-    //     </ul>
-
-    //     <h6>Customer Details</h6>
-    //     <ul class="list-group mb-3">
-    //       <li class="list-group-item"><strong>Name:</strong> ${order.user?.name || "Unknown"}</li>
-    //       <li class="list-group-item"><strong>Email:</strong> ${order.user?.email || ""}</li>
-    //       <li class="list-group-item"><strong>Address:</strong> ${order.selectedAddress?.fullAddress || ""}</li>
-    //     </ul>
-
-    //     <h6>Products</h6>
-    //     <table class="table table-sm table-bordered">
-    //       <thead>
-    //         <tr>
-    //           <th>Product Name</th>
-    //           <th>Price (₹)</th>
-    //           <th>Qty</th>
-    //           <th>Total (₹)</th>
-    //         </tr>
-    //       </thead>
-    //       <tbody>
-    //         ${order.orderItems.map(item => `
-    //           <tr>
-    //             <td>${item.product?.productName || "Deleted Product"}</td>
-    //             <td>${item.price}</td>
-    //             <td>${item.quantity}</td>
-    //             <td>${item.price * item.quantity}</td>
-    //           </tr>
-    //         `).join('')}
-    //       </tbody>
-    //     </table>
-
-    //     <div class="text-end mt-3"><strong>Final Amount: ₹${order.finalAmount}</strong></div>
-    //   `;
-
-    //       container.innerHTML = html;
-
-    //       // ✅ Open the modal AFTER setting content
-    //       var viewOrderModal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
-    //       viewOrderModal.show();
-
-    //     } catch (err) {
-    //       console.error(err);
-    //       container.innerHTML = '<p class="text-danger">Failed to load order details.</p>';
-    //     }
-    //   });
-    // });
     document.querySelectorAll('.view-order').forEach(btn => {
-  btn.addEventListener('click', async function (e) {
-    e.preventDefault();
+      btn.addEventListener('click', async function (e) {
+        e.preventDefault();
 
-    const orderId = this.dataset.orderId;
-    const container = document.getElementById('orderDetailsContainer');
+        const orderId = this.dataset.orderId;
+        const container = document.getElementById('orderDetailsContainer');
 
-    try {
-      const res = await fetch(`/admin/details/${orderId}`);
-      const order = await res.json();
+        try {
+          const res = await fetch(`/admin/details/${orderId}`);
+          const order = await res.json();
 
-      let html = `
+          let html = `
         <h6>Order Information</h6>
         <ul class="list-group mb-3">
           <li class="list-group-item"><strong>Order ID:</strong> ${order.orderId}</li>
@@ -357,15 +273,15 @@
           </thead>
           <tbody>
             ${order.orderItems.map((item, index) => {
-              const offerDiscount =
-                item.finalPrice
-                  ? (item.price - item.finalPrice) * item.quantity
-                  : 0;
+            const offerDiscount =
+              item.finalPrice
+                ? (item.price - item.finalPrice) * item.quantity
+                : 0;
 
-              const couponDiscount =
-                index === 0 ? order.discountAmount || 0 : 0;
+            const couponDiscount =
+              index === 0 ? order.discountAmount || 0 : 0;
 
-              return `
+            return `
                 <tr>
                   <td>${item.product?.productName || "Deleted Product"}</td>
                   <td>${item.price}</td>
@@ -377,7 +293,7 @@
                   </td>
                 </tr>
               `;
-            }).join('')}
+          }).join('')}
           </tbody>
         </table>
 
@@ -386,20 +302,20 @@
         </div>
       `;
 
-      container.innerHTML = html;
+          container.innerHTML = html;
 
-      const viewOrderModal = new bootstrap.Modal(
-        document.getElementById('viewOrderModal')
-      );
-      viewOrderModal.show();
+          const viewOrderModal = new bootstrap.Modal(
+            document.getElementById('viewOrderModal')
+          );
+          viewOrderModal.show();
 
-    } catch (err) {
-      console.error(err);
-      container.innerHTML =
-        '<p class="text-danger">Failed to load order details.</p>';
-    }
-  });
-});
+        } catch (err) {
+          console.error(err);
+          container.innerHTML =
+            '<p class="text-danger">Failed to load order details.</p>';
+        }
+      });
+    });
 
 
 
@@ -460,7 +376,7 @@
               const data = await res.json();
               if (data.success) {
                 returnVerifyModal.hide();
-                Swal.fire('Success', 'Return request rejected', 'success').then(() => {location.reload()})
+                Swal.fire('Success', 'Return request rejected', 'success').then(() => { location.reload() })
               }
             } catch (err) {
               console.error(err);
@@ -484,11 +400,11 @@
 
 
     document.getElementById('searchInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      applyFilters();
-    }
-  });
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyFilters();
+      }
+    });
 
 
     function applyFilters() {
@@ -504,6 +420,7 @@
 
       // Redirect to backend with query params
       window.location.href = `/admin/orders?${query.join('&')}`;
+
     }
 
     function clearFilters() {
@@ -515,5 +432,6 @@
     }
 
 
-
   </script>
+
+  <%-include("../../views/partials/admin/footer")%>

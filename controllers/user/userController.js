@@ -286,7 +286,7 @@ const login = async (req, res) => {
     const findUser = await User.findOne({ isAdmin: false, email });
 
     if (!findUser) {
-      return res.render("login", { message: "User not found" });
+      return res.render("login", { message: "Invalid Credentials" });
     }
 
     if (findUser.isBlocked) {
@@ -296,7 +296,7 @@ const login = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, findUser.password);
 
     if (!passwordMatch) {
-      return res.render("login", { message: "Incorrect password" });
+      return res.render("login", { message: "Invalid Credentials" });
     }
 
     req.session.user = findUser._id;
@@ -353,6 +353,7 @@ const loadHomepage = async (req, res) => {
       isDeleted: false,
       category: { $in: categories.map((category) => category._id) },
     })
+      .populate("category","name")
       .sort({ createdAt: -1 })
       .limit(4);
 
@@ -374,9 +375,20 @@ const loadHomepage = async (req, res) => {
       },
       { $unwind: "$product" },
       {
+        $lookup:{
+          from:"categories",
+          localField:"product.category",
+          foreignField:"_id",
+          as:"category"
+        }
+      },
+      {$unwind:"$category"},
+      {
         $match: {
           "product.isListed": true,
           "product.isDeleted": false,
+          "category.isListed":true,
+          "category.isDeleted":false
         },
       },
       { $sort: { totalSold: -1 } },
@@ -409,7 +421,7 @@ const loadHomepage = async (req, res) => {
 const loadShoppingPage = async (req, res) => {
   try {
     let page = Math.max(1, parseInt(req.query.page) || 1);
-    let limit = 8;
+    let limit = 6;
     let skip = (page - 1) * limit;
 
     const search = req.query.search ? req.query.search.trim() : "";

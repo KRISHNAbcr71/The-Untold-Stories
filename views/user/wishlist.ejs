@@ -3,88 +3,90 @@
 
   <div class="page-wrapper">
     <main class="content">
-  <div class="cart-card">
-    <% if (wishlist && wishlist.products && wishlist.products.length> 0) { %>
-      <table class="cart-table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Details</th>
-            <th>Price</th>
-            <th>Action</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% wishlist.products.forEach(product=> { %>
-            <tr class="cart-item wishlist-item" data-product-id="<%= product.productId._id %>">
-              <!-- Image -->
-              <td>
-                <img src="/<%= product.productId.productImage[0] %>" alt="<%= product.productId.productName %>"
-                  class="cart-img" />
-              </td>
-              <!-- Product details -->
-              <td>
-                <strong>
-                  <%= product.productId.productName %>
-                </strong><br>
-                <small>by <%= product.productId.author %></small><br>
-                <small class="text-muted">
-                  <%= product.productId.category ? product.productId.category.name:'' %>
-                </small>
-              </td>
-              <!-- Price -->
-              <td>
-                <% if (product.offerPercentage> 0) { %>
-                  <div class="final-price fw-bold">
-                    ₹<%= product.finalPrice.toFixed(2) %>
-                  </div>
-                  <span class="badge bg-success ms-2">
-                    <%= product.offerPercentage %>% OFF
-                  </span>
-                  <div class="original-price">
-                    <small class="text-muted text-decoration-line-through">
-                      ₹<%= product.price.toFixed(2) %>
-                    </small>
-                  </div>
-                  <div class="savings">
-                    <small class="text-success">
-                      Save: ₹<%= product.discountAmount.toFixed(2) %>
-                    </small>
-                  </div>
-                  <% } else { %>
-                    <div class="regular-price fw-bold">
-                      ₹<%= product.price.toFixed(2) %>
-                    </div>
-                    <% } %>
-              </td>
-              <!-- Add to cart -->
-              <td>
-                <button class="checkout-btn">Add to Cart</button>
-              </td>
-              <!-- Remove -->
-              <td>
-                <button class="delete-btn delete-icon">✕</button>
-              </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <!-- Empty wishlist -->
-        <div class="empty-cart">
-          <div class="empty-icon">💛</div>
-          <h4>Your wishlist is empty</h4>
-          <p>Save your favorite books here for later.</p>
-          <a href="/shop" class="empty-cart-btn">Browse Books</a>
+      <div class="cart-card">
+        <div id="wishlistTableWrapper">
+          <% if (wishlist && wishlist.products && wishlist.products.length> 0) { %>
+            <table class="cart-table">
+              <thead class="custom-thead">
+                <tr>
+                  <th>Product</th>
+                  <th>Details</th>
+                  <th>Price</th>
+                  <th>Action</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% wishlist.products.forEach(product=> { %>
+                  <tr class="cart-item wishlist-item" data-product-id="<%= product.productId._id %>">
+                    <!-- Image -->
+                    <td>
+                      <img src="/<%= product.productId.productImage[0] %>" alt="<%= product.productId.productName %>"
+                        class="cart-img" />
+                    </td>
+                    <!-- Product details -->
+                    <td>
+                      <strong>
+                        <%= product.productId.productName %>
+                      </strong><br>
+                      <small>by <%= product.productId.author %></small><br>
+                      <small class="text-muted">
+                        <%= product.productId.category ? product.productId.category.name:'' %>
+                      </small>
+                    </td>
+                    <!-- Price -->
+                    <td>
+                      <% if (product.offerPercentage> 0) { %>
+                        <div class="final-price fw-bold">
+                          ₹<%= product.finalPrice.toFixed(2) %>
+                        </div>
+                        <span class="badge bg-success ms-2">
+                          <%= product.offerPercentage %>% OFF
+                        </span>
+                        <div class="original-price">
+                          <small class="text-muted text-decoration-line-through">
+                            ₹<%= product.price.toFixed(2) %>
+                          </small>
+                        </div>
+                        <div class="savings">
+                          <small class="text-success">
+                            Save: ₹<%= product.discountAmount.toFixed(2) %>
+                          </small>
+                        </div>
+                        <% } else { %>
+                          <div class="regular-price fw-bold">
+                            ₹<%= product.price.toFixed(2) %>
+                          </div>
+                          <% } %>
+                    </td>
+                    <!-- Add to cart -->
+                    <td>
+                      <button class="checkout-btn">Add to Cart</button>
+                    </td>
+                    <!-- Remove -->
+                    <td>
+                      <button class="delete-btn delete-icon">✕</button>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+            <% } else { %>
+              <!-- Empty wishlist -->
+              <div class="empty-cart">
+                <div class="empty-icon">💛</div>
+                <h4>Your wishlist is empty</h4>
+                <p>Save your favorite books here for later.</p>
+                <a href="/shop" class="empty-cart-btn">Browse Books</a>
+              </div>
+              <% } %>
         </div>
-        <% } %>
-  </div>
-  </main>
-  <%-include("../../views/partials/user/footer")%>
+      </div>
+    </main>
+    <%-include("../../views/partials/user/footer")%>
   </div>
 
-  
+
 
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -111,7 +113,7 @@
                   text: data.message,
                   icon: 'success'
                 }).then(() =>
-                  wishlistItem.remove())
+                  location.reload())
               }
             } catch (error) {
               console.error(error)
@@ -144,7 +146,7 @@
             Swal.fire({
               icon: 'error',
               title: 'Oops',
-              text: data.message || 'Faied to remove item'
+              text: data.message || 'Failed to remove item'
             })
           }
         } catch (error) {
@@ -157,5 +159,5 @@
         }
       })
     })
-    
+
   </script>

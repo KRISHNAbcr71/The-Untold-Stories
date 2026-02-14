@@ -24,21 +24,17 @@ const adminAuth = async (req, res, next) => {
   try {
     const adminId = req.session.admin;
 
-    // 1. No session
     if (!adminId) {
       return res.redirect('/admin/login');
     }
 
-    // 2. Invalid ObjectId (prevents CastError)
     if (!mongoose.Types.ObjectId.isValid(adminId)) {
       req.session.destroy();
       return res.redirect('/admin/login');
     }
 
-    // 3. Fetch admin
     const admin = await User.findById(adminId);
 
-    // 4. Validate admin
     if (!admin || !admin.isAdmin || admin.isBlocked) {
       req.session.destroy();
       return res.redirect('/admin/login');

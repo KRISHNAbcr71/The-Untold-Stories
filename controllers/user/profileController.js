@@ -507,7 +507,7 @@ const changePassword = async(req,res) => {
 
         // hash and save
         const passwordHash = await securePassword(newPassword)
-        user.password = hashedPassword
+        user.password = passwordHash
         await user.save()
 
         return res.status(200).json({message:'Password changed successfully'})

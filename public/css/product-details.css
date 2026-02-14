@@ -1,3 +1,63 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* background: #f4f1ea !important; */
+  background-color: #f5f0e8;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4a373' stroke-width='1' opacity='0.15'%3E%3Cpath d='M60 20c8 12 20 14 30 6-6 14-2 26 10 30-14 4-18 16-10 30-10-8-22-6-30 6-8-12-20-14-30-6 6-14 2-26-10-30 14-4 18-16 10-30 10 8 22 6 30-6z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Matching Breadcrumb Design */
+.breadcrumb-section {
+    background-color: #f5f0e8;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4a373' stroke-width='1' opacity='0.15'%3E%3Cpath d='M60 20c8 12 20 14 30 6-6 14-2 26 10 30-14 4-18 16-10 30-10-8-22-6-30 6-8-12-20-14-30-6 6-14 2-26-10-30 14-4 18-16 10-30 10 8 22 6 30-6z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+    margin: 0;
+    padding: 25px 0;
+    border: none;
+}
+
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.breadcrumb-nav a {
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 5px 12px;
+    border-radius: 6px;
+}
+
+.breadcrumb-nav a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.breadcrumb-separator {
+    color: black;
+    font-size: 1.2rem;
+}
+
+.breadcrumb-nav .current {
+    color: black;
+    font-weight: 600;
+    padding: 5px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+/* Ensure no default bootstrap styles interfere */
+.breadcrumb-section .container {
+    max-width: 1320px;
+}
+
+
 .product-image-container {
   position: relative;
 }
@@ -142,8 +202,43 @@
   border-color: #d4a373;
 }
 
+
+
+
+
+
+
+
+/* Wishlist active state */
+.wishlist-active .wishlist-icon {
+  color: #dc3545; /* Bootstrap danger red */
+}
+
+.wishlist-icon {
+  transition: color 0.3s ease, transform 0.2s ease;
+  margin-left: 2px;
+}
+
+.wishlist-active .wishlist-icon {
+  transform: scale(1.15);
+}
+
+.wishlist-active i {
+  color: #dc3545; /* red */
+  transform: scale(1.15);
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
 .view-btn,
 .view-btn:hover,
 .view-btn:active {
-  border-color: #d4a373;
+  background: #d4a373;
+}
+
+
+.related-product-image{
+  height: 240px;          /* fixed height */
+  object-fit: contain;    /* keep full book visible */
+  background: #f8f9fa;    /* nice neutral background */
+  padding: 15px;
 }
