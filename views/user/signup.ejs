@@ -801,7 +801,6 @@
 
         if (!valid) {
           e.preventDefault();
-          // Add shake animation to invalid fields
           const invalidFields = [];
           if (error1.style.display === 'block') invalidFields.push(name);
           if (error2.style.display === 'block') invalidFields.push(email);
@@ -816,7 +815,6 @@
             }, 500);
           });
         } else {
-          // Show loading state
           submitBtn.classList.add('loading');
           submitBtn.disabled = true;
         }
@@ -832,8 +830,7 @@
                 }
             `;
       document.head.appendChild(style);
-
-      // Auto-focus first input
+      
       name.focus();
     });
   </script>

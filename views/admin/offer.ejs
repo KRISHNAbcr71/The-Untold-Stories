@@ -12,16 +12,12 @@
         </div>
     </div>
 
-    <!-- <div class="d-flex" style="gap: 10px;">
-        <a href="/admin/addOffer" class="btn btn-secondary add-cat" style="width: 200px;">Add Offer</a>
-        <a href="/admin/trashOffer" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
-    </div> -->
     <div class="d-flex mb-4 ps-4" style="gap: 12px;">
-  <a href="/admin/addOffer" class="btn add-cat-btn">
-    <span class="icon">➕</span>
-    Add Offer
-  </a>
-</div>
+        <a href="/admin/addOffer" class="btn add-cat-btn">
+            <span class="icon">➕</span>
+            Add Offer
+        </a>
+    </div>
 
 
 
@@ -69,7 +65,7 @@
                                             <span class="badge bg-success">Active</span>
                                             <%}else{%>
                                                 <span class="badge bg-secondary">Inactive</span>
-                                            <%}%>    
+                                                <%}%>
                                     </td>
 
                                     <td>
@@ -130,7 +126,7 @@
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
             clearBtn.style.display = 'none';
-            window.location.href = '/admin/offer'; // Reload full list
+            window.location.href = '/admin/offer';
         });
 
         // Initialize clear button on page load

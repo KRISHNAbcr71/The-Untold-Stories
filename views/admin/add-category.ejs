@@ -1,30 +1,167 @@
 <%-include("../../views/partials/admin/header")%>
+    <link rel="stylesheet" href="/css/add-category.css">
 
-    <!-- Form to Add New Category -->
-    <div class="card p-4 border border-dark"
-        style="width: 100%; max-width: 1300px; margin-left: 200px;margin-top: 100px;">
-        <form method="POST" id="categoryForm" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
-
-            <!-- Name Field -->
-            <div class="mb-3">
-                <label for="categoryName" class="form-label fw-semibold">Category Name</label>
-                <input type="text" class="form-control" id="categoryName" name="name" placeholder="Enter category name">
-                <div id="name-error" class="error-message text-danger small mt-1"></div>
+    <!-- Add Category Page with Custom Design -->
+    <div class="add-category-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="page-title">Add New Category</h1>
+                    <p class="page-subtitle">Create a new category to organize your products</p>
+                </div>
             </div>
+            <a href="/admin/category" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19L5 12L12 5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Back to Categories</span>
+            </a>
+        </div>
 
-            <!-- Description Field -->
-            <div class="mb-3">
-                <label for="descriptionId" class="form-label fw-semibold">Description</label>
-                <textarea class="form-control" id="descriptionId" name="description" rows="3"
-                    placeholder="Enter description"></textarea>
-                <div id="description-error" class="error-message text-danger small mt-1"></div>
-            </div>
+        <!-- Main Form Card -->
+        <div class="form-card">
+            <div class="card-pattern"></div>
+            <form method="POST" id="categoryForm" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
+                <!-- Form Fields -->
+                <div class="form-fields">
+                    <!-- Name Field -->
+                    <div class="field-group">
+                        <label for="categoryName" class="field-label">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 7L9 18L4 13" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Category Name
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" class="form-control" id="categoryName" name="name"
+                                placeholder="e.g., Electronics, Clothing, Books">
+                            <div class="input-border"></div>
+                        </div>
+                        <div id="name-error" class="error-message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
 
-            <!-- Submit Button -->
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">Create Category</button>
+                    <!-- Description Field -->
+                    <div class="field-group">
+                        <label for="descriptionId" class="field-label">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                                <line x1="8" y1="14" x2="8" y2="18" />
+                                <line x1="16" y1="14" x2="16" y2="18" />
+                            </svg>
+                            Description
+                        </label>
+                        <div class="input-wrapper">
+                            <textarea class="form-control" id="descriptionId" name="description" rows="4"
+                                placeholder="Describe what kind of products belong in this category..."></textarea>
+                            <div class="input-border"></div>
+                        </div>
+                        <div id="description-error" class="error-message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <!-- Form Footer with Submit Button -->
+                    <div class="form-footer">
+                        <div class="footer-decoration"></div>
+                        <div class="button-group">
+                            <a href="/admin/category" class="btn btn-outline">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12" y2="16" />
+                                    <line x1="8" y1="12" x2="16" y2="12" />
+                                </svg>
+                                <span>Cancel</span>
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                                    <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                                </svg>
+                                <span>Create Category</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon" style="background: rgba(212, 163, 115, 0.1);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="12" x2="12" y2="16" />
+                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Be Specific</h4>
+                    <p>Use clear, descriptive category names that make sense to customers</p>
+                </div>
             </div>
-        </form>
+            <div class="tip-card">
+                <div class="tip-icon" style="background: rgba(212, 163, 115, 0.1);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                        stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Unique Names</h4>
+                    <p>Avoid duplicate category names to prevent confusion</p>
+                </div>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon" style="background: rgba(212, 163, 115, 0.1);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                        stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Good Description</h4>
+                    <p>Help customers understand what products they'll find here</p>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -61,7 +198,8 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Category added',
-                        text: 'The Category has been successfully added.'
+                        text: 'The Category has been successfully added.',
+                        confirmButtonColor: '#d4a373'
                     })
                         .then(() => {
                             window.location.href = '/admin/category';
@@ -73,13 +211,15 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops',
-                            text: 'Category already exists.'
+                            text: 'Category already exists.',
+                            confirmButtonColor: '#d4a373'
                         });
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops',
-                            text: 'An error occurred while adding the category.'
+                            text: 'An error occurred while adding the category.',
+                            confirmButtonColor: '#d4a373'
                         });
                     }
                 });
@@ -87,7 +227,7 @@
 
 
 
-        // Validates the form inputs for category name and description
+        // Validates the form inputs 
         function validateForm() {
             clearErrorMessages()
             const name = document.getElementById('categoryName').value.trim()
@@ -114,19 +254,56 @@
         // Displays error message in the specified element
         function displayErrorMessage(elementId, message) {
             let errorElement = document.getElementById(elementId)
-            errorElement.innerText = message
-            errorElement.style.display = 'block'
+            errorElement.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>${message}</span>`
+            errorElement.style.display = 'flex'
         }
 
 
-        // Clears all error messages displayed in the form
+        // Clears all error messages 
         function clearErrorMessages() {
             let errorElements = document.getElementsByClassName('error-message')
             Array.from(errorElements).forEach((element) => {
-                element.innerText = ''
+                element.innerHTML = '<span></span>'
                 element.style.display = 'none'
             })
         }
 
+        // to hide error message when typing
+        function setupRealTimeValidation() {
+            const nameInput = document.getElementById('categoryName');
+            const descriptionInput = document.getElementById('descriptionId');
+            const nameError = document.getElementById('name-error');
+            const descriptionError = document.getElementById('description-error');
+
+            if (nameInput) {
+                nameInput.addEventListener('input', function () {
+                    if (this.value.trim() !== '') {
+                        nameError.style.display = 'none';
+                        nameError.innerHTML = '<span></span>';
+                    }
+                });
+            }
+
+            if (descriptionInput) {
+                descriptionInput.addEventListener('input', function () {
+                    if (this.value.trim() !== '') {
+                        descriptionError.style.display = 'none';
+                        descriptionError.innerHTML = '<span></span>';
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setupRealTimeValidation();
+        });
+
     </script>
+
+
     <%-include("../../views/partials/admin/footer")%>

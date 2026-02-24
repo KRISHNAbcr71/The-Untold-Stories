@@ -1,45 +1,171 @@
 <%-include("../../views/partials/admin/header")%>
+    <link rel="stylesheet" href="/css/add-category.css">
 
-
-
-
-    <!-- Form to Add New Category -->
-    <div class="card p-4 border border-dark"
-        style="width: 100%; max-width: 1300px; margin-left: 200px;margin-top: 100px;">
-        <form id="categoryForm" method="POST" data-id="<%= category._id %>">
-
-            <!-- Name Field -->
-            <div class="mb-3">
-                <label for="categoryName" class="form-label fw-semibold">Category Name</label>
-                <input type="text" class="form-control" id="categoryName" name="name" value="<%=category.name%>"
-                    placeholder="Enter category name">
-                <div id="name-error" class="error-message text-danger small mt-1"></div>
+    <!-- Edit Category Page with Custom Design -->
+    <div class="add-category-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="page-title">Edit Category</h1>
+                    <p class="page-subtitle">Update the category details below</p>
+                </div>
             </div>
+            <a href="/admin/category" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19L5 12L12 5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Back to Categories</span>
+            </a>
+        </div>
 
-            <!-- Description Field -->
-            <div class="mb-3">
-                <label for="descriptionId" class="form-label fw-semibold">Description</label>
-                <textarea class="form-control" id="descriptionId" name="description" rows="3"
-                    placeholder="Enter description"><%=category.description%></textarea>
-                <div id="description-error" class="error-message text-danger small mt-1"></div>
-            </div>
+        <!-- Main Form Card -->
+        <div class="form-card">
+            <div class="card-pattern"></div>
+            <form id="categoryForm" method="POST" data-id="<%= category._id %>">
+                <!-- Form Fields -->
+                <div class="form-fields">
+                    <!-- Name Field -->
+                    <div class="field-group">
+                        <label for="categoryName" class="field-label">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 7L9 18L4 13" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Category Name
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" class="form-control" id="categoryName" name="name"
+                                value="<%= category.name %>" placeholder="Enter category name">
+                            <div class="input-border"></div>
+                        </div>
+                        <div id="name-error" class="error-message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
 
-            <!-- Submit Button -->
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">Update Category</button>
+                    <!-- Description Field -->
+                    <div class="field-group">
+                        <label for="descriptionId" class="field-label">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                                <line x1="8" y1="14" x2="8" y2="18" />
+                                <line x1="16" y1="14" x2="16" y2="18" />
+                            </svg>
+                            Description
+                        </label>
+                        <div class="input-wrapper">
+                            <textarea class="form-control" id="descriptionId" name="description" rows="4"
+                                placeholder="Describe what kind of products belong in this category..."><%= category.description %></textarea>
+                            <div class="input-border"></div>
+                        </div>
+                        <div id="description-error" class="error-message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <!-- Form Footer with Submit Button -->
+                    <div class="form-footer">
+                        <div class="footer-decoration"></div>
+                        <div class="button-group">
+                            <a href="/admin/category" class="btn btn-outline">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12" y2="16" />
+                                    <line x1="8" y1="12" x2="16" y2="12" />
+                                </svg>
+                                <span>Cancel</span>
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                                    <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                                </svg>
+                                <span>Update Category</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon" style="background: rgba(212, 163, 115, 0.1);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="12" x2="12" y2="16" />
+                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Keep it Clear</h4>
+                    <p>Use descriptive names that customers will easily understand</p>
+                </div>
             </div>
-        </form>
+            <div class="tip-card">
+                <div class="tip-icon" style="background: rgba(212, 163, 115, 0.1);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                        stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Accurate Info</h4>
+                    <p>Make sure the description matches the category purpose</p>
+                </div>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon" style="background: rgba(212, 163, 115, 0.1);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Check Spelling</h4>
+                    <p>Review your changes before updating</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-
-
         document.getElementById('categoryForm').addEventListener('submit', async function (e) {
-            e.preventDefault(); // prevent page reload
+            e.preventDefault();
 
             if (!validateForm()) return;
 
@@ -47,6 +173,12 @@
             const description = document.getElementById('descriptionId').value.trim();
             const form = document.getElementById('categoryForm');
             const categoryId = "<%= category._id %>";
+
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Updating...';
+            submitBtn.disabled = true;
 
             try {
                 const response = await fetch(`/admin/editCategory/${categoryId}`, {
@@ -62,33 +194,37 @@
                 if (response.ok) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Updated',
+                        title: 'Updated!',
                         text: 'Category updated successfully',
-                        confirmButtonColor: '#28a745'
-                    })
-                        .then(() => {
-                            window.location.href = '/admin/category'
-                        })
+                        confirmButtonColor: '#d4a373',
+                        timer: 2000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = '/admin/category';
+                    });
                 } else {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: data.message || 'Updated failed',
-                        confirmButtonColor: '#dc3545'
-                    })
+                        text: data.message || 'Update failed',
+                        confirmButtonColor: '#e74c3c'
+                    });
                 }
             } catch (error) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
                     text: 'An error occurred while updating the category.',
-                    confirmButtonColor: '#dc3545'
-                })
+                    confirmButtonColor: '#e74c3c'
+                });
             }
         });
-
-
-
 
         function validateForm() {
             clearErrorMessages();
@@ -97,42 +233,70 @@
             let isValid = true;
 
             if (name === '') {
-                displayErrorMessage('name-error', 'Please enter a name')
-                isValid = false
+                displayErrorMessage('name-error', 'Please enter a name');
+                isValid = false;
             } else if (!/^[a-zA-Z\s]+$/.test(name)) {
-                displayErrorMessage('name-error', 'Category name only contain alphabetic characters')
-                isValid = false
+                displayErrorMessage('name-error', 'Category name should only contain alphabetic characters');
+                isValid = false;
             }
 
             if (description === '') {
-                displayErrorMessage('description-error', 'Please enter description')
-                isValid = false
+                displayErrorMessage('description-error', 'Please enter description');
+                isValid = false;
             }
             return isValid;
         }
 
-
-
         function displayErrorMessage(elementId, message) {
-            var errorElement = document.getElementById(elementId);
-            errorElement.innerText = message
-            errorElement.style.display = 'block'
+            let errorElement = document.getElementById(elementId);
+            errorElement.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>${message}</span>`;
+            errorElement.style.display = 'flex';
         }
 
         function clearErrorMessages() {
-            var errorElements = document.getElementsByClassName('error-message')
+            let errorElements = document.getElementsByClassName('error-message');
             Array.from(errorElements).forEach((element) => {
-                element.innerText = ''
-                element.style.display = 'none'
+                element.innerHTML = '<span></span>';
+                element.style.display = 'none';
             });
         }
 
+        // Real-time validation - hide errors when typing
+        function setupRealTimeValidation() {
+            const nameInput = document.getElementById('categoryName');
+            const descriptionInput = document.getElementById('descriptionId');
+            const nameError = document.getElementById('name-error');
+            const descriptionError = document.getElementById('description-error');
+
+            if (nameInput) {
+                nameInput.addEventListener('input', function () {
+                    if (this.value.trim() !== '') {
+                        nameError.style.display = 'none';
+                        nameError.innerHTML = '<span></span>';
+                    }
+                });
+            }
+
+            if (descriptionInput) {
+                descriptionInput.addEventListener('input', function () {
+                    if (this.value.trim() !== '') {
+                        descriptionError.style.display = 'none';
+                        descriptionError.innerHTML = '<span></span>';
+                    }
+                });
+            }
+        }
+
+        // Initialize real-time validation
+        document.addEventListener('DOMContentLoaded', function () {
+            setupRealTimeValidation();
+        });
     </script>
-
-
-
-
-
 
 
     <%-include("../../views/partials/admin/footer")%>

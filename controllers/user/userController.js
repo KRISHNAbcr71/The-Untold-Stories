@@ -1,13 +1,8 @@
 const User = require("../../models/userSchema");
-const Category = require("../../models/categorySchema");
-const Product = require("../../models/productSchema");
-const Order = require("../../models/orderSchema");
-const Offer = require("../../models/offerSchema");
 const nodemailer = require("nodemailer");
 const env = require("dotenv").config();
 const bcrypt = require("bcrypt");
 const { Types } = require("mongoose");
-const Wishlist = require("../../models/wishlistSchema");
 
 // Controller to handle 404 (Page Not Found) errors
 const pageNotFound = (req, res) => {
@@ -33,14 +28,12 @@ const loadSignup = async (req, res) => {
   }
 };
 
-// Function to generate a 6-digit numeric OTP as a string
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 async function sendVerificationEmail(email, otp) {
   try {
-    // Configure the email transport using Gmail SMTP
     const transporter = nodemailer.createTransport({
       service: "gmail",
       port: 587,
@@ -52,7 +45,6 @@ async function sendVerificationEmail(email, otp) {
       },
     });
 
-    // Prepare the email content
     const info = await transporter.sendMail({
       from: `"The Untold Stories 📖" <${process.env.NODEMAILER_EMAIL}>`,
       to: email,
@@ -76,7 +68,8 @@ async function sendVerificationEmail(email, otp) {
 // Controller for handling user signup
 const signup = async (req, res) => {
   try {
-    const { name, phone, email, password, confirmPassword, referralCode } = req.body;
+    const { name, phone, email, password, confirmPassword, referralCode } =
+      req.body;
 
     if (password !== confirmPassword) {
       return res.render("signup", { message: "Passwords do not match" });
@@ -90,12 +83,12 @@ const signup = async (req, res) => {
     }
 
     let referrer = null;
-    if(referralCode){
-      referrer = await User.findOne({referralCode})
-      if(!referrer){
-        return res.render('signup',{
-          message:'Invalid referral code'
-        })
+    if (referralCode) {
+      referrer = await User.findOne({ referralCode });
+      if (!referrer) {
+        return res.render("signup", {
+          message: "Invalid referral code",
+        });
       }
     }
 
@@ -110,7 +103,13 @@ const signup = async (req, res) => {
 
     req.session.userOtp = otp;
     req.session.otpSentAt = new Date();
-    req.session.userData = { name, phone, email, password, referredBy: referrer ? referrer._id : null };
+    req.session.userData = {
+      name,
+      phone,
+      email,
+      password,
+      referredBy: referrer ? referrer._id : null,
+    };
 
     res.redirect("/verify-otp");
 
@@ -161,10 +160,11 @@ const verifyOtp = async (req, res) => {
       const passwordHash = await securePassword(user.password);
 
       const generateReferralCode = (name) => {
-        return(
-          name.substring(0,3).toUpperCase()+Math.random().toString(36).substring(2,6).toUpperCase()
-        )
-      }
+        return (
+          name.substring(0, 3).toUpperCase() +
+          Math.random().toString(36).substring(2, 6).toUpperCase()
+        );
+      };
 
       const saveUserData = new User({
         name: user.name,
@@ -172,33 +172,30 @@ const verifyOtp = async (req, res) => {
         phone: user.phone,
         password: passwordHash,
         referralCode: generateReferralCode(user.name),
-        referredBy: user.referredBy
+        referredBy: user.referredBy,
       });
 
       await saveUserData.save();
 
       //referral reward
-
-      if(saveUserData.referredBy && !saveUserData.referralRewardCredited){
-        const referrer = await User.findById(saveUserData.referredBy)
-        if(referrer){
-          referrer.wallet.balance += 100
+      if (saveUserData.referredBy && !saveUserData.referralRewardCredited) {
+        const referrer = await User.findById(saveUserData.referredBy);
+        if (referrer) {
+          referrer.wallet.balance += 100;
           referrer.wallet.transactions.push({
-            type:'referral',
-            amount:100,
-            description:'Referral reward for new signup',
-            status:'completed'
+            type: "referral",
+            amount: 100,
+            description: "Referral reward for new signup",
+            status: "completed",
           });
-          await referrer.save()
-          saveUserData.referralRewardCredited = true
-          await saveUserData.save()
+          await referrer.save();
+          saveUserData.referralRewardCredited = true;
+          await saveUserData.save();
         }
       }
 
-    
-
-      delete req.session.userOtp
-      delete req.session.userData
+      delete req.session.userOtp;
+      delete req.session.userData;
 
       req.session.user = saveUserData._id;
 
@@ -271,7 +268,7 @@ const loadLoginPage = async (req, res) => {
     if (req.session.user) {
       return res.redirect("/");
     }
-    res.render("login", { message: null });
+    res.render("login", { message: null, query: req.query });
   } catch (error) {
     console.error("[Login page load error]", error);
     res.redirect("/pageNotFound");
@@ -286,17 +283,26 @@ const login = async (req, res) => {
     const findUser = await User.findOne({ isAdmin: false, email });
 
     if (!findUser) {
-      return res.render("login", { message: "Invalid Credentials" });
+      return res.render("login", {
+        message: "Invalid Credentials",
+        query: req.query,
+      });
     }
 
     if (findUser.isBlocked) {
-      return res.render("login", { message: "User is blocked by admin" });
+      return res.render("login", {
+        message: "User is blocked by admin",
+        query: req.query,
+      });
     }
 
     const passwordMatch = await bcrypt.compare(password, findUser.password);
 
     if (!passwordMatch) {
-      return res.render("login", { message: "Invalid Credentials" });
+      return res.render("login", {
+        message: "Invalid Credentials",
+        query: req.query,
+      });
     }
 
     req.session.user = findUser._id;
@@ -304,7 +310,10 @@ const login = async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.error("[Login error]", error);
-    res.render("login", { message: "Login failed. Please try again later." });
+    res.render("login", {
+      message: "Login failed. Please try again later.",
+      query: req.query,
+    });
   }
 };
 
@@ -317,7 +326,6 @@ const logout = async (req, res) => {
         return res.redirect("/pageNotFound");
       }
 
-      // Clear the session cookie manually
       res.clearCookie("connect.sid", {
         httpOnly: true,
         sameSite: "Strict",
@@ -333,248 +341,6 @@ const logout = async (req, res) => {
   }
 };
 
-// Controller to render the home page
-const loadHomepage = async (req, res) => {
-  try {
-    const userId = req.session.user;
-
-    let wishlistIds = [];
-    if(userId){
-      const wishlist = await Wishlist.findOne({userId})
-      wishlistIds = wishlist ? wishlist.products.map(p => p.productId.toString()) : []
-    }
-
-    const categories = await Category.find({
-      isListed: true,
-      isDeleted: false,
-    });
-    let productData = await Product.find({
-      isListed: true,
-      isDeleted: false,
-      category: { $in: categories.map((category) => category._id) },
-    })
-      .populate("category","name")
-      .sort({ createdAt: -1 })
-      .limit(4);
-
-    const bestSelling = await Order.aggregate([
-      { $unwind: "$orderItems" },
-      {
-        $group: {
-          _id: "$orderItems.product",
-          totalSold: { $sum: "$orderItems.quantity" },
-        },
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "product",
-        },
-      },
-      { $unwind: "$product" },
-      {
-        $lookup:{
-          from:"categories",
-          localField:"product.category",
-          foreignField:"_id",
-          as:"category"
-        }
-      },
-      {$unwind:"$category"},
-      {
-        $match: {
-          "product.isListed": true,
-          "product.isDeleted": false,
-          "category.isListed":true,
-          "category.isDeleted":false
-        },
-      },
-      { $sort: { totalSold: -1 } },
-    ]);
-
-    let bestSellingProducts = [];
-    if (bestSelling.length > 0) {
-      const maxSold = bestSelling[0].totalSold;
-      bestSellingProducts = bestSelling.filter(
-        (item) => item.totalSold === maxSold,
-      );
-    }
-
-    const userData = userId ? await User.findById(userId) : null;
-
-    res.status(200).render("home", {
-      user: userData,
-      products: productData,
-      bestSellingProducts,
-      wishlistIds
-    });
-  } catch (error) {
-    console.error("[Home page load error]", error);
-    res
-      .status(500)
-      .send("An unexpected error occurred. Please try again later.");
-  }
-};
-
-const loadShoppingPage = async (req, res) => {
-  try {
-    let page = Math.max(1, parseInt(req.query.page) || 1);
-    let limit = 6;
-    let skip = (page - 1) * limit;
-
-    const search = req.query.search ? req.query.search.trim() : "";
-    const category = req.query.category || "";
-    const minPrice = parseFloat(req.query.minPrice);
-    const maxPrice = parseFloat(req.query.maxPrice);
-    const sort = req.query.sort || "";
-
-    let userData = null;
-    if (req.session.user) {
-      userData = await User.findById(req.session.user);
-    }
-
-    let wishlistIds = [];
-    if(req.session.user){
-      const wishlist = await Wishlist.findOne({userId:req.session.user})
-      wishlistIds = wishlist ? wishlist.products.map(p => p.productId.toString()) : []
-    }
-
-    const match = {
-      isListed: true,
-      isDeleted: false,
-      price: { $gt: 0 },
-    };
-
-    if (minPrice) match.price = { $gte: minPrice };
-    if (maxPrice) match.price = { ...match.price, $lte: maxPrice };
-    if (search) match.productName = { $regex: search, $options: "i" };
-    if (category && Types.ObjectId.isValid(category)) {
-      match.category = new Types.ObjectId(category);
-    }
-
-    let sortOptions = {};
-    switch (sort) {
-      case "priceLowHigh":
-        sortOptions.price = 1;
-        break;
-      case "priceHighLow":
-        sortOptions.price = -1;
-        break;
-      case "a-z":
-        sortOptions.productName = 1;
-        break;
-      case "z-a":
-        sortOptions.productName = -1;
-        break;
-      default:
-        sortOptions.createdAt = -1;
-    }
-
-    const agg = await Product.aggregate([
-      { $match: match },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "category",
-        },
-      },
-      { $unwind: "$category" },
-      { $match: { "category.isListed": true, "category.isDeleted": false } },
-      { $sort: sortOptions },
-      {
-        $facet: {
-          data: [
-            { $skip: skip },
-            { $limit: limit },
-            {
-              $project: {
-                productName: 1,
-                price: 1,
-                quantity: 1,
-                productImage: 1,
-                createdAt: 1,
-                category: { _id: "$category._id", name: "$category.name" },
-              },
-            },
-          ],
-          total: [{ $count: "count" }],
-        },
-      },
-    ]);
-
-    const products = agg[0]?.data || [];
-    const totalProducts = agg[0]?.total?.[0]?.count || 0;
-    const totalPages = Math.ceil(totalProducts / limit);
-
-    const categories = await Category.find({
-      isListed: true,
-      isDeleted: false,
-    }).lean();
-
-    const now = new Date();
-    const activeOffers = await Offer.find({
-      isDeleted: false,
-      isActive: true,
-      startDate: { $lte: now },
-      endDate: { $gte: now },
-    });
-
-    const productOfferMap = new Map();
-    const categoryOfferMap = new Map();
-
-    activeOffers.forEach((offer) => {
-      if (offer.appliesTo === "product") {
-        offer.targetIds.forEach((id) => {
-          productOfferMap.set(id.toString(), offer.discountValue);
-        });
-      } else if (offer.appliesTo === "category") {
-        offer.targetIds.forEach((id) => {
-          categoryOfferMap.set(id.toString(), offer.discountValue);
-        });
-      }
-    });
-
-    const productsWithOffers = products.map((product) => {
-      const productDiscount = productOfferMap.get(product._id.toString()) || 0;
-
-      const categoryDiscount =
-        categoryOfferMap.get(product.category._id.toString()) || 0;
-
-      //Pick the higher discount
-      const discountValue = Math.max(productDiscount, categoryDiscount);
-
-      return {
-        ...product,
-        discountValue,
-      };
-    });
-
-
-    res.render("shop", {
-      products: productsWithOffers,
-      wishlistIds,
-      totalPages,
-      categories,
-      currentPage: page,
-      search,
-      category,
-      minPrice,
-      maxPrice,
-      sort,
-      limit,
-      totalProducts,
-      user: userData,
-    });
-  } catch (error) {
-    console.error("[Error loading shop page]", error);
-    res.status(500).render("page-404");
-  }
-};
-
 module.exports = {
   pageNotFound,
   loadSignup,
@@ -585,6 +351,4 @@ module.exports = {
   loadLoginPage,
   login,
   logout,
-  loadHomepage,
-  loadShoppingPage,
 };

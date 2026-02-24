@@ -1,10 +1,8 @@
 const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
-const Category = require("../../models/categorySchema");
-const Offer = require("../../models/offerSchema")
+const Offer = require("../../models/offerSchema");
 const Cart = require("../../models/cartSchema");
 const Wishlist = require("../../models/wishlistSchema");
-
 
 const getWishlistPage = async (req, res) => {
   try {
@@ -13,12 +11,33 @@ const getWishlistPage = async (req, res) => {
 
     if (!userData) return res.redirect("/login");
 
-    let wishlist = await Wishlist.findOne({ userId }).populate(
-      "products.productId",
-    );
+    let wishlist = await Wishlist.findOne({ userId }).populate({
+      path: "products.productId",
+      populate: {
+        path: "category",
+        model: "Category",
+      },
+    });
 
     if (!wishlist) {
       wishlist = { products: [] };
+    } else {
+      const validProducts = wishlist.products.filter((item) => {
+        const product = item.productId;
+        return (
+          product &&
+          product.isListed &&
+          !product.isDeleted &&
+          product.category &&
+          product.category.isListed &&
+          !product.category.isDeleted
+        );
+      });
+
+      if(validProducts.length !== wishlist.products.length){
+        wishlist.products = validProducts;
+        await wishlist.save();
+      }
     }
 
     const now = new Date();
@@ -44,12 +63,10 @@ const getWishlistPage = async (req, res) => {
       }
     });
 
-    // Calculate everything
     let subtotal = 0;
     let totalSavings = 0;
     let originalSubtotal = 0;
 
-    // Prepare enhanced items array
     const enhancedItems = wishlist.products.map((item) => {
       const product = item.productId;
       const originalPrice = Number(product.price) || 0;
@@ -59,7 +76,7 @@ const getWishlistPage = async (req, res) => {
       const productDiscount =
         Number(productOfferMap.get(product._id.toString())) || 0;
       const categoryDiscount =
-        Number(categoryOfferMap.get(product.category._id.toString())) || 0;
+        Number(categoryOfferMap.get(product.category?._id.toString())) || 0;
       const offerPercentage = Math.max(productDiscount, categoryDiscount);
 
       // Calculate prices
@@ -77,9 +94,8 @@ const getWishlistPage = async (req, res) => {
       originalSubtotal += originalPrice * quantity;
       subtotal += itemTotal;
 
-      // Return enhanced item
       return {
-        ...item._doc, // Use _doc for mongoose document's data
+        ...item._doc,
         productId: product,
         price: originalPrice,
         finalPrice: finalPrice,
@@ -90,7 +106,6 @@ const getWishlistPage = async (req, res) => {
       };
     });
 
-    // Create enhanced cart object
     const enhancedWishlist = {
       ...wishlist._doc,
       products: enhancedItems,
@@ -101,7 +116,7 @@ const getWishlistPage = async (req, res) => {
       user: userData,
       subtotal: subtotal.toFixed(2),
       totalSavings: totalSavings.toFixed(2),
-      originalSubtotal: originalSubtotal.toFixed(2)
+      originalSubtotal: originalSubtotal.toFixed(2),
     });
   } catch (error) {
     console.error("[Error in loading wishlist page]", error);
@@ -144,6 +159,10 @@ const addToWishlist = async (req, res) => {
 
     let wishlist = await Wishlist.findOne({ userId });
     if (!wishlist) wishlist = new Wishlist({ userId, products: [] });
+
+    if(wishlist.products.length >= 5){
+      return res.status(400).json({message:"You can only add up to 5 products to your wishlist"})
+    }
 
     let itemIndex = wishlist.products.findIndex(
       (product) => product.productId.toString() === productId,

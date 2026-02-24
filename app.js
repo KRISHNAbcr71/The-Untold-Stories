@@ -4,10 +4,11 @@ const app = express();
 const path = require('path');
 const nocache = require('nocache');
 const session = require('express-session');
+const env = require('dotenv').config();
 const passport = require('./config/passport');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
-const env = require('dotenv').config();
+
 const db = require('./config/db');
 db();
 const methodOverride = require('method-override')

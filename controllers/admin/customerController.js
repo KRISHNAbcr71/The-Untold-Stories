@@ -1,9 +1,6 @@
-const User = require('../../models/userSchema')
+const User = require("../../models/userSchema");
 
-
-
-
-
+// Load customer list with search and pagination
 const customerInfo = async (req, res) => {
   try {
     let search = req.query.search || "";
@@ -29,7 +26,7 @@ const customerInfo = async (req, res) => {
     for (let u of userData) {
       const index = await User.countDocuments({
         isAdmin: false,
-        createdOn: { $gt: u.createdOn }
+        createdOn: { $gt: u.createdOn },
       });
       u.globalIndex = index + 1;
     }
@@ -42,51 +39,38 @@ const customerInfo = async (req, res) => {
       currentPage: page,
       limit,
       search,
-      noResults: userData.length === 0
+      noResults: userData.length === 0,
     });
-
   } catch (error) {
     console.error("Error fetching customers:", error);
     res.status(500).send("Internal Server Error");
   }
 };
 
-
-
-
-
-const customerBlocked = async(req,res)=>{
+// Block a customer account
+const customerBlocked = async (req, res) => {
   try {
-    let id = req.query.id
-    await User.updateOne({_id:id},{$set:{isBlocked:true}})
+    let id = req.query.id;
+    await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
     res.status(200).json({ success: true });
-    
   } catch (error) {
-     res.status(500).json({ success: false, error: 'Block failed' });
+    res.status(500).json({ success: false, error: "Block failed" });
   }
 };
 
-
-
-
-
-const customerUnblocked = async(req,res)=>{
+// Unblock a customer account
+const customerUnblocked = async (req, res) => {
   try {
-    let id = req.query.id
-    await User.updateOne({_id:id},{$set:{isBlocked:false}})
+    let id = req.query.id;
+    await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
     res.status(200).json({ success: true });
-    
   } catch (error) {
-     res.status(500).json({ success: false, error: 'Unblock failed' });
+    res.status(500).json({ success: false, error: "Unblock failed" });
   }
-}
-
-
-
-
+};
 
 module.exports = {
-    customerInfo,
-    customerBlocked,
-    customerUnblocked
-}
+  customerInfo,
+  customerBlocked,
+  customerUnblocked,
+};

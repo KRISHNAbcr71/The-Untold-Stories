@@ -1,545 +1,541 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Panel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<%-include("../../views/partials/admin/header")%>
+<link rel="stylesheet" href="/css/add-product.css">
 
 
 
-  <style>
-    .admin-image {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .nav-link {
-      margin: 0 10px;
-    }
-
-    footer {
-      background-color: #f8f9fa;
-      padding: 10px 0;
-      text-align: center;
-      margin-top: auto;
-    }
-
-    .navbar {
-      background-color: #343a40;
-    }
-
-    .navbar .nav-link,
-    .navbar-brand,
-    .dropdown-toggle {
-      color: white;
-    }
-
-    .navbar .nav-link:hover,
-    .navbar-brand:hover,
-    .dropdown-item:hover {
-      color: #ffc107;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .content {
-      flex: 1;
-    }
-
-    main {
-      padding-top: 20px;
-    }
-
-    /* Basic page styling */
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Content container */
-    .content {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    /* Header */
-    .header h1 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    /* Form container */
-    .form-container {
-      padding: 20px;
-    }
-
-    /* Table form layout */
-    form table {
-      width: 100%;
-      border-spacing: 15px;
-    }
-
-    form table td:first-child {
-      text-align: right;
-      font-weight: bold;
-      color: #444;
-      vertical-align: top;
-      padding-top: 8px;
-    }
-
-    form table td input,
-    form table td textarea,
-    form table td select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: border-color 0.2s ease-in-out;
-    }
-
-    form table td input:focus,
-    form table td textarea:focus,
-    form table td select:focus {
-      outline: none;
-      border-color: #4a90e2;
-    }
-
-    /* Image preview styling */
-    .image-upload {
-      margin-bottom: 10px;
-    }
-
-    .image-preview {
-      display: block;
-      margin-top: 8px;
-      max-width: 150px;
-      height: auto;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-    }
-
-    /* Cropper modal styling */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-content {
-      background: #fff;
-      margin: 50px auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 600px;
-      text-align: center;
-    }
-
-    .modal-content img {
-      max-width: 100%;
-      margin-bottom: 15px;
-    }
-
-    .modal-content button {
-      background: #4a90e2;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .modal-content button:hover {
-      background: #357ab7;
-    }
-
-    /* Submit button */
-    .publish {
-      display: block;
-      margin: 25px auto 0 auto;
-      padding: 12px 20px;
-      background: #198754;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-  </style>
-</head>
-
-<body>
-
-  <!-- Header -->
-  <nav class="navbar navbar-expand-lg navbar-dark px-3">
-    <a class="navbar-brand" href="#">The Untold Stories</a>
-
-    <div class="collapse navbar-collapse justify-content-center">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/users">Customers</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/category">Category</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/product">Product</a></li>
-        <li class="nav-item"><a class="nav-link" href="/admin/banner">Banner</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Coupon</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Orders</a></li>
-      </ul>
-    </div>
-
-    <!-- Admin Dropdown -->
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="adminDropdown"
-        data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="/images/admin-icon.jpg" alt="Admin" class="admin-image">
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-      </ul>
-    </div>
-  </nav>
-
-
-
+<!-- Main Content -->
   <div class="content">
-    <div class="header">
-      <h1>Add New Product</h1>
-    </div>
-    <div class="form-container">
-      <form action="/admin/addProduct" method="POST" enctype="multipart/form-data" id="productForm">
-        <table>
-          <tr>
-            <td><label>Product Name</label></td>
-            <td><input type="text" name="product_name" id="product_name">
-              <div id="name-error" class="error-message text-danger small mt-1"></div>
-            </td>
-          </tr>
-          <tr>
-            <td><label>Full Description</label></td>
-            <td><textarea name="description" rows="4" id="dec"></textarea>
-              <div id="description-error" class="error-message text-danger small mt-1"></div>
-            </td>
-          </tr>
-          <tr>
-            <td><label>Price ($)</label></td>
-            <td><input type="number" name="price" id="price">
-              <div id="price-error" class="error-message text-danger small mt-1"></div>
-            </td>
-          </tr>
-          <tr>
-            <td><label>Author</label></td>
-            <td><input type="text" name="author" id="author">
-              <div id="author-error" class="error-message text-danger small mt-1"></div>
-            </td>
-          </tr>
-          <tr>
-            <td><label>Quantity</label></td>
-            <td><input type="number" name="quantity" id="quantity">
-              <div id="quantity-error" class="error-message text-danger small mt-1"></div>
-            </td>
-          </tr>
-          <tr>
-            <td><label>Category</label></td>
-            <td>
-              <select name="category" id="category">
-                <% if (cat && cat.length> 0) { %>
-                  <% for (let i=0; i < cat.length; i++) { %>
-                    <option value="<%= cat[i].name %>">
-                      <%= cat[i].name %>
-                    </option>
-                    <% } %>
-                      <% } else { %>
-                        <option value="">No Categories Available</option>
-                        <% } %>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td><label>Upload Images</label></td>
-            <td>
-              <div class="image-upload">
-                <input type="file" name="image1" id="image1" accept="image/*" onchange="handleFileSelect(event, 1)">
-                <div id="image1-error" class="error-message text-danger small mt-1"></div>
-              </div>
-              <img id="preview1" class="image-preview">
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <div class="image-upload">
-                <input type="file" name="image2" id="image2" accept="image/*" onchange="handleFileSelect(event, 2)">
-                <div id="image2-error" class="error-message text-danger small mt-1"></div>
-              </div>
-              <img id="preview2" class="image-preview">
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <div class="image-upload">
-                <input type="file" name="image3" id="image3" accept="image/*" onchange="handleFileSelect(event, 3)">
-                <div id="image3-error" class="error-message text-danger small mt-1"></div>
-              </div>
-              <img id="preview3" class="image-preview">
-            </td>
-          </tr>
-        </table>
-
-
-        <div id="cropperModal" class="modal">
-          <div class="modal-content">
-            <img id="cropperImage" src="" style="max-width: 100%;" />
-            <button type="button" onclick="cropImage()">Crop & Save</button>
-            <button type="button" onclick="closeCropper()">Cancel</button>
-          </div>
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-plus-circle-fill" style="font-size: 1.5rem;"></i>
         </div>
-
-
-        <button type="submit" class="publish">Publish</button>
-      </form>
+        <div>
+          <h1 class="page-title">Add New Product</h1>
+          <p class="page-subtitle">Create a new product for your store</p>
+        </div>
+      </div>
+      <a href="/admin/product" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        <span>Back to Products</span>
+      </a>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <!-- Main Form Card -->
+    <div class="form-card">
+      <div class="card-pattern"></div>
+      <div class="form-fields">
+        <form action="/admin/addProduct" method="POST" enctype="multipart/form-data" id="productForm">
+          <!-- Form Grid Layout -->
+          <div class="form-grid">
+            <!-- Left Column -->
+            <div>
+              <!-- Product Name -->
+              <div class="field-group">
+                <label for="product_name" class="field-label">
+                  <i class="bi bi-tag-fill"></i>
+                  Product Name
+                </label>
+                <div class="input-wrapper">
+                  <input type="text" class="form-control" id="product_name" name="product_name" placeholder="e.g., The Great Gatsby">
+                  <div class="input-border"></div>
+                </div>
+                <div id="name-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- Price -->
+              <div class="field-group">
+                <label for="price" class="field-label">
+                  <i class="bi bi-currency-dollar"></i>
+                  Price ($)
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" class="form-control" id="price" name="price" placeholder="29.99" step="0.01">
+                  <div class="input-border"></div>
+                </div>
+                <div id="price-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- Author -->
+              <div class="field-group">
+                <label for="author" class="field-label">
+                  <i class="bi bi-pencil-fill"></i>
+                  Author
+                </label>
+                <div class="input-wrapper">
+                  <input type="text" class="form-control" id="author" name="author" placeholder="e.g., F. Scott Fitzgerald">
+                  <div class="input-border"></div>
+                </div>
+                <div id="author-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+              <!-- Quantity -->
+              <div class="field-group">
+                <label for="quantity" class="field-label">
+                  <i class="bi bi-box-fill"></i>
+                  Quantity
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" class="form-control" id="quantity" name="quantity" placeholder="100">
+                  <div class="input-border"></div>
+                </div>
+                <div id="quantity-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- Category -->
+              <div class="field-group">
+                <label for="category" class="field-label">
+                  <i class="bi bi-grid-fill"></i>
+                  Category
+                </label>
+                <div class="input-wrapper">
+                  <select class="form-select" id="category" name="category">
+                    <option value="" disabled selected>Select a category</option>
+                    <% if (cat && cat.length> 0) { %>
+                      <% for (let i=0; i < cat.length; i++) { %>
+                        <option value="<%= cat[i].name %>">
+                          <%= cat[i].name %>
+                        </option>
+                      <% } %>
+                    <% } else { %>
+                      <option value="" disabled>No Categories Available</option>
+                    <% } %>
+                  </select>
+                  <div class="input-border"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Full Description (Full Width) -->
+          <div class="field-group">
+            <label for="dec" class="field-label">
+              <i class="bi bi-card-text"></i>
+              Full Description
+            </label>
+            <div class="input-wrapper">
+              <textarea class="form-control" id="dec" name="description" rows="4" placeholder="Provide a detailed description of the product..."></textarea>
+              <div class="input-border"></div>
+            </div>
+            <div id="description-error" class="error-message">
+              <i class="bi bi-exclamation-circle-fill"></i>
+              <span></span>
+            </div>
+          </div>
+
+          <!-- Image Upload Section -->
+          <div class="image-upload-section">
+            <div class="section-title">
+              <i class="bi bi-images"></i>
+              <span>Product Images</span>
+            </div>
+            
+            <div class="image-grid">
+              <!-- Image 1 -->
+              <div class="image-upload-card">
+                <div class="image-upload-header">
+                  <i class="bi bi-image-fill"></i>
+                  <span>Main Image</span>
+                </div>
+                <div class="file-input-wrapper">
+                  <input type="file" name="image1" id="image1" accept="image/*" onchange="handleFileSelect(event, 1)">
+                </div>
+                <img id="preview1" class="image-preview" src="#" alt="Preview" style="display: none;">
+                <div id="image1-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- Image 2 -->
+              <div class="image-upload-card">
+                <div class="image-upload-header">
+                  <i class="bi bi-image-fill"></i>
+                  <span>Image 2</span>
+                </div>
+                <div class="file-input-wrapper">
+                  <input type="file" name="image2" id="image2" accept="image/*" onchange="handleFileSelect(event, 2)">
+                </div>
+                <img id="preview2" class="image-preview" src="#" alt="Preview" style="display: none;">
+                <div id="image2-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- Image 3 -->
+              <div class="image-upload-card">
+                <div class="image-upload-header">
+                  <i class="bi bi-image-fill"></i>
+                  <span>Image 3</span>
+                </div>
+                <div class="file-input-wrapper">
+                  <input type="file" name="image3" id="image3" accept="image/*" onchange="handleFileSelect(event, 3)">
+                </div>
+                <img id="preview3" class="image-preview" src="#" alt="Preview" style="display: none;">
+                <div id="image3-error" class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Footer -->
+          <div class="form-footer">
+            <div class="footer-decoration"></div>
+            <div class="button-group">
+              <button type="button" class="btn btn-outline" onclick="clearForm()">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear Form</span>
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i>
+                <span>Publish Product</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">
+          <i class="bi bi-lightbulb-fill"></i>
+        </div>
+        <div>
+          <h4>Quality Images</h4>
+          <p>Use high-quality images for better product presentation</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">
+          <i class="bi bi-file-text-fill"></i>
+        </div>
+        <div>
+          <h4>Detailed Description</h4>
+          <p>Provide comprehensive details about the product</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">
+          <i class="bi bi-tags-fill"></i>
+        </div>
+        <div>
+          <h4>Accurate Pricing</h4>
+          <p>Ensure price and quantity are correctly entered</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cropper Modal -->
+  <div id="cropperModal" class="modal">
+    <div class="modal-content">
+      <img id="cropperImage" src="" style="max-width: 100%;" />
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn modal-btn-primary" onclick="cropImage()">
+          <i class="bi bi-crop"></i> Crop & Save
+        </button>
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeCropper()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 
 
-    <script>
+  
 
-      function validateForm() {
-        clearErrorMessages()
-        const productName = document.getElementById("product_name").value.trim();
-        const description = document.getElementById("dec").value.trim();
-        const author = document.getElementById('author').value.trim();
-        const price = document.getElementById('price').value.trim();
-        const quantity = document.getElementById('quantity').value.trim();
-        const category = document.getElementById('category').value.trim();
-        const image1 = document.getElementById('image1').files[0];
-        const image2 = document.getElementById('image2').files[0];
-        const image3 = document.getElementById('image3').files[0];
-        const images = [image1, image2, image3]
+    <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
-        const nameRegex = /^[a-zA-Z\s]+$/;
+  <script>
+    // Validation Functions
+    function validateForm() {
+      clearErrorMessages();
+      const productName = document.getElementById("product_name").value.trim();
+      const description = document.getElementById("dec").value.trim();
+      const author = document.getElementById('author').value.trim();
+      const price = document.getElementById('price').value.trim();
+      const quantity = document.getElementById('quantity').value.trim();
+      const category = document.getElementById('category').value;
+      const image1 = document.getElementById('image1').files[0];
+      const image2 = document.getElementById('image2').files[0];
+      const image3 = document.getElementById('image3').files[0];
+      const images = [image1, image2, image3];
+      let isValid = true;
 
-        if (productName === '') {
-          displayErrorMessage('name-error', 'Please enter a name.')
-          return false;
-        }
+      const nameRegex = /^[a-zA-Z\s]+$/;
 
-        if (description.length < 10) {
-          displayErrorMessage('description-error', 'Description must be at least 10 characters long.')
-          return false;
-        }
-
-        if (price === "" || isNaN(price) || parseFloat(price) <= 0) {
-          displayErrorMessage('price-error', 'Price must be a valid number greater than 0.')
-          return false;
-        }
-
-        if (!nameRegex.test(author)) {
-          displayErrorMessage('author-error', 'Author name must contain only alphabets.')
-          return false;
-        }
-
-        if (quantity === "" || isNaN(quantity) || parseInt(quantity) <= 0) {
-          displayErrorMessage('quantity-error', 'Quantity must be a valid number greater than 0.')
-          return false;
-        }
-
-        const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-
-        for (let i = 0; i < images.length; i++) {
-          if (images[i] && !allowedTypes.includes(images[i].type)) {
-            displayErrorMessage(`image${i + 1}-error`, "Only PNG and JPG files are allowed.");
-            return false;
-          }
-        }
-
-        return true;
+      if (productName === '') {
+        displayErrorMessage('name-error', 'Please enter a product name.');
+        isValid = false;
       }
 
-
-      // Displays error message in the specified element
-      function displayErrorMessage(elementId, message) {
-        let errorElement = document.getElementById(elementId)
-        errorElement.innerText = message
-        errorElement.style.display = 'block'
+      if (description.length < 10) {
+        displayErrorMessage('description-error', 'Description must be at least 10 characters long.');
+        isValid = false;
       }
 
-
-      // Clears all error messages displayed in the form
-      function clearErrorMessages() {
-        let errorElements = document.getElementsByClassName('error-message')
-        Array.from(errorElements).forEach((element) => {
-          element.innerText = ''
-          element.style.display = 'none'
-        })
+      if (price === "" || isNaN(price) || parseFloat(price) <= 0) {
+        displayErrorMessage('price-error', 'Price must be a valid number greater than 0.');
+        isValid = false;
       }
 
-      let cropper;
-      let currentImageIndex;
-
-      function handleFileSelect(event, index) {
-        const file = event.target.files[0];
-        if (file) {
-          // Allowed file types
-          const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-          if (!allowedTypes.includes(file.type)) {
-            Swal.fire("Invalid File Type", "Only PNG and JPG files are allowed.", "error");
-            event.target.value = ""; // Clear the invalid file input
-            return;
-          }
-
-          currentImageIndex = index;
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            document.getElementById(`preview${index}`).src = e.target.result;
-            document.getElementById('cropperImage').src = e.target.result;
-            openCropper();
-          };
-          reader.readAsDataURL(file);
-        }
-      }
-      function openCropper() {
-        document.getElementById('cropperModal').style.display = 'block';
-        const image = document.getElementById('cropperImage');
-        cropper = new Cropper(image, {
-          aspectRatio: 1,
-          viewMode: 1
-        });
-      }
-      function cropImage() {
-        const canvas = cropper.getCroppedCanvas({ width: 440, height: 600 });
-        canvas.toBlob(blob => {
-          const file = new File([blob], `cropped_image_${currentImageIndex}.png`, { type: "image/png" });
-
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          document.getElementById(`image${currentImageIndex}`).files = dataTransfer.files;
-
-          document.getElementById(`preview${currentImageIndex}`).src = URL.createObjectURL(blob);
-
-          closeCropper();
-        });
+      if (!nameRegex.test(author)) {
+        displayErrorMessage('author-error', 'Author name must contain only alphabets.');
+        isValid = false;
       }
 
-
-      function closeCropper() {
-        document.getElementById('cropperModal').style.display = 'none';
-        cropper.destroy();
+      if (quantity === "" || isNaN(quantity) || parseInt(quantity) <= 0) {
+        displayErrorMessage('quantity-error', 'Quantity must be a valid number greater than 0.');
+        isValid = false;
       }
 
-      function clearForm() {
-        document.getElementById("product_name").value = "";
-        document.getElementById("dec").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("author").value = "";
-        document.getElementById("quantity").value = "";
-        document.getElementById("category").selectedIndex = 0;
+      if (!category || category === '') {
+        displayErrorMessage('category-error', 'Please select a category.');
+        isValid = false;
+      }
 
-        for (let i = 1; i <= 3; i++) {
-          let fileInput = document.getElementById(`image${i}`);
-          let imgPreview = document.getElementById(`preview${i}`);
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
 
-          fileInput.value = "";
-          imgPreview.src = "";
-
-          localStorage.removeItem(`croppedImage_${i}`);
-          localStorage.removeItem(`imageName_${i}`);
+      for (let i = 0; i < images.length; i++) {
+        if (images[i] && !allowedTypes.includes(images[i].type)) {
+          displayErrorMessage(`image${i + 1}-error`, "Only PNG and JPG files are allowed.");
+          isValid = false;
         }
       }
 
+      return isValid;
+    }
 
-
-      function showSuccessMessage() {
-        Swal.fire({
-          title: "Success!",
-          text: "Product added successfully!",
-          icon: "success",
-          confirmButtonText: "OK"
-        }).then(() => {
-          clearForm();
-          localStorage.clear();
-          sessionStorage.removeItem("imagesLoaded");
-          window.location.href = '/admin/product'
-        });
+    function displayErrorMessage(elementId, message) {
+      let errorElement = document.getElementById(elementId);
+      if (errorElement) {
+        errorElement.querySelector('span').innerText = message;
+        errorElement.style.display = 'flex';
       }
+    }
 
+    function clearErrorMessages() {
+      let errorElements = document.getElementsByClassName('error-message');
+      Array.from(errorElements).forEach((element) => {
+        element.querySelector('span').innerText = '';
+        element.style.display = 'none';
+      });
+    }
 
-      document.getElementById("productForm").addEventListener("submit", async function (event) {
-        event.preventDefault();
-        if (!validateForm()) {
-          return;
-        }
-        const formData = new FormData(this);
-        try {
-          const response = await fetch("/admin/addProduct", {
-            method: "POST",
-            body: formData
+    function setupRealTimeValidation() {
+      const inputs = [
+        { id: 'product_name', errorId: 'name-error' },
+        { id: 'dec', errorId: 'description-error' },
+        { id: 'price', errorId: 'price-error' },
+        { id: 'author', errorId: 'author-error' },
+        { id: 'quantity', errorId: 'quantity-error' }
+      ];
+
+      inputs.forEach(input => {
+        const element = document.getElementById(input.id);
+        const errorElement = document.getElementById(input.errorId);
+        if (element && errorElement) {
+          element.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+              errorElement.style.display = 'none';
+              errorElement.querySelector('span').innerText = '';
+            }
           });
-          const data = await response.json();
-          if (response.ok && data.message === "Product added successfully!") {
-            showSuccessMessage();
-          } else {
-            Swal.fire("Error", "Failed to add product.", "error");
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          Swal.fire("Error", "Something went wrong.", "error");
         }
       });
+    }
 
-    </script>
+    // Cropper functionality
+    let cropper;
+    let currentImageIndex;
 
-
-
-    <!-- Footer -->
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-
-      async function logout() {
-        try {
-          const response = await fetch('/admin/logout', { method: 'GET' });
-          if (response.ok) {
-            window.location.href = '/admin/login'
-          } else {
-            console.error('Logout failed')
-          }
-        } catch (error) {
-          console.error('Error during logout', error)
-
+    function handleFileSelect(event, index) {
+      const file = event.target.files[0];
+      if (file) {
+        const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+        if (!allowedTypes.includes(file.type)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid File Type',
+            text: 'Only PNG and JPG files are allowed.',
+            confirmButtonColor: '#d4a373'
+          });
+          event.target.value = "";
+          return;
         }
-      }
 
-    </script>
-    
-</body>
-</html>
+        currentImageIndex = index;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const preview = document.getElementById(`preview${index}`);
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          document.getElementById('cropperImage').src = e.target.result;
+          openCropper();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function openCropper() {
+      document.getElementById('cropperModal').style.display = 'block';
+      const image = document.getElementById('cropperImage');
+      cropper = new Cropper(image, {
+        aspectRatio: 440/600,
+        viewMode: 1
+      });
+    }
+
+    function cropImage() {
+      const canvas = cropper.getCroppedCanvas({ width: 440, height: 600 });
+      canvas.toBlob(blob => {
+        const file = new File([blob], `cropped_image_${currentImageIndex}.png`, { type: "image/png" });
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById(`image${currentImageIndex}`).files = dataTransfer.files;
+
+        const preview = document.getElementById(`preview${currentImageIndex}`);
+        preview.src = URL.createObjectURL(blob);
+        preview.style.display = 'block';
+
+        closeCropper();
+      });
+    }
+
+    function closeCropper() {
+      document.getElementById('cropperModal').style.display = 'none';
+      if (cropper) {
+        cropper.destroy();
+      }
+    }
+
+    function clearForm() {
+      document.getElementById("product_name").value = "";
+      document.getElementById("dec").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("author").value = "";
+      document.getElementById("quantity").value = "";
+      document.getElementById("category").selectedIndex = 0;
+
+      for (let i = 1; i <= 3; i++) {
+        let fileInput = document.getElementById(`image${i}`);
+        let imgPreview = document.getElementById(`preview${i}`);
+
+        fileInput.value = "";
+        imgPreview.src = "#";
+        imgPreview.style.display = 'none';
+      }
+      
+      clearErrorMessages();
+    }
+
+    function showSuccessMessage() {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Product added successfully!",
+        confirmButtonColor: '#d4a373',
+        timer: 2000,
+        timerProgressBar: true
+      }).then(() => {
+        window.location.href = '/admin/product';
+      });
+    }
+
+    // Form submission
+    document.getElementById("productForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      if (!validateForm()) {
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.btn-primary');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Publishing...';
+      submitBtn.disabled = true;
+
+      const formData = new FormData(this);
+      try {
+        const response = await fetch("/admin/addProduct", {
+          method: "POST",
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok && data.message === "Product added successfully!") {
+          showSuccessMessage();
+        } else {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to add product.",
+            confirmButtonColor: '#d4a373'
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Something went wrong.",
+          confirmButtonColor: '#d4a373'
+        });
+      }
+    });
+
+    // Logout function
+    async function logout() {
+      try {
+        const response = await fetch('/admin/logout', { method: 'GET' });
+        if (response.ok) {
+          window.location.href = '/admin/login';
+        } else {
+          console.error('Logout failed');
+        }
+      } catch (error) {
+        console.error('Error during logout', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      setupRealTimeValidation();
+      
+      // Hide preview images initially
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`preview${i}`).style.display = 'none';
+      }
+    });
+  </script>
+
+
+
+<%-include("../../views/partials/admin/footer")%>

@@ -2,6 +2,7 @@ const Offer = require("../../models/offerSchema");
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 
+// Load offer list with search, pagination, and active status
 const getOfferPage = async (req, res) => {
   try {
     const search = req.query.search || "";
@@ -43,6 +44,7 @@ const getOfferPage = async (req, res) => {
   }
 };
 
+// Load add offer page with products and categories
 const getAddOfferPage = async (req, res) => {
   try {
     const products = await Product.find({ isDeleted: false, isListed: true });
@@ -57,6 +59,7 @@ const getAddOfferPage = async (req, res) => {
   }
 };
 
+// Add a new offer with validation and active status
 const addOffer = async (req, res) => {
   try {
     const { name, discountValue, appliesTo, targetIds, startDate, endDate } =
@@ -131,6 +134,7 @@ const addOffer = async (req, res) => {
   }
 };
 
+// Load edit offer page with offer, products, and categories
 const getEditOffer = async (req, res) => {
   try {
     const offerId = req.query.id;
@@ -168,6 +172,7 @@ const getEditOffer = async (req, res) => {
   }
 };
 
+// Update offer details with validation
 const editOffer = async (req, res) => {
   try {
     const { id } = req.params;
@@ -187,7 +192,6 @@ const editOffer = async (req, res) => {
       });
     }
 
-    // Check if offer exists and not deleted
     const offer = await Offer.findById(id);
 
     if (!offer) {
@@ -197,7 +201,6 @@ const editOffer = async (req, res) => {
       });
     }
 
-    // Check if name is changed and conflicts with other offers
     if (name.trim().toUpperCase() !== offer.name) {
       const existingOffer = await Offer.findOne({
         name: name.trim().toUpperCase(),
@@ -234,6 +237,7 @@ const editOffer = async (req, res) => {
   }
 };
 
+// Soft delete offer
 const deleteOffer = async (req, res) => {
   try {
     const { id } = req.params;

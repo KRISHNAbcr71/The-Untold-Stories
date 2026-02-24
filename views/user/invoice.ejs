@@ -49,7 +49,7 @@
                         <th>Price</th>
                         <th>Item Status</th>
                         <th>Total</th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
@@ -61,10 +61,6 @@
                             <td>
                                 <%= item.quantity %>
                             </td>
-                            <!-- <td>₹<%= item.price %>
-                            </td>
-                            <td>₹<%= item.price * item.quantity %>
-                            </td> -->
                             <td>
                                 <% if (item.finalPrice && item.finalPrice < item.price) { %>
                                     <span style="text-decoration: line-through; color: #888;">
@@ -75,18 +71,11 @@
                                         ₹<%= item.price %>
                                             <% } %>
                             </td>
-
-                            
-
                             <td>
-                                <span class="
-          <%= 
-            item.itemStatus === 'Delivered' ? 'text-success' :
-            item.itemStatus === 'Cancelled' ? 'text-danger' :
-            item.itemStatus.includes('Return') ? 'text-warning' :
-            'text-primary'
-          %>
-        ">
+                                <span class="<%= item.itemStatus === 'Delivered' ? 'text-success' : 
+                                item.itemStatus === 'Cancelled' ? 'text-danger' :
+                                item.itemStatus.includes('Return') ? 'text-warning' :
+                                'text-primary'%>">
                                     <%= item.itemStatus %>
                                 </span>
                             </td>
@@ -103,12 +92,6 @@
             </table>
         </div>
 
-        <!-- <div class="total">
-        <strong>Subtotal:</strong> ₹<%= order.subtotal %><br>
-        <strong>Discount:</strong> ₹<%= order.discountAmount %><br>
-        <strong>Delivery:</strong> ₹<%= order.deliveryCharge %><br>
-        <strong>Final Amount:</strong> ₹<%= order.finalAmount %>
-    </div> -->
         <div class="summary-section">
             <div class="payment-info">
                 <p><strong>Payment Method:</strong>
@@ -127,13 +110,14 @@
             </div>
         </div>
 
-
         <div class="footer">
             Thank you for your purchase!
         </div>
         <div class="action-buttons">
             <a href="/my-order" class="btn">Go Back</a>
-            <!-- <button class="btn">Download Invoice</button> -->
             <a href="/invoice/<%= order.orderId %>/download" class="btn">Download Invoice</a>
         </div>
     </div>
+
+
+    <%-include("../../views/partials/user/footer")%>

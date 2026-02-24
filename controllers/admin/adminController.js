@@ -68,7 +68,7 @@ const logout = async (req, res) => {
   }
 };
 
-
+// Controller to load admin dashboard
 const loadDashboard = async (req, res) => {
   try {
     const { period = "monthly" } = req.query;

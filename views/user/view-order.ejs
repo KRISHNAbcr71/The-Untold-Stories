@@ -7,67 +7,54 @@
             <h4 class="fw-bold text-center mb-4 text-secondary">
                 Order #<%= order.orderId %>
             </h4>
-            <!-- Status Tracker -->
-
-
             <%
-const statuses = ['Pending', 'Shipped', 'Out for Delivery', 'Delivered'];
+            const statuses = ['Pending', 'Shipped', 'Out for Delivery', 'Delivered'];
+            let displayStatus = order.status;
+            const returnStatuses = ['Return Requested','Return Approved','Return Rejected'];
 
-let displayStatus = order.status;
+            if (returnStatuses.includes(order.status)) {
+                displayStatus = 'Delivered';
+            }
 
-const returnStatuses = [
-  'Return Requested',
-  'Return Approved',
-  'Return Rejected'
-];
+            let activeIndex = statuses.indexOf(displayStatus);
 
-if (returnStatuses.includes(order.status)) {
-  displayStatus = 'Delivered';
-}
+            if (activeIndex === -1) {
+                activeIndex = statuses.length - 1;
+            }
+            %>
 
-let activeIndex = statuses.indexOf(displayStatus);
-
-if (activeIndex === -1) {
-  activeIndex = statuses.length - 1;
-}
-%>
-
-
-                <div class="d-flex justify-content-around mb-3">
-                    <% statuses.forEach(function(status, idx) { %>
-                        <div class="text-center">
-                            <div class="circle <%= idx <= activeIndex ? 'active' : '' %>"></div>
-                            <p class="mt-2">
-                                <%= status.toUpperCase() %>
-                            </p>
-                        </div>
-                        <% }) %>
-                </div>
-
-
-
-                <!-- Order Dates -->
-                <div class="bg-light p-3 rounded">
-                    <p>
-                        <strong>Order Placed On:</strong>
-                        <%= order.invoiceDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
-                            %>
-                    </p>
-                    <p>
-                        <strong>Delivered On:</strong>
-                        <%= order.deliveredDate ?
-                            order.deliveredDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
-                            : 'N/A' %>
-                    </p>
-                </div>
-                <% if(order.status && order.status.toLowerCase().trim()==='delivered' ){ %>
-                    <div class="text-end mt-3">
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnOrderModal"
-                            data-order="<%= order.orderId %>">
-                            Return Order
-                        </button>
+            <div class="d-flex justify-content-around mb-3">
+                <% statuses.forEach(function(status, idx) { %>
+                    <div class="text-center">
+                        <div class="circle <%= idx <= activeIndex ? 'active' : '' %>"></div>
+                        <p class="mt-2">
+                            <%= status.toUpperCase() %>
+                        </p>
                     </div>
-                    <% } %>
+                    <% }) %>
+            </div>
+
+            <!-- Order Dates -->
+            <div class="bg-light p-3 rounded">
+                <p>
+                    <strong>Order Placed On:</strong>
+                    <%= order.invoiceDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) %>
+                </p>
+                <p>
+                    <strong>Delivered On:</strong>
+                    <%= order.deliveredDate ?
+                        order.deliveredDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+                        : 'N/A' %>
+                </p>
+            </div>
+            <% if(order.status && order.status.toLowerCase().trim()==='delivered' ){ %>
+                <div class="text-end mt-3">
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnOrderModal"
+                        data-order="<%= order.orderId %>">
+                        Return Order
+                    </button>
+                </div>
+                <% } %>
         </div>
         <!-- Product Details -->
         <div class="card shadow-sm mb-4">
@@ -87,19 +74,27 @@ if (activeIndex === -1) {
                             <p class="mb-1">Price: ₹<%= item.price %>
                             </p>
                             <p class="mb-0">Status:
-  <span class="
-    <%= 
-      item.itemStatus === 'Cancelled' ? 'text-danger' :
-      item.itemStatus === 'Delivered' ? 'text-success' :
-      item.itemStatus === 'Return Requested' ? 'text-warning' :
-      item.itemStatus === 'Return Approved' ? 'text-warning' :
-      item.itemStatus === 'Return Rejected' ? 'text-danger' :
-      'text-primary'
-    %>
-  ">
-    <%= item.itemStatus %>
-  </span>
-                                
+                                <span class="
+                                <%= 
+                                  item.itemStatus === 'Cancelled' ? 'text-danger' :
+                                  item.itemStatus === 'Delivered' ? 'text-success' :
+                                  item.itemStatus === 'Return Requested' ? 'text-warning' :
+                                  item.itemStatus === 'Return Approved' ? 'text-warning' :
+                                  item.itemStatus === 'Return Rejected' ? 'text-danger' :
+                                  'text-primary'
+                                %>">
+                                    <%= item.itemStatus %>
+                                </span>
+
+                            </p>
+                            <p>
+                                <% if(item.itemStatus==='Delivered' ){ %>
+                                    <button class="btn btn-warning btn-sm return-item-btn" data-bs-toggle="modal"
+                                        data-bs-target="#returnItemModal" data-order-id="<%= order.orderId %>"
+                                        data-item-id="<%= item._id %>">
+                                        Return
+                                    </button>
+                                    <% } %>
                             </p>
                         </div>
                     </div>
@@ -213,16 +208,62 @@ if (activeIndex === -1) {
         </div>
     </div>
 
+
+
+    <!-- Return Item Modal -->
+    <div class="modal fade" id="returnItemModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form class="modal-content" id="returnItemForm">
+                <input type="hidden" id="returnItemOrderId">
+                <input type="hidden" id="returnItemId">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Return Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <label class="form-label">Reason for Return</label>
+
+                    <div class="form-check">
+                        <input class="form-check-input item-reason" type="radio" name="itemReason"
+                            value="Damaged product">
+                        <label class="form-check-label">Damaged product</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input item-reason" type="radio" name="itemReason"
+                            value="Wrong item received">
+                        <label class="form-check-label">Wrong item received</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input item-reason" type="radio" name="itemReason" value="Other">
+                        <label class="form-check-label">Other</label>
+                    </div>
+
+                    <textarea class="form-control mt-2" id="itemOtherReason" placeholder="Enter reason..."
+                        style="display:none"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">Submit Return</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // const returnModal = new bootstrap.Modal(document.getElementById('returnOrderModal'));
             const returnOrderIdInput = document.getElementById("returnOrderId");
             const returnForm = document.getElementById("returnOrderForm");
             const returnReasonRadios = document.querySelectorAll(".return-reason");
             const returnOtherReason = document.getElementById("returnOtherReason");
 
-            // Pass orderId when button clicked
             document
                 .querySelectorAll('[data-bs-target="#returnOrderModal"]')
                 .forEach((btn) => {
@@ -232,7 +273,6 @@ if (activeIndex === -1) {
                     });
                 });
 
-            // Show/hide textarea for "Other"
             returnReasonRadios.forEach((radio) => {
                 radio.addEventListener("change", () => {
                     if (radio.value === "Other" && radio.checked) {
@@ -285,5 +325,58 @@ if (activeIndex === -1) {
                     });
                 }
             });
+
+
+
+
+            const returnItemModal = new bootstrap.Modal(document.getElementById("returnItemModal"));
+
+            document.querySelectorAll(".return-item-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    document.getElementById("returnItemOrderId").value = btn.dataset.orderId;
+                    document.getElementById("returnItemId").value = btn.dataset.itemId;
+                    returnItemModal.show();
+                });
+            });
+
+            document.querySelectorAll(".item-reason").forEach(radio => {
+                radio.addEventListener("change", () => {
+                    document.getElementById("itemOtherReason").style.display =
+                        radio.value === "Other" ? "block" : "none";
+                });
+            });
+
+            // Submit item return
+            document.getElementById("returnItemForm").addEventListener("submit", async e => {
+                e.preventDefault();
+
+                const orderId = document.getElementById("returnItemOrderId").value;
+                const itemId = document.getElementById("returnItemId").value;
+
+                const selected =
+                    document.querySelector('input[name="itemReason"]:checked')?.value;
+
+                const reason =
+                    selected === "Other"
+                        ? document.getElementById("itemOtherReason").value
+                        : selected;
+
+                const res = await fetch(`/return-item/${orderId}/${itemId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ reason }),
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    Swal.fire("Success", data.message, "success").then(() => location.reload());
+                } else {
+                    Swal.fire("Error", data.message, "error");
+                }
+            });
+
         });
     </script>
+
+    <%-include("../../views/partials/user/footer")%>

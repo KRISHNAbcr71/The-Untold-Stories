@@ -4,18 +4,9 @@
   font-weight: bold;
 }
 
-/* Table Head */
-/* .cart-table-head {
-  display: grid;
-  grid-template-columns: 100px 1fr 120px 160px 50px;
-  font-weight: bold;
-  padding: 12px 10px;
-  border-bottom: 2px solid #ddd;
-  color: #555;
-} */
- .custom-thead th{
+.custom-thead th {
   background-color: #f8f4e9;
- }
+}
 
 /* Row */
 .cart-item {

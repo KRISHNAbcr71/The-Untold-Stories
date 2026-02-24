@@ -2,7 +2,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  /* background: #f4f1ea !important; */
   background-color: #f5f0e8;
   background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4a373' stroke-width='1' opacity='0.15'%3E%3Cpath d='M60 20c8 12 20 14 30 6-6 14-2 26 10 30-14 4-18 16-10 30-10-8-22-6-30 6-8-12-20-14-30-6 6-14 2-26-10-30 14-4 18-16 10-30 10 8 22 6 30-6z'/%3E%3C/g%3E%3C/svg%3E");
   background-repeat: repeat;
@@ -201,13 +200,6 @@ body {
 .wishlist-action:hover {
   border-color: #d4a373;
 }
-
-
-
-
-
-
-
 
 /* Wishlist active state */
 .wishlist-active .wishlist-icon {

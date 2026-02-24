@@ -232,16 +232,12 @@
     <div class="text-end">
       <a href="/admin/downloadSalesReportPDF?filter=<%= filter %>&from=<%= from %>&to=<%= to %>" class="btn btn-outline-danger me-2">
         Download PDF
-      </a>
+      </a> 
+
 
       <a href="/admin/downloadSalesReportExcel?filter=<%= filter %>&from=<%= from %>&to=<%= to %>" class="btn btn-success">
         Download Excel
       </a>
-
-
-
-
-
     </div>
 
   </div>
@@ -257,11 +253,9 @@
   </script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Get filter from URL or default
     const urlParams = new URLSearchParams(window.location.search);
     const currentFilter = urlParams.get('filter') ;
     
-    // Highlight active filter button
     document.querySelectorAll('.quick-filter').forEach(btn => {
       if (btn.dataset.filter === currentFilter) {
         btn.classList.add('active');
@@ -275,7 +269,6 @@
         const url = new URL(window.location);
         url.searchParams.set('filter', filter);
         
-        // Remove custom date params if not custom filter
         if (filter !== 'custom') {
           url.searchParams.delete('from');
           url.searchParams.delete('to');
@@ -298,7 +291,6 @@
       window.location.href = `/admin/sales?filter=custom&from=${from}&to=${to}`;
     });
 
-    // Chart rendering
     const salesTrendData = JSON.parse(document.getElementById('salesTrendData').textContent || '[]');
     const discountData = JSON.parse(document.getElementById('discountData').textContent || '{}');
 
@@ -306,7 +298,6 @@
       const labels = salesTrendData.map(d => d.label);
       const revenue = salesTrendData.map(d => d.totalRevenue);
       
-      // Determine chart type based on data density
       let chartType = 'bar';
       if (labels.length > 20) chartType = 'line';
       
@@ -315,11 +306,8 @@
         data: {
           labels,
           datasets: [{
-            // label: 'Revenue',
             data: revenue,
-            // backgroundColor: labels.length > 10 ? 'transparent' : 'rgba(54, 162, 235, 0.5)',
             backgroundColor: '#d4a373',
-            // borderWidth: 2
           }]
         },
         options: {
@@ -340,7 +328,6 @@
         }
       });
     } else {
-      // Show empty chart message
       document.getElementById('salesChart').innerHTML = 
         '<div class="text-center text-muted p-4">No data available for the selected period</div>';
     }
@@ -403,7 +390,6 @@
       });
     }
 
-    // If custom filter is active, show custom range and set dates
     if (currentFilter === 'custom') {
       customRange?.classList.remove('d-none');
       if (urlParams.get('from')) {
@@ -414,138 +400,8 @@
       }
     }
   });
+
+  
 </script>
-
-
-  <!-- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-      /* ===== QUICK FILTER BUTTONS ===== */
-      document.querySelectorAll('.quick-filter').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const filter = btn.dataset.filter;
-          window.location.href = `/admin/sales?filter=${filter}`
-        });
-      });
-
-      /* ===== GENERATE REPORT BUTTON ===== */
-      document.getElementById('generateReport').addEventListener('click', () => {
-        const from = document.getElementById('fromDate').value;
-        const to = document.getElementById('toDate').value;
-
-        if (!from || !to) {
-          Swal.fire('error', 'Please select both From and To dates')
-          return;
-        }
-
-        window.location.href = `/admin/sales?filter=custom&from=${from}&to=${to}`
-      })
-
-
-
-
-
-
-
-
-      const salesTrendScript = document.getElementById('salesTrendData');
-  const salesTrendData = JSON.parse(salesTrendScript.textContent || '[]');
-
-  if (salesTrendData.length > 0) {
-    const labels = salesTrendData.map(d => d.label);
-    const revenue = salesTrendData.map(d => d.totalRevenue);
-
-    new Chart(document.getElementById('salesChart'), {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Weekly Revenue',
-          data: revenue,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false }
-        }
-      }
-    });
-  } else {
-    console.warn('No sales trend data');
-  }
-
-      /* ========== DISCOUNT CHART ========== */
-
-      new Chart(document.getElementById('discountChart'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Offer Discount', 'Coupon Discount'],
-          datasets: [{
-            data: [
-              discountData.offerDiscount || 0,
-              discountData.couponDiscount || 0
-            ]
-          }]
-        },
-        options: { responsive: true }
-      });
-
-
-
-
-    });
-
-
-
-    const customBtn = document.getElementById('customBtn');
-  const customRange = document.getElementById('customRange');
-  const resetBtn = document.getElementById('resetFilters');
-
-  // Show custom date range
-  customBtn.addEventListener('click', () => {
-    customRange.classList.remove('d-none');
-
-    // deactivate quick filters
-    document.querySelectorAll('.quick-filter').forEach(btn => {
-      btn.classList.remove('active');
-    });
-  });
-
-  // Quick filter active state + hide custom range
-  document.querySelectorAll('.quick-filter').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.quick-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // hide custom range
-      customRange.classList.add('d-none');
-      document.getElementById('fromDate').value = '';
-      document.getElementById('toDate').value = '';
-    });
-  });
-
-  // Reset everything
-  resetBtn.addEventListener('click', () => {
-    document.querySelectorAll('.quick-filter').forEach(b => b.classList.remove('active'));
-    document.getElementById('fromDate').value = '';
-    document.getElementById('toDate').value = '';
-    customRange.classList.add('d-none');
-
-    // reload full dashboard
-    window.location.href = '/admin/sales';
-  });
-
-  </script> -->
-
-
-
-
-
-
-
-
-
 
   <%-include("../../views/partials/admin/footer")%>

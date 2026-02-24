@@ -66,7 +66,6 @@
                   </td>
                 </tr>
                 <%}%>
-                  <!-- Add more rows dynamically -->
             </tbody>
           </table>
         </div>
@@ -92,21 +91,14 @@
                 </ul>
               </nav>
             </div>
-
-
-
-
        </div>
       
 
             
 
             <!-- Bootstrap JS -->
-
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
             <script>
-
 
               const searchInput = document.getElementById('searchInput');
               const clearBtn = document.getElementById('clearSearch');
@@ -128,7 +120,7 @@
               clearBtn.addEventListener('click', () => {
                 searchInput.value = '';
                 clearBtn.style.display = 'none';
-                window.location.href = '/admin/users'; // Reload full list
+                window.location.href = '/admin/users'; 
               });
 
               // Initialize clear button on page load
@@ -136,12 +128,8 @@
                 clearBtn.style.display = 'block';
               }
 
-
-
-
-
               function confirmAction(event, action, id) {
-                event.preventDefault(); // Prevent the default <a> click
+                event.preventDefault(); 
 
                 const actionText = action === 'block' ? 'Block' : 'Unblock';
                 const buttonColor = action === 'block' ? '#d33' : '#3085d6';
@@ -171,7 +159,7 @@
                           `User has been ${actionText.toLowerCase()}ed successfully.`,
                           'success'
                         ).then(() => {
-                          location.reload(); // Refresh the page to show updated status
+                          location.reload(); 
                         });
                       })
                       .catch(error => {
@@ -184,8 +172,9 @@
                   }
                 });
 
-                return false; // Prevent default behavior
+                return false; 
               }
 
             </script>
+            
             <%-include("../../views/partials/admin/footer")%>

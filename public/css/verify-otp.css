@@ -1,25 +1,3 @@
-/* .otp-container {
-  max-width: 400px;
-  margin: 80px auto;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.timer {
-  font-weight: bold;
-  margin: 10px 0;
-  color: #d9534f;
-}
-
-.custom-btn {
-  background-color: #ccc !important;
-  color: black !important;
-  margin-top: 10px;
-  border: none;
-} */
-
-
 /* --- Global Theme Sync --- */
 body {
     background-color: #f4f1ea;
@@ -136,23 +114,6 @@ h3 {
     cursor: not-allowed;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* --- Global Theme Sync --- */
 body {
     background-color: #f4f1ea;
@@ -268,20 +229,6 @@ h3 {
     opacity: 0.6;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* --- Global Theme Sync --- */
 body {
     background-color: #f4f1ea; /* The base page color */
@@ -294,7 +241,7 @@ body {
     margin: 100px auto;
     padding: 30px;
     /* Matches change-name card color exactly */
-    background-color: #e9e4d9 !important; 
+    background-color: #ffffff !important; 
     border: none;
     border-radius: 12px;
     box-shadow: 20px 20px 60px #dad5cb, -20px -20px 60px #ffffff;

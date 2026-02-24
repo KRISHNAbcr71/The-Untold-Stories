@@ -8,6 +8,7 @@ const couponController = require("../controllers/admin/couponController");
 const orderController = require("../controllers/admin/orderController");
 const offerController = require("../controllers/admin/offerController");
 const salesController = require("../controllers/admin/salesController");
+const salesExportController = require("../controllers/admin/salesExportController")
 const { route } = require("./userRouter");
 const { upload } = require("../middlewares/multer");
 const { adminAuth } = require("../middlewares/auth");
@@ -25,7 +26,6 @@ router.get("/pageError", adminController.loadErrorPage);
 router.get("/login", adminController.loadLogin);
 router.post("/login", adminController.login);
 router.get("/logout", adminAuth, adminController.logout);
-
 router.get("/dashboard",adminAuth,adminController.loadDashboard)
 
 
@@ -50,8 +50,7 @@ router.get("/unlistCategory", adminAuth, categoryController.getUnlistCategory);
 router.get("/editCategory", adminAuth, categoryController.getEditCategory);
 router.put("/editCategory/:id", adminAuth, categoryController.editCategory);
 router.delete("/deleteCategory/:id",adminAuth,categoryController.deleteCategory,);
-// router.get("/trash-category", adminAuth, categoryController.trashCategory);
-// router.patch("/restore-category/:id",adminAuth,categoryController.restoreCategory);
+
 
 // Product management
 // -----------------
@@ -64,8 +63,7 @@ router.get("/editProduct", adminAuth, productController.getEditProduct);
 router.post("/editProduct/:id",adminAuth,upload,productController.editProduct);
 router.delete("/deleteImage/:productId/:imageName",adminAuth,productController.deleteSingleImage,);
 router.delete("/deleteProduct/:id", adminAuth, productController.deleteProduct);
-// router.get("/trashProduct", adminAuth, productController.trashProduct);
-// router.patch("/restoreProduct/:id",adminAuth,productController.restoreProduct);
+
 
 
 
@@ -99,6 +97,7 @@ router.patch("/updateStatus/:orderId", adminAuth, orderController.updateStatus);
 router.get("/details/:orderId", adminAuth, orderController.viewOrderDetails);
 router.post("/acceptReturn/:orderId",adminAuth,orderController.acceptReturnRequest);
 router.post("/rejectReturn/:orderId",adminAuth,orderController.rejectReturnRequest);
+router.post("/acceptItemReturn/:orderId/:itemId",adminAuth,orderController.acceptItemReturn )
 
 
 
@@ -106,8 +105,8 @@ router.post("/rejectReturn/:orderId",adminAuth,orderController.rejectReturnReque
 // Sales report
 // ------------
 router.get("/sales", adminAuth, salesController.getSalesReport);
-router.get("/downloadSalesReportPDF",adminAuth,salesController.downloadSalesReportPDF);
-router.get("/downloadSalesReportExcel",adminAuth,salesController.downloadSalesReportExcel)
+router.get("/downloadSalesReportPDF",adminAuth,salesExportController.downloadSalesReportPDF);
+router.get("/downloadSalesReportExcel",adminAuth,salesExportController.downloadSalesReportExcel)
 
 
 

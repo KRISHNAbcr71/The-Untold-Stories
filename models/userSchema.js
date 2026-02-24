@@ -53,22 +53,21 @@ const userSchema = new Schema({
     },
   ],
   createdOn: {
-    // Date of account creation
     type: Date,
     default: Date.now,
   },
   referralCode: {
     type: String,
-    unique: true
+    unique: true,
   },
   referredBy: {
     type: Schema.Types.ObjectId,
-    ref:"User",
-    default:null
+    ref: "User",
+    default: null,
   },
   referralRewardCredited: {
-    type:Boolean,
-    default:false
+    type: Boolean,
+    default: false,
   },
   searchHistory: [
     {
@@ -107,7 +106,7 @@ const userSchema = new Schema({
         {
           type: {
             type: String,
-            enum: ["credit", "debit", "refund", "payment","referral"],
+            enum: ["credit", "debit", "refund", "payment", "referral"],
             required: true,
           },
           amount: {
@@ -144,9 +143,9 @@ const userSchema = new Schema({
         },
       ],
     },
-    default: () => ({ 
-      balance: 0, 
-      transactions: [] 
+    default: () => ({
+      balance: 0,
+      transactions: [],
     }),
   },
 });

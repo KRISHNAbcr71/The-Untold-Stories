@@ -7,9 +7,8 @@
         <i class="fas fa-times"></i>
       </div>
       <h2>Payment Failed!</h2>
-      <p>Payment Status: <%= order.paymentStatus %></p>
-
-
+      <p>Payment Status: <%= order.paymentStatus %>
+      </p>
       <% if (order) { %>
         <p>Order ID: <strong>
             <%= order.orderId %>
@@ -21,122 +20,12 @@
           </p>
 
           <div class="actions">
-            <!-- <% if (order && order.paymentStatus==='Failed' ) { %>
-              <button class="btn retry-payment" data-order-id="<%= order._id %>">
-                Retry Payment
-              </button>
-              <% } %> -->
-
-                <a href="/my-order" class="btn view-order">VIEW MY ORDERS</a>
-                <a href="/shop" class="btn continue-shopping">CONTINUE SHOPPING</a>
+            <a href="/my-order" class="btn view-order">VIEW MY ORDERS</a>
+            <a href="/shop" class="btn continue-shopping">CONTINUE SHOPPING</a>
           </div>
     </div>
   </div>
 
-  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 
 
-<!-- <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const retryBtn = document.querySelector(".retry-payment");
-    if (!retryBtn) return;
-
-    retryBtn.addEventListener("click", async function () {
-      const orderId = this.dataset.orderId;
-
-      const originalText = this.innerHTML;
-      this.disabled = true;
-      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-      try {
-        // 1️⃣ Create Razorpay order again
-        const res = await fetch(`/retry-payment/${orderId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
-        });
-
-        const data = await res.json();
-
-        if (!data.success) {
-          Swal.fire("Retry Failed", data.message || "Unable to retry payment", "error");
-          this.disabled = false;
-          this.innerHTML = originalText;
-          return;
-        }
-
-        // 2️⃣ Razorpay options
-        const options = {
-          key: "<%= razorpayKeyId %>",
-          amount: data.razorpayOrder.amount,
-          currency: data.razorpayOrder.currency,
-          order_id: data.razorpayOrder.id,
-          name: "The Untold Stories",
-          description: "Retry Order Payment",
-
-          prefill: {
-            name: "<%= user.name %>",
-            email: "<%= user.email %>",
-            contact: "<%= user.phone || '' %>",
-          },
-
-          // ✅ VERY IMPORTANT PART
-          handler: async function (response) {
-            try {
-              const verifyRes = await fetch("/verify-payment", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "same-origin",
-                body: JSON.stringify({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                  orderId: orderId,
-                }),
-              });
-
-              const verifyData = await verifyRes.json();
-
-              if (verifyData.success) {
-                window.location.href = "/order-success";
-              } else {
-                window.location.href = `/order-failed/${orderId}`;
-              }
-            } catch (err) {
-              console.error("Verify error:", err);
-              window.location.href = `/order-failed/${orderId}`;
-            }
-          },
-
-          modal: {
-            ondismiss: function () {
-              window.location.href = `/order-failed/${orderId}`;
-            },
-          },
-
-          theme: {
-            color: "#3399cc",
-          },
-        };
-
-        this.disabled = false;
-        this.innerHTML = originalText;
-
-        const rzp = new Razorpay(options);
-
-        rzp.on("payment.failed", function () {
-          window.location.href = `/order-failed/${orderId}`;
-        });
-
-        rzp.open();
-      } catch (err) {
-        console.error("Retry payment error:", err);
-        Swal.fire("Error", "Something went wrong. Please try again.", "error");
-        this.disabled = false;
-        this.innerHTML = originalText;
-      }
-    });
-  });
-</script> -->
 

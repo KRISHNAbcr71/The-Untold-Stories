@@ -1,51 +1,52 @@
-const User = require('../models/userSchema')
-const mongoose = require('mongoose')
+const User = require("../models/userSchema");
+const mongoose = require("mongoose");
 
-const userAuth = async(req,res,next) =>{
-    try {
-        const userId = req.session.user
-        if(!userId) return res.redirect('/login')
+// User authentication middleware
+const userAuth = async (req, res, next) => {
+  try {
+    const userId = req.session.user;
+    if (!userId) return res.redirect("/login");
 
-        const userData = await User.findById(userId)
-        if(!userData) {
-            req.session.destroy()
-            return res.redirect('/login')
-        }
-        req.user = userData
-        next()
-    } catch (error) {
-        console.log("Error in userAuth middleware:", error);
-        res.status(500).send("Internal Server Error");
+    const userData = await User.findById(userId);
+    if (!userData) {
+      req.session.destroy();
+      return res.redirect("/login");
     }
-}
+    req.user = userData;
+    next();
+  } catch (error) {
+    console.log("Error in userAuth middleware:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
-
+// Admin authentication middleware
 const adminAuth = async (req, res, next) => {
   try {
     const adminId = req.session.admin;
 
     if (!adminId) {
-      return res.redirect('/admin/login');
+      return res.redirect("/admin/login");
     }
 
     if (!mongoose.Types.ObjectId.isValid(adminId)) {
       req.session.destroy();
-      return res.redirect('/admin/login');
+      return res.redirect("/admin/login");
     }
 
     const admin = await User.findById(adminId);
 
     if (!admin || !admin.isAdmin || admin.isBlocked) {
       req.session.destroy();
-      return res.redirect('/admin/login');
+      return res.redirect("/admin/login");
     }
 
     req.admin = admin;
     next();
   } catch (error) {
-    console.error('Error in adminAuth middleware:', error);
-    res.redirect('/admin/login');
+    console.error("Error in adminAuth middleware:", error);
+    res.redirect("/admin/login");
   }
 };
 
-module.exports = {userAuth, adminAuth}
+module.exports = { userAuth, adminAuth };

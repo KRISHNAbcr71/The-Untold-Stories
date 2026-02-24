@@ -1,152 +1,132 @@
 <%-include("../../views/partials/user/header")%>
-<link rel="stylesheet" href="/css/verify-otp.css">
+  <link rel="stylesheet" href="/css/verify-otp.css">
 
-<div class="otp-container">
-  <h3 class="text-center mb-3">OTP Verification</h3>
+  <div class="otp-container">
+    <h3 class="text-center mb-3">OTP Verification</h3>
 
-  <form id="form" novalidate>
-    <!-- OTP Input -->
-    <div class="mb-3">
-      <label for="otp" class="form-label">Enter OTP: </label>
-      <input type="text" class="form-control" id="otp" name="otp" maxlength="6" placeholder="Enter 6-digit OTP"
-      style="border: 1px solid #ccc; padding: 8px; outline: none;"
-      onfocus="this.style.border='2px solid black'; this.style.boxShadow='none';"
-      onblur="this.style.border='1px solid #ccc'">
-    </div>
+    <form id="form" novalidate>
+      <!-- OTP Input -->
+      <div class="mb-3">
+        <label for="otp" class="form-label">Enter OTP: </label>
+        <input type="text" class="form-control" id="otp" name="otp" maxlength="6" placeholder="Enter 6-digit OTP"
+          style="border: 1px solid #ccc; padding: 8px; outline: none;"
+          onfocus="this.style.border='2px solid black'; this.style.boxShadow='none';"
+          onblur="this.style.border='1px solid #ccc'">
+      </div>
 
-    <!-- Verify Button -->
-    <button type="submit" class="btn w-100" style="background-color: #fca311;color: white;">Verify Email</button>
-  </form>
+      <!-- Verify Button -->
+      <button type="submit" class="btn w-100" style="background-color: #fca311;color: white;">Verify Email</button>
+    </form>
 
-  <!-- Timer -->
-  <div class="timer text-center" id="timer">60</div>
+    <!-- Timer -->
+    <div class="timer text-center" id="timer">60</div>
 
-  <!-- Resend Button -->
-  <button type="submit" id="resendBtn" class="btn custom-btn w-100" onclick="resendOtp()">Resend OTP</button>
-    
-</div>
+    <!-- Resend Button -->
+    <button type="submit" id="resendBtn" class="btn custom-btn w-100" onclick="resendOtp()">Resend OTP</button>
 
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </div>
 
 
-<script>
 
-  let otpSentAt = new Date('<%= otpSentAt %>');
-  let countdown;
-  const timerSpan = document.getElementById("timer");
-  const resendBtn = document.getElementById("resendBtn");
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  function startTimer() {
-    clearInterval(countdown);
 
-    const now = new Date();
-    const secondsPassed = Math.floor((now - otpSentAt) / 1000);
-    let timeLeft = Math.max(60 - secondsPassed, 0);
+  <script>
 
-    if (timeLeft <= 0) {
-      resendBtn.disabled = false;
-      timerSpan.textContent = "Expired";
-      return;
-    }
+    let otpSentAt = new Date('<%= otpSentAt %>');
+    let countdown;
+    const timerSpan = document.getElementById("timer");
+    const resendBtn = document.getElementById("resendBtn");
 
-    resendBtn.disabled = true;
-    timerSpan.textContent = timeLeft;
+    function startTimer() {
+      clearInterval(countdown);
 
-    countdown = setInterval(() => {
-      timeLeft--;
-      timerSpan.textContent = timeLeft;
+      const now = new Date();
+      const secondsPassed = Math.floor((now - otpSentAt) / 1000);
+      let timeLeft = Math.max(60 - secondsPassed, 0);
 
       if (timeLeft <= 0) {
-        clearInterval(countdown);
         resendBtn.disabled = false;
         timerSpan.textContent = "Expired";
+        return;
       }
-    }, 1000);
-  }
 
+      resendBtn.disabled = true;
+      timerSpan.textContent = timeLeft;
 
-  document.addEventListener('DOMContentLoaded', startTimer);
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerSpan.textContent = timeLeft;
 
-
-  document.getElementById("form").addEventListener("submit", function(e){
-
-    e.preventDefault(); // 🚀 stops default reload
-    console.log("🚀 Form submitted"); 
-
-    const otpInput = document.getElementById('otp').value;
-    console.log("OTP entered:", otpInput); // debug
-
-    if (!otpInput) {
-      // Show an error alert if OTP is missing
-      Swal.fire({
-        icon: 'error',
-        title: 'Missing OTP',
-        text: 'Please enter the OTP to continue.'
-      });
-      return false;  // Prevent form submission
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          resendBtn.disabled = false;
+          timerSpan.textContent = "Expired";
+        }
+      }, 1000);
     }
 
-    $.ajax({
-      type: 'POST',
-      url: '/verify-changeEmail-otp',
-      data: { otp: otpInput },
-      success: function(response){
-        if(response.success){
-          Swal.fire({
-            icon: 'success',
-            title: 'OTP verified successfully',
-            showConfirmButton: false,
-            timer: 1500
-          }).then(()=>{
 
-            // 🚀 redirect to reset password page
-            window.location.href = response.redirectUrl || '/reset-email'
-          })
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid OTP',
-            text: response.message
-          })
-        }
-      },
+    document.addEventListener('DOMContentLoaded', startTimer);
 
-      error: function(){
+
+    document.getElementById("form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const otpInput = document.getElementById('otp').value;
+
+      if (!otpInput) {
         Swal.fire({
           icon: 'error',
-          title: 'Error',
-          text: 'Failed to verify OTP. Please try again.'
-        })
+          title: 'Missing OTP',
+          text: 'Please enter the OTP to continue.'
+        });
+        return false;
       }
+
+      $.ajax({
+        type: 'POST',
+        url: '/verify-changeEmail-otp',
+        data: { otp: otpInput },
+        success: function (response) {
+          if (response.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'OTP verified successfully',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              window.location.href = response.redirectUrl || '/reset-email'
+            })
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid OTP',
+              text: response.message
+            })
+          }
+        },
+
+        error: function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to verify OTP. Please try again.'
+          })
+        }
+      });
     });
-  });
 
 
 
-
-
-
-
-
-
-
-
-
-  // Function to handle "Resend OTP" action:
+    // Function to handle "Resend OTP" action:
     function resendOtp() {
-
-      // Send AJAX request to the server to resend the OTP
       $.ajax({
         type: 'POST',
         url: '/resend-forgot-otp',
 
-        // If the server responds successfully
         success: function (response) {
           if (response.success) {
-            // Show success alert if OTP is sent successfully
             Swal.fire({
               icon: 'success',
               title: 'OTP Sent ',
@@ -155,17 +135,12 @@
               timer: 1500
             });
 
-
-            // ✅ Update otpSentAt and restart timer
-        if (response.otpSentAt) {
-          otpSentAt = new Date(response.otpSentAt); // update global variable
-          startTimer(); // restart timer with new value
-        }
-
-
+            if (response.otpSentAt) {
+              otpSentAt = new Date(response.otpSentAt);
+              startTimer();
+            }
 
           } else {
-            // Show error alert if backend responds with failure
             Swal.fire({
               icon: 'error',
               title: 'Failed to Resend',
@@ -175,7 +150,6 @@
         },
 
         error: function () {
-          // Show error alert if the request itself fails (e.g., network/server error)
           Swal.fire({
             icon: 'error',
             title: 'Server Error',
@@ -186,6 +160,4 @@
     }
 
 
-</script>
-
-
+  </script>

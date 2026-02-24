@@ -11,10 +11,7 @@
     </div>
 </div>
 
-<!-- <div class="d-flex" style="gap: 10px;">
-    <a href="/admin/addCoupon" class="btn btn-secondary add-cat" style="width: 200px;">Add Coupon</a>
-    <a href="/admin/trashProduct" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
-</div> -->
+
 <div class="d-flex mb-4 ps-4" style="gap: 12px;">
   <a href="/admin/addCoupon" class="btn add-cat-btn">
     <span class="icon">➕</span>
@@ -111,7 +108,7 @@
     clearBtn.addEventListener('click', () => {
         searchInput.value = '';
         clearBtn.style.display = 'none';
-        window.location.href = '/admin/coupon'; // Reload full list
+        window.location.href = '/admin/coupon';
     });
 
     // Initialize clear button on page load

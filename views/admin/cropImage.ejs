@@ -75,7 +75,7 @@ function saveCroppedImage() {
         const urlParams = new URLSearchParams(window.location.search);
         const index = urlParams.get("index");
 
-        console.log("Saving cropped image for index:", index);
+        //console.log("Saving cropped image for index:", index);
         localStorage.setItem(`croppedImage_${index}`, croppedData);
 
         window.location.href = `/admin/addProducts?index=${index}`

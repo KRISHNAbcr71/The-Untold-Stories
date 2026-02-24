@@ -1,119 +1,89 @@
-/* 
-.btn-sub {
-    background-color: #d4a373;
-    color: white;
-    font-weight: bold;
-}
-
-.btn-sub:hover {
-    background-color: #d4a373;
-    color: white;
-}
-
-input, textarea {
-    background-color: white;      
-    color: black;                 
-}
-
-input:focus, textarea:focus {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: black !important;
-    background-color: white !important;   
-}
-
-input:-webkit-autofill,
-textarea:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset; 
-    -webkit-text-fill-color: black !important;
-}
-
- */
-
 body {
-    background-color: #f4f1ea !important;
-    font-family: 'Montserrat', sans-serif;
+  background-color: #f4f1ea !important;
+  font-family: "Montserrat", sans-serif;
 }
 
 /* --- Card Styling (Matched to Change-Name/Password) --- */
 .card {
-    background-color: #e9e4d9 !important; /* Warm Sand */
-    border: none !important;
-    border-radius: 12px !important;
-    /* Premium Neumorphic Effect */
-    box-shadow: 20px 20px 60px #dad5cb, -20px -20px 60px #ffffff !important;
-    padding: 30px !important;
+  background-color: #e9e4d9 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  /* Premium Neumorphic Effect */
+  box-shadow:
+    20px 20px 60px #dad5cb,
+    -20px -20px 60px #ffffff !important;
+  padding: 30px !important;
 }
 
 h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.5rem;
-    color: #1e2a2d; /* Deep Teal */
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-weight: 600;
-    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
-    padding-bottom: 15px;
+  font-family: "Cinzel", serif;
+  font-size: 1.5rem;
+  color: #1e2a2d;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+  padding-bottom: 15px;
 }
 
 /* --- Form Elements --- */
 .form-label {
-    font-family: 'Montserrat', sans-serif;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    color: #1e2a2d;
-    font-weight: 700;
-    margin-bottom: 8px;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: #1e2a2d;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .form-control {
-    background-color: #f4f1ea !important; /* Matches page background */
-    border: 1px solid rgba(30, 42, 45, 0.1) !important;
-    border-radius: 4px !important;
-    padding: 10px 15px !important;
-    font-size: 0.9rem !important;
-    color: #1e2a2d !important;
-    transition: all 0.3s ease !important;
+  background-color: #f4f1ea !important; /* Matches page background */
+  border: 1px solid rgba(30, 42, 45, 0.1) !important;
+  border-radius: 4px !important;
+  padding: 10px 15px !important;
+  font-size: 0.9rem !important;
+  color: #1e2a2d !important;
+  transition: all 0.3s ease !important;
 }
 
 /* "White Focus" state for luxury feel */
 .form-control:focus {
-    background-color: #ffffff !important;
-    border-color: #d4a373 !important;
-    box-shadow: 0 0 0 0.2rem rgba(212, 163, 115, 0.15) !important;
-    outline: none !important;
+  background-color: #ffffff !important;
+  border-color: #d4a373 !important;
+  box-shadow: 0 0 0 0.2rem rgba(212, 163, 115, 0.15) !important;
+  outline: none !important;
 }
 
 /* Fix for browser autofill background */
 input:-webkit-autofill,
 textarea:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #f4f1ea inset !important;
-    -webkit-text-fill-color: #1e2a2d !important;
+  -webkit-box-shadow: 0 0 0px 1000px #f4f1ea inset !important;
+  -webkit-text-fill-color: #1e2a2d !important;
 }
 
 /* --- Submit Button --- */
 .btn-sub {
-    background-color: #1e2a2d !important; /* Deep Teal */
-    color: #ffffff !important;
-    font-family: 'Montserrat', sans-serif;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    padding: 12px 40px !important;
-    border: none !important;
-    border-radius: 4px !important;
-    transition: 0.3s ease !important;
-    font-weight: 600 !important;
+  background-color: #1e2a2d !important; /* Deep Teal */
+  color: #ffffff !important;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  padding: 12px 40px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  transition: 0.3s ease !important;
+  font-weight: 600 !important;
 }
 
 .btn-sub:hover {
-    background-color: #d4a373 !important; /* Gold hover */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  background-color: #d4a373 !important; /* Gold hover */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Textarea specific adjustment */
 textarea.form-control {
-    min-height: 80px;
+  min-height: 80px;
 }

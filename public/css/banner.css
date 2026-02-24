@@ -8,40 +8,10 @@ body {
   margin-bottom: 20px;
   margin-top: 20px;
   margin-right: 40px;
-  
 }
-
-/* .search-container input {
-  padding-right: 30px;
-  width: 400px;
-}
-
-.search-container input:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  border-color: black !important;
-}
-
-.search-clear {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #aaa;
-  font-size: 1.2rem;
-} */
-
-
-
 
 .table td,
 .table th {
   vertical-align: middle;
   border: 1px solid black;
 }
-
-/* .table-wrapper {
-  position: relative;
-  min-height: 800px;
-} */

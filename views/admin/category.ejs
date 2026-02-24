@@ -15,23 +15,11 @@
     <% if (noResults) { %>
         <div class="text-center text-danger mb-3">No results found</div>
         <% } %>
-
-            <!-- <div class="d-flex" style="gap: 10px;">
-                <a href="/admin/addCategory" class="btn btn-secondary add-cat" style="width: 200px;">Add Category</a>
-                <a href="/admin/trash-category" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
-            </div> -->
-            <div class="d-flex mb-4 ps-4" style="gap: 12px;">
-  <a href="/admin/addCategory" class="btn add-cat-btn">
-    <span class="icon">➕</span>
-    Add Category
-  </a>
-</div>
-
-
-
-
+        <div class="d-flex mb-4 ps-4" style="gap: 12px;">
+            <a href="/admin/addCategory" class="btn add-cat-btn">
+            <span class="icon">➕</span>Add Category</a>
+        </div>
             <div class="table-wrapper">
-
                 <div class="table-responsive container-fluid">
                     <table class="table align-middle admin-table">
                         <thead class="table-secondary">
@@ -98,17 +86,10 @@
                         </ul>
                     </nav>
                 </div>
-
-
-
             </div>
 
 
-
-
             <!-- Bootstrap JS -->
-
-
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
             <script>
@@ -132,7 +113,7 @@
                 clearBtn.addEventListener('click', () => {
                     searchInput.value = '';
                     clearBtn.style.display = 'none';
-                    window.location.href = '/admin/category'; // Reload full list
+                    window.location.href = '/admin/category';
                 });
 
                 // Initialize clear button on page load
@@ -143,7 +124,7 @@
 
 
                 function confirmAction(event, action, id) {
-                    event.preventDefault(); // Prevent the default <a> click
+                    event.preventDefault();
 
                     const actionText = action === 'list' ? 'List' : 'Unlist';
                     const buttonColor = action === 'list' ? '#3085d6' : '#d33';
@@ -173,7 +154,7 @@
                                         `User has been ${actionText.toLowerCase()}ed successfully.`,
                                         'success'
                                     ).then(() => {
-                                        location.reload(); // Refresh the page to show updated status
+                                        location.reload(); 
                                     });
                                 })
                                 .catch(error => {
@@ -185,7 +166,7 @@
                                 });
                         }
                     });
-                    return false; // Prevent default behavior
+                    return false; 
                 }
 
 
@@ -203,7 +184,7 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 fetch(`/admin/deleteCategory/${categoryId}`, {
-                                    method: 'DELETE', // use DELETE if route is delete
+                                    method: 'DELETE', 
                                     headers: {
                                         'Content-Type': 'application/json'
                                     }
@@ -212,7 +193,7 @@
                                     .then(data => {
                                         if (data.success) {
                                             Swal.fire('Deleted!', data.message, 'success').then(() => {
-                                                location.reload(); // refresh page to show updated data
+                                                location.reload(); 
                                             });
                                         } else {
                                             Swal.fire('Oops!', data.message || 'Something went wrong.', 'error');

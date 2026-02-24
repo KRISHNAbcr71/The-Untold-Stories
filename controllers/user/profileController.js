@@ -4,10 +4,6 @@ const bcrypt = require('bcrypt')
 const env = require('dotenv').config()
 const session = require('express-session')
 
-
-
-
-
 function generateOtp() {
     return Math.floor(100000 + Math.random() * 900000).toString()
 }
@@ -46,10 +42,6 @@ async function sendVerificationEmail(email, otp) {
     }
 }
 
-
-
-
-
 const securePassword = async (password) => {
     try {
         const passwordHash = await bcrypt.hash(password, 10)
@@ -60,154 +52,17 @@ const securePassword = async (password) => {
     }
 };
 
-
-
-
-
-const getForgotPasswordPage = async (req, res) => {
-    try {
-        res.render('forgot-password', { message: null })
-    } catch (error) {
-        res.redirect('/pageNotFound')
-    }
-}
-
-
-
-
-
-const forgotEmailValid = async (req, res) => {
-    try {
-        const { email } = req.body
-        const findUser = await User.findOne({ email: email })
-        if (!findUser) {
-            return res.render('forgot-password', { message: 'No account found with this email. Please check the email or sign up for a new account.' })
-        }
-
-        const otp = generateOtp()
-        const emailSent = await sendVerificationEmail(email, otp)
-
-        if (!emailSent) {
-            return res.render('forgot-password', { message: 'Failed to send OTP. Please try again.' })
-        }
-
-        req.session.userOtp = otp
-        req.session.email = email
-        req.session.otpSentAt = new Date();
-
-        res.render('forgotPass-otp', { otpSentAt: req.session.otpSentAt })
-
-        console.log('Otp sent: ', otp);
-
-    } catch (error) {
-        console.error('[Email validation error]', error)
-        res.redirect('/pageNotFound')
-    }
-}
-
-
-
-
-
-const verifyForgotPassOtp = async (req, res) => {
-    try {
-        const { otp } = req.body
-        if (otp === req.session.userOtp) {
-            res.json({ success: true, redirectUrl: '/reset-password' })
-        } else {
-            res.json({ success: false, message: 'OTP not matching' })
-        }
-    } catch (error) {
-        console.error('[otp verification error]', error)
-        res.redirect('/pageNotFound')
-    }
-}
-
-
-
-
-
-const getResetPassPage = async (req, res) => {
-    try {
-        res.render('reset-password')
-    } catch (error) {
-        console.error('[rendering reset password page error]', error)
-        res.redirect('/pageNotFound')
-    }
-}
-
-
-
-
-
-const resendOtp = async (req, res) => {
-    try {
-        const otp = generateOtp();
-        req.session.userOtp = otp;
-        req.session.otpSentAt = new Date();
-        const email = req.session.email;
-
-        console.log('Resending otp to email: ', email);
-
-        const emailSent = await sendVerificationEmail(email, otp);
-
-        if (!emailSent) {
-            return res.json({ success: false, message: 'Failed to send OTP. Please try again.' });
-        }
-
-        console.log('Resend otp: ', otp);
-
-        return res.json({ success: true, message: 'A new OTP has been sent to your email.', otpSentAt: req.session.otpSentAt });
-
-    } catch (error) {
-        console.error('[resend otp error]', error);
-        res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
-    }
-};
-
-
-
-
-
-const newPassword = async (req, res) => {
-    try {
-        const { password, confirmPassword } = req.body
-        const email = req.session.email
-        if (password === confirmPassword) {
-            const passwordHash = await securePassword(password)
-            await User.updateOne(
-                { email: email },
-                { $set: { password: passwordHash } }
-            )
-            res.redirect('/login')
-        } else {
-            res.render('reset-password', { message: 'Passwords do not match' })
-        }
-
-    } catch (error) {
-        console.error('[Error checking password ]', error)
-        res.redirect('/pageNotFound')
-    }
-}
-
-
-
-
-
 const getProfilePage = async (req, res) => {
     try {
         const userId = req.session.user
         const userData = await User.findById(userId)
+            .populate('referredBy','name email referralCode')
         res.render('profile', { user: userData })
     } catch (error) {
         console.error('[Error in loading user profile page]', error)
         res.status(500).render('page-404')
     }
 }
-
-
-
-
 
 const profileImage = async (req, res) => {
     try {
@@ -259,10 +114,6 @@ const getChangeNamePage = async (req, res) => {
     }
 }
 
-
-
-
-
 const updateProfileName = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -296,10 +147,6 @@ const updateProfileName = async (req, res) => {
     }
 }
 
-
-
-
-
 const getChangeEmailPage = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -319,10 +166,6 @@ const getChangeEmailPage = async (req, res) => {
         res.status(500).render('page-404')
     }
 }
-
-
-
-
 
 const verifyEmail = async (req, res) => {
     try {
@@ -354,10 +197,6 @@ const verifyEmail = async (req, res) => {
     }
 }
 
-
-
-
-
 const verifyChangeEmailOtp = async (req, res) => {
     try {
         const { otp } = req.body
@@ -372,10 +211,6 @@ const verifyChangeEmailOtp = async (req, res) => {
     }
 }
 
-
-
-
-
 const getResetEmailPage = async (req, res) => {
     try {
         res.render('reset-email')
@@ -384,10 +219,6 @@ const getResetEmailPage = async (req, res) => {
         res.redirect('/pageNotFound')
     }
 }
-
-
-
-
 
 const newEmail = async (req, res) => {
     try {
@@ -432,10 +263,6 @@ const newEmail = async (req, res) => {
     }
 };
 
-
-
-
-
 const resendEmailOtp = async (req, res) => {
     try {
         const otp = generateOtp();
@@ -460,10 +287,6 @@ const resendEmailOtp = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
     }
 }
-
-
-
-
 
 const getChangePasswordEmailValid = async (req, res) => {
     try {
@@ -493,19 +316,16 @@ const changePassword = async(req,res) => {
             return res.status(400).json({message:'Passwords do not match'})
         }
 
-        // check current password
         const currentPasswordMatch = await bcrypt.compare(currentPassword, user.password)
         if(!currentPasswordMatch){
             return res.status(400).json({message:'Current password is incorrect'})
         }
 
-        // prevent same password
         const preventSamePassword = await bcrypt.compare(newPassword, user.password)
         if(preventSamePassword){
             return res.status(400).json({message:'New password must be different'})
         }
 
-        // hash and save
         const passwordHash = await securePassword(newPassword)
         user.password = passwordHash
         await user.save()
@@ -519,19 +339,7 @@ const changePassword = async(req,res) => {
     }
 }
 
-
-
-
-
-
-
 module.exports = {
-    getForgotPasswordPage,
-    forgotEmailValid,
-    verifyForgotPassOtp,
-    getResetPassPage,
-    resendOtp,
-    newPassword,
     getProfilePage,
     profileImage,
     getChangeNamePage,

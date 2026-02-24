@@ -1,172 +1,127 @@
-/* body {
-  background: #f8f9fa;
-  font-family: "Segoe UI", sans-serif;
-}
-
-.sidebar {
-  background: #e5e5e5;
-  color: white;
-  height: 100vh;
-  padding: 30px 20px;
-}
-
-.sidebar h2 {
-  color: black;
-  font-weight: bold;
-  margin-bottom: 40px;
-}
-
-.sidebar .nav-link {
-  color: black;
-  font-size: 16px;
-  margin: 10px 0;
-  padding: 12px;
-  border-radius: 12px;
-  transition: background 0.3s;
-}
-
-.sidebar .nav-link:hover {
-  background: #d4a373;
-  color: white;
-}
-
-.address-card {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 20px;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  width: 500px;
-}
-
-.address-actions button {
-  margin-right: 8px;
-} */
-
-
-
 /* --- Global Theme Sync --- */
 body {
-    background-color: #f4f1ea; /* Soft Parchment */
-    font-family: 'Montserrat', sans-serif;
+  background-color: #f4f1ea; /* Soft Parchment */
+  font-family: "Montserrat", sans-serif;
 }
 
 /* --- Sidebar Sync --- */
 .sidebar {
-    background-color: #1e2a2d; 
-    min-height: 100vh;
-    padding: 50px 30px;
-    color: #fff;
+  background-color: #1e2a2d;
+  min-height: 100vh;
+  padding: 50px 30px;
+  color: #fff;
 }
 
 .sidebar h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: #d4a373;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
-    padding-bottom: 20px;
-    margin-bottom: 40px;
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  color: #d4a373;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+  padding-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.6);
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 1.5px;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    transition: 0.3s;
-    text-decoration: none;
-    display: block;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  transition: 0.3s;
+  text-decoration: none;
+  display: block;
 }
 
-.sidebar .nav-link:hover, .sidebar .nav-link.active {
-    background-color: rgba(212, 163, 115, 0.15);
-    color: #d4a373;
-    padding-left: 25px;
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background-color: rgba(212, 163, 115, 0.15);
+  color: #d4a373;
+  padding-left: 25px;
 }
 
 /* --- Address Cards --- */
 .address-card {
-    background-color: #e9e4d9; /* Warm Sand */
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 25px;
-    transition: transform 0.3s ease;
-    box-shadow: 10px 10px 20px #dad5cb, -10px -10px 20px #ffffff;
+  background-color: #e9e4d9; /* Warm Sand */
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 25px;
+  transition: transform 0.3s ease;
+  box-shadow:
+    10px 10px 20px #dad5cb,
+    -10px -10px 20px #ffffff;
 }
 
 .address-card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 .add-address-dashed {
-    border: 2px dashed #d4a373;
-    background-color: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    color: #1e2a2d;
-    transition: 0.3s;
+  border: 2px dashed #d4a373;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #1e2a2d;
+  transition: 0.3s;
 }
 
 .add-address-dashed:hover {
-    background-color: rgba(212, 163, 115, 0.05);
-    color: #d4a373;
+  background-color: rgba(212, 163, 115, 0.05);
+  color: #d4a373;
 }
 
 /* --- Typography inside Cards --- */
 .address-card p {
-    font-size: 0.85rem;
-    color: #555;
-    margin-bottom: 8px;
-    line-height: 1.6;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 8px;
+  line-height: 1.6;
 }
 
 .address-card strong {
-    color: #1e2a2d;
-    font-weight: 600;
+  color: #1e2a2d;
+  font-weight: 600;
 }
 
 .address-card .name-header {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.3rem;
-    color: #1e2a2d;
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    padding-bottom: 10px;
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: #1e2a2d;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 10px;
 }
 
 /* --- Buttons --- */
 .btn-edit {
-    background-color: #1e2a2d;
-    color: white;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 8px 20px;
+  background-color: #1e2a2d;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px 20px;
 }
 
 .btn-delete {
-    background-color: transparent;
-    color: #dc3545;
-    border: 1px solid #dc3545;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 8px 20px;
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px 20px;
 }
 
 .btn-delete:hover {
-    background-color: #dc3545;
-    color: white;
+  background-color: #dc3545;
+  color: white;
 }

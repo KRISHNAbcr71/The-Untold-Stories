@@ -1,179 +1,335 @@
 <%-include("../../views/partials/admin/header")%>
-
-  <div class="container mt-5">
-    <div class="card shadow-lg rounded-4">
-      <div class="card-header text-center">
-        <h3 class="mb-0">Add New Coupon</h3>
-      </div>
-      <div class="card-body p-4">
-
-        <!-- Coupon Form -->
-        <form id="couponForm" onsubmit="return handleFormSubmit(event)">
-
-          <!-- Coupon Code -->
-          <div class="mb-3">
-            <label for="code" class="form-label">Coupon Code</label>
-            <input type="text" class="form-control" id="code" name="code" placeholder="e.g. SAVE20">
-            <div id="code-error" class="error-message text-danger small mt-1"></div>
-          </div>
+<link rel="stylesheet" href="/css/add-coupon.css">
 
 
-          <!-- Start Date -->
-          <div class="mb-3">
-            <label for="startDate" class="form-label">Start Date</label>
-            <input type="date" class="form-control" id="startDate" name="startDate">
-            <div id="startDate-error" class="error-message text-danger small mt-1"></div>
-          </div>
-
-          <!-- End Date -->
-          <div class="mb-3">
-            <label for="endDate" class="form-label">End Date</label>
-            <input type="date" class="form-control" id="endDate" name="endDate">
-            <div id="endDate-error" class="error-message text-danger small mt-1"></div>
-          </div>
-
-
-          <!-- Discount Value -->
-          <div class="mb-3">
-            <label for="discountValue" class="form-label">Discount Value</label>
-            <input type="number" class="form-control" id="discountValue" name="discountValue"
-              placeholder="Enter discount (e.g. 10%)">
-            <div id="discountValue-error" class="error-message text-danger small mt-1"></div>
-          </div>
-
-
-
-
-          <!-- Minimum Order Value -->
-          <div class="mb-3">
-            <label for="minValue" class="form-label">Minimum Order Value (₹)</label>
-            <input type="number" class="form-control" id="minValue" name="minValue" placeholder="Minimum Order Value">
-            <div id="minValue-error" class="error-message text-danger small mt-1"></div>
-          </div>
-
-
-
-          <!-- Submit Button -->
-          <div class="text-center">
-            <button type="submit" class="btn btn-success px-4">Add Coupon</button>
-            <a href="/admin/coupon" class="btn btn-secondary px-4">Cancel</a>
-          </div>
-
-        </form>
-
-      </div>
+  <!-- Add Coupon Page with Custom Design -->
+<div class="add-coupon-wrapper">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="bi bi-ticket-perforated" style="font-size: 1.5rem;"></i>
+            </div>
+            <div>
+                <h1 class="page-title">Add New Coupon</h1>
+                <p class="page-subtitle">Create a new discount coupon for customers</p>
+            </div>
+        </div>
+        <a href="/admin/coupon" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Coupons</span>
+        </a>
     </div>
-  </div>
 
+    <!-- Main Form Card -->
+    <div class="form-card">
+        <div class="card-pattern"></div>
+        <div class="form-fields">
+            <form id="couponForm" onsubmit="return handleFormSubmit(event)">
+                <!-- Form Grid Layout -->
+                <div class="form-grid">
+                    <!-- Left Column -->
+                    <div>
+                        <!-- Coupon Code -->
+                        <div class="field-group">
+                            <label for="code" class="field-label">
+                                <i class="bi bi-tag-fill"></i>
+                                Coupon Code
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" class="form-control" id="code" name="code" 
+                                       placeholder="e.g. SAVE20">
+                                <div class="input-border"></div>
+                            </div>
+                            <div id="code-error" class="error-message">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span></span>
+                            </div>
+                        </div>
+
+                        <!-- Discount Value -->
+                        <div class="field-group">
+                            <label for="discountValue" class="field-label">
+                                <i class="bi bi-percent"></i>
+                                Discount Value (%)
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" class="form-control" id="discountValue" name="discountValue"
+                                       placeholder="Enter discount (e.g. 10)">
+                                <div class="input-border"></div>
+                            </div>
+                            <div id="discountValue-error" class="error-message">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span></span>
+                            </div>
+                        </div>
+
+                        <!-- Minimum Order Value -->
+                        <div class="field-group">
+                            <label for="minValue" class="field-label">
+                                <i class="bi bi-currency-rupee"></i>
+                                Minimum Order Value (₹)
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" class="form-control" id="minValue" name="minValue" 
+                                       placeholder="e.g. 1000">
+                                <div class="input-border"></div>
+                            </div>
+                            <div id="minValue-error" class="error-message">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <!-- Start Date -->
+                        <div class="field-group">
+                            <label for="startDate" class="field-label">
+                                <i class="bi bi-calendar-check"></i>
+                                Start Date
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="date" class="form-control" id="startDate" name="startDate">
+                                <div class="input-border"></div>
+                            </div>
+                            <div id="startDate-error" class="error-message">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span></span>
+                            </div>
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="field-group">
+                            <label for="endDate" class="field-label">
+                                <i class="bi bi-calendar-x"></i>
+                                End Date
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="date" class="form-control" id="endDate" name="endDate">
+                                <div class="input-border"></div>
+                            </div>
+                            <div id="endDate-error" class="error-message">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Footer -->
+                <div class="form-footer">
+                    <div class="footer-decoration"></div>
+                    <div class="button-group">
+                        <a href="/admin/coupon" class="btn btn-outline">
+                            <i class="bi bi-x-circle"></i>
+                            <span>Cancel</span>
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i>
+                            <span>Add Coupon</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="tips-grid">
+        <div class="tip-card">
+            <div class="tip-icon">
+                <i class="bi bi-lightbulb-fill"></i>
+            </div>
+            <div>
+                <h4>Unique Code</h4>
+                <p>Use a unique coupon code that customers can easily remember</p>
+            </div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-icon">
+                <i class="bi bi-calendar-range"></i>
+            </div>
+            <div>
+                <h4>Date Range</h4>
+                <p>End date must be after start date</p>
+            </div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-icon">
+                <i class="bi bi-currency-rupee"></i>
+            </div>
+            <div>
+                <h4>Minimum Order</h4>
+                <p>Set minimum order value for coupon eligibility</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-
     function setDefaultStartDate() {
-      const today = new Date().toISOString().split('T')[0];
-      const startDateInput = document.getElementById('startDate')
-      startDateInput.setAttribute('min', today)
-      startDateInput.value = today
+        const today = new Date().toISOString().split('T')[0];
+        const startDateInput = document.getElementById('startDate');
+        if (startDateInput) {
+            startDateInput.setAttribute('min', today);
+            startDateInput.value = today;
+        }
     }
 
     window.onload = setDefaultStartDate;
 
-
     function handleFormSubmit(event) {
-      event.preventDefault()
-      if (!validateForm()) return false
+        event.preventDefault();
+        if (!validateForm()) return false;
 
-      fetch('/admin/addCoupon', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          code: document.getElementById('code').value.trim(),
-          startDate: document.getElementById('startDate').value.trim(),
-          endDate: document.getElementById('endDate').value.trim(),
-          discountValue: Number(document.getElementById('discountValue').value.trim()),
-          minValue: Number(document.getElementById('minValue').value.trim())
-        })
-      }).then(async response => {
-        const data = await response.json().catch(() => { })
-        if (!response.ok) {
-          throw new Error(data.message || 'An error occurred.')
-        }
-        return data;
-
-      }).then(data => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Coupon added',
-          text: data.message || 'The coupon has been successfully added'
-        }).then(() => {
-          window.location.href = '/admin/coupon'
+        fetch('/admin/addCoupon', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+                code: document.getElementById('code').value.trim(),
+                startDate: document.getElementById('startDate').value.trim(),
+                endDate: document.getElementById('endDate').value.trim(),
+                discountValue: Number(document.getElementById('discountValue').value.trim()),
+                minValue: Number(document.getElementById('minValue').value.trim())
+            })
+        }).then(async response => {
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.message || 'An error occurred.');
+            }
+            return data;
+        }).then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Coupon added',
+                text: data.message || 'The coupon has been successfully added',
+                confirmButtonColor: '#d4a373'
+            }).then(() => {
+                window.location.href = '/admin/coupon';
+            });
+        }).catch(error => {
+            if (error.message === 'Coupon already exists!') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: 'Coupon code already exists',
+                    confirmButtonColor: '#d4a373'
+                });
+                
+                // Show error on the code field
+                const codeError = document.getElementById('code-error');
+                codeError.querySelector('span').innerText = 'Coupon code already exists';
+                codeError.style.display = 'flex';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: 'An error occurred while adding the coupon',
+                    confirmButtonColor: '#d4a373'
+                });
+            }
         });
-      }).catch(error => {
-        if (error.message === 'Coupon already exists!') {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops',
-            text: 'Coupon code already exists'
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops',
-            text: 'An error occurred while adding the coupon'
-          });
-        }
-      });
     }
-
 
     function validateForm() {
-      const code = document.getElementById('code').value.trim()
-      const start = document.getElementById('startDate').value.trim()
-      const end = document.getElementById('endDate').value.trim()
-      const discount = document.getElementById('discountValue').value.trim()
-      const minimum = document.getElementById('minValue').value.trim()
+        // Clear any existing error messages
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.querySelector('span').innerText = '';
+            el.style.display = 'none';
+        });
 
-      if(!code || !start || !end || !discount || !minimum){
-      Swal.fire('Error','All fields are required','error')
-      return false
-    }
+        const code = document.getElementById('code').value.trim();
+        const start = document.getElementById('startDate').value.trim();
+        const end = document.getElementById('endDate').value.trim();
+        const discount = document.getElementById('discountValue').value.trim();
+        const minimum = document.getElementById('minValue').value.trim();
 
-    if (new Date(start) < new Date(new Date().toISOString().split('T')[0])) {
-      Swal.fire('Error','Start date cannot be in the past!','error')
-      return false
-    }
+        if (!code || !start || !end || !discount || !minimum) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'All fields are required',
+                confirmButtonColor: '#d4a373'
+            });
+            return false;
+        }
 
-    if (new Date(end) <= new Date(start)) {
-      Swal.fire('Error','End date must be greater than start date','error')
-      return false
-    }
+        if (code.length < 3) {
+            const errorEl = document.getElementById('code-error');
+            errorEl.querySelector('span').innerText = 'Coupon code must be at least 3 characters';
+            errorEl.style.display = 'flex';
+            return false;
+        }
 
+        if (!/^[A-Za-z0-9_]+$/.test(code)) {
+            const errorEl = document.getElementById('code-error');
+            errorEl.querySelector('span').innerText = 'Only letters, numbers, and underscores allowed';
+            errorEl.style.display = 'flex';
+            return false;
+        }
 
-    if (isNaN(discount) || Number(discount) <= 0) {
-      Swal.fire('Error','Discount must be a positive number','error')
-      return false
-    }
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const startDate = new Date(start);
+        const endDate = new Date(end);
 
-    if (minimum && (isNaN(minimum) || Number(minimum) < 0)) {
-      Swal.fire('Error','Minimum value must be 0 or greater','error')
-      return false
-    }
-      return true
+        if (startDate < today) {
+            const errorEl = document.getElementById('startDate-error');
+            errorEl.querySelector('span').innerText = 'Start date cannot be in the past';
+            errorEl.style.display = 'flex';
+            return false;
+        }
+
+        if (endDate <= startDate) {
+            const errorEl = document.getElementById('endDate-error');
+            errorEl.querySelector('span').innerText = 'End date must be after start date';
+            errorEl.style.display = 'flex';
+            return false;
+        }
+
+        if (isNaN(discount) || Number(discount) <= 0 || Number(discount) > 100) {
+            const errorEl = document.getElementById('discountValue-error');
+            errorEl.querySelector('span').innerText = 'Discount must be between 1 and 100';
+            errorEl.style.display = 'flex';
+            return false;
+        }
+
+        if (minimum && (isNaN(minimum) || Number(minimum) < 0)) {
+            const errorEl = document.getElementById('minValue-error');
+            errorEl.querySelector('span').innerText = 'Minimum value must be 0 or greater';
+            errorEl.style.display = 'flex';
+            return false;
+        }
+
+        return true;
     }
 
     function attachInputListeners() {
         const fields = ['code', 'startDate', 'endDate', 'discountValue', 'minValue'];
         fields.forEach(fieldId => {
-          const input = document.getElementById(fieldId);
-          input.addEventListener('input', () => {
-            const errorElement = document.getElementById(`${fieldId}-error`);
-            errorElement.innerText = '';
-            errorElement.style.display = 'none';
-          });
+            const input = document.getElementById(fieldId);
+            if (input) {
+                input.addEventListener('input', () => {
+                    const errorElement = document.getElementById(`${fieldId}-error`);
+                    if (errorElement) {
+                        errorElement.querySelector('span').innerText = '';
+                        errorElement.style.display = 'none';
+                    }
+                });
+            }
         });
-      }
+    }
 
-      attachInputListeners();
-  </script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        setDefaultStartDate();
+        attachInputListeners();
+    });
+</script>
 
 
   <%-include("../../views/partials/admin/footer")%>

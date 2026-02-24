@@ -54,7 +54,6 @@ body {
 }
 
 /* --- Profile Card --- */
-/* --- Profile Card: Warm Sand --- */
 .profile-card {
   background-color: #e9e4d9;
   padding: 50px;
@@ -133,25 +132,6 @@ body {
   font-weight: 500;
 }
 
-/* .upload-icon {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: #d4a373;
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.upload-icon:hover {
-    background: #111;
-} */
 /* --- Floating Plus Icon --- */
 .upload-icon {
   position: absolute;
@@ -189,12 +169,6 @@ body {
   font-size: 0.9rem;
   color: #666;
 }
-
-/* .btn-custom:hover {
-    background-color: #d4a373;
-    border-color: #d4a373;
-    color: white;
-} */
 
 .copy-icon {
   cursor: pointer;

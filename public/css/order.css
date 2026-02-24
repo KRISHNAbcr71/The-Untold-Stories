@@ -31,75 +31,70 @@
 
 body {
   background: var(--bg-body);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   color: var(--text-dark);
   min-height: 100vh;
-
-  background-image: 
-    radial-gradient(ellipse at 0% 0%, rgba(212, 163, 115, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 100% 100%, rgba(204, 213, 174, 0.03) 0%, transparent 50%);
+  background-image:
+    radial-gradient(
+      ellipse at 0% 0%,
+      rgba(212, 163, 115, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 100% 100%,
+      rgba(204, 213, 174, 0.03) 0%,
+      transparent 50%
+    );
   background-attachment: fixed;
+  overflow-x: hidden;
 }
 
-#searchInput::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
+/* Container fixes */
+.container {
+  max-width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-.pagination-custom .page-item .page-link {
-  border: none;
-  border-radius: 10px;
-  margin: 0 4px;
-  padding: 8px 14px;
-  color: #6d6a64;
-  background: #f5f0e8;
-  font-weight: 500;
-  transition: all 0.25s ease;
+/* Card fix - make it responsive */
+.orders-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-/* Hover */
-.pagination-custom .page-item:not(.active):not(.disabled) .page-link:hover {
-  background: #e9dccb;
-  color: #2d2a24;
+.card-body {
+  padding: 1.5rem;
+  overflow-x: auto;
 }
 
-/* Active page */
-.pagination-custom .page-item.active .page-link {
-  background: linear-gradient(to right, #d4a373, #b78b5a);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
+/* Table wrapper for horizontal scroll */
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-md);
 }
 
-/* Disabled */
-.pagination-custom .page-item.disabled .page-link {
-  background: #f0ede8;
-  color: #aaa;
-  cursor: not-allowed;
-}
-
-/* Previous / Next emphasis */
-.pagination-custom .page-item:first-child .page-link,
-.pagination-custom .page-item:last-child .page-link {
-  font-weight: 600;
-}
-
-/* Mobile-friendly */
-@media (max-width: 576px) {
-  .pagination-custom .page-link {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-}
-
-
-
-
-/* ================= ADMIN TABLE STYLE ================= */
-
+/* Table fixes */
 .admin-table {
+  width: 100%;
+  min-width: 1200px; /* Forces horizontal scroll instead of squeezing */
+  margin-bottom: 0;
+  background: #fff;
   border-collapse: separate;
   border-spacing: 0;
-  background: #fff;
 }
 
 /* Header */
@@ -109,29 +104,51 @@ body {
 
 .admin-table thead th {
   border: none;
-  padding: 1rem 1.25rem;
+  padding: 1rem 0.75rem;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-dark);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-   background-color: #f8f4e9;
+  background-color: #f8f4e9;
+  white-space: nowrap;
 }
 
-/* Body rows */
-.admin-table tbody tr {
-  transition: all 0.25s ease;
-}
+/* Column widths - adjusted for better fit */
+.admin-table th:nth-child(1) {
+  min-width: 140px;
+} /* Order ID */
+.admin-table th:nth-child(2) {
+  min-width: 90px;
+} /* Order Date */
+.admin-table th:nth-child(3) {
+  min-width: 120px;
+} /* User */
+.admin-table th:nth-child(4) {
+  min-width: 100px;
+} /* Payment Method */
+.admin-table th:nth-child(5) {
+  min-width: 110px;
+} /* Payment */
+.admin-table th:nth-child(6) {
+  min-width: 70px;
+} /* Total */
+.admin-table th:nth-child(7) {
+  min-width: 90px;
+} /* Status */
+.admin-table th:nth-child(8) {
+  min-width: 100px;
+} /* Return */
+.admin-table th:nth-child(9) {
+  min-width: 100px;
+} /* Actions */
 
-.admin-table tbody tr:hover {
-  background-color: rgba(212, 163, 115, 0.08);
-}
-
-/* Cells */
+/* Body cells */
 .admin-table td {
-  padding: 1rem 1.25rem;
+  padding: 1rem 0.75rem;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 /* First column emphasis */
@@ -140,15 +157,51 @@ body {
   color: var(--primary);
 }
 
-/* Action column */
-.admin-table td:last-child {
+/* Badge fixes */
+.admin-table .badge {
+  display: inline-block;
+  min-width: 95px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   text-align: center;
+  white-space: nowrap;
+  border-radius: 20px;
+  line-height: 1;
 }
+
+/* Status select dropdown */
+.admin-table select.form-select-sm {
+  width: 110px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+}
+
+/* Action buttons */
+.admin-table .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* Button group */
+.d-flex.gap-1 {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Center align all cells */
 .admin-table th,
 .admin-table td {
   text-align: center;
   vertical-align: middle;
 }
+
 /* Vertical lines */
 .admin-table th,
 .admin-table td {
@@ -161,18 +214,124 @@ body {
   border-right: none;
 }
 
-.table-wrapper {
-  min-height: 500px;
+/* Pagination styles */
+.pagination-custom .page-item .page-link {
+  border: none;
+  border-radius: 10px;
+  margin: 0 4px;
+  padding: 8px 14px;
+  color: #6d6a64;
+  background: #f5f0e8;
+  font-weight: 500;
+  transition: all 0.25s ease;
 }
 
-.table-responsive {
-  min-height: 380px;
+.pagination-custom .page-item:not(.active):not(.disabled) .page-link:hover {
+  background: #e9dccb;
+  color: #2d2a24;
 }
 
+.pagination-custom .page-item.active .page-link {
+  background: linear-gradient(to right, #d4a373, #b78b5a);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
+}
 
-.orders-card {
-  background: var(--card-bg);
+.pagination-custom .page-item.disabled .page-link {
+  background: #f0ede8;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Search input */
+#searchInput {
+  border-radius: 8px;
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  overflow: hidden;   /* important so body follows curve */
+  padding: 0.5rem 1rem;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+  .container {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .admin-table {
+    min-width: 1000px; /* Slightly smaller on mobile but still scrollable */
+  }
+
+  .admin-table th {
+    font-size: 0.7rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .admin-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .admin-table .badge {
+    min-width: 85px;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .admin-table select.form-select-sm {
+    width: 90px;
+    font-size: 0.7rem;
+  }
+
+  .admin-table .btn-sm {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* Custom badge colors */
+.badge.bg-success {
+  background-color: #2ecc71 !important;
+  color: white !important;
+}
+
+.badge.bg-danger {
+  background-color: #e74c3c !important;
+  color: white !important;
+}
+
+.badge.bg-warning {
+  background-color: #f39c12 !important;
+  color: white !important;
+}
+
+.badge.bg-info {
+  background-color: #3498db !important;
+  color: white !important;
+}
+
+/* Partially Refunded special styling */
+.badge.bg-warning.text-dark {
+  background-color: #f39c12 !important;
+  color: #2d2a24 !important;
+  font-weight: 600;
+}
+
+/* Partially Returned badge */
+.badge.bg-info {
+  background-color: #3498db !important;
+}
+
+/* Return Requested badge */
+.badge.bg-warning.text-dark {
+  background-color: #f39c12 !important;
 }

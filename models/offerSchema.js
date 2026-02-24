@@ -4,7 +4,7 @@ const offerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   discountValue: { type: Number, required: true },
   appliesTo: { type: String, enum: ["product", "category"], required: true },
-  targetIds: [{ type: mongoose.Schema.Types.ObjectId, refPath: 'appliesTo'}],
+  targetIds: [{ type: mongoose.Schema.Types.ObjectId, refPath: "appliesTo" }],
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   isActive: { type: Boolean, default: false },
@@ -13,12 +13,11 @@ const offerSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-
-// Update updatedAt on save
-offerSchema.pre('save', function (next) {
+// Automatically refresh updatedAt on save
+offerSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-const Offer = mongoose.model("Offer",offerSchema)
-module.exports = Offer
+const Offer = mongoose.model("Offer", offerSchema);
+module.exports = Offer;

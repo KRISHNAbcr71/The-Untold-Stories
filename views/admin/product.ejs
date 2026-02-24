@@ -4,118 +4,115 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <h2 class="fw-bold ps-4 mb-0">📦 Product</h2>
         <div class="search-container position-relative">
-            <input type="text" class="form-control" id="searchInput" placeholder="Search products..." value="<%= search || '' %>">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search products..."
+                value="<%= search || '' %>">
             <span class="search-clear" id="clearSearch" style="display:none;">&times;</span>
         </div>
     </div>
 
-
-
-    <!-- <div class="d-flex" style="gap: 10px;">
-        <a href="/admin/addProduct" class="btn btn-secondary add-cat" style="width: 200px;">Add Product</a>
-        <a href="/admin/trashProduct" class="btn btn-secondary add-cat" style="width: 200px;">Trash</a>
-    </div> -->
     <div class="d-flex mb-4 ps-4" style="gap: 12px;">
-  <a href="/admin/addProduct" class="btn add-cat-btn">
-    <span class="icon">➕</span>
-    Add Product
-  </a>
-</div>
+        <a href="/admin/addProduct" class="btn add-cat-btn">
+            <span class="icon">➕</span>
+            Add Product
+        </a>
+    </div>
 
 
 
     <div class="table-wrapper">
 
         <div class="table-responsive container-fluid">
-        <table class="table align-middle admin-table">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Number</th>
-                    <th>Image</th>
-                    <th>Product Name</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Author</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Action</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% data.forEach((product, index) => { %>
-                <tr>
-                    <td>
-                        <%= product.serialNumber %>    
-                    </td>
-                    <td>
-                        <% if(product.productImage && product.productImage.length > 0){%>
-                            <img src="/<%= product.productImage[0] %>" alt="Product Image"
-                                style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                        <%}else{%>
-                            <span>No Image</span>
-                        <%}%>            
-                    </td>
-                    <td><%= product.productName %></td>
-                    <td><%= product.description %></td>
-                    <td><%= product.category?.name %></td>
-                    <td><%= product.author %></td>
-                    <td><%= product.price %></td>
-                    <td><%= product.quantity %></td>
-                    <td>
-                        <%if(product.isListed){%>
-                        <a href="/admin/unlistProduct?id=<%= product._id%>" class="btn btn-warning btn-sm"
-                            onclick="return confirmAction(event,'unlist','<%= product._id%>')">Unlist</a>
-                        <%}else{%>    
-                        <a href="/admin/listProduct?id=<%= product._id%>" class="btn btn-info btn-sm"
-                            onclick="return confirmAction(event,'list','<%= product._id%>')">List</a>
-                        <%}%>
-                    </td>
-                    <td>
-                        <a href="/admin/editProduct?id=<%= product._id%>" class="btn btn-dark btn-sm">Edit</a>
-                    </td>
-                    <td>
-                        <button class="btn btn-dark btn-sm delete-btn" data-id="<%= product._id %>">Delete</button>
-                    </td>
-                </tr>
-                <%})%>
-            </tbody>
-        </table>
+            <table class="table align-middle admin-table">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Number</th>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Author</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% data.forEach((product, index)=> { %>
+                        <tr>
+                            <td>
+                                <%= product.serialNumber %>
+                            </td>
+                            <td>
+                                <% if(product.productImage && product.productImage.length> 0){%>
+                                    <img src="/<%= product.productImage[0] %>" alt="Product Image"
+                                        style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                    <%}else{%>
+                                        <span>No Image</span>
+                                        <%}%>
+                            </td>
+                            <td>
+                                <%= product.productName %>
+                            </td>
+                            <td>
+                                <%= product.description %>
+                            </td>
+                            <td>
+                                <%= product.category?.name %>
+                            </td>
+                            <td>
+                                <%= product.author %>
+                            </td>
+                            <td>
+                                <%= product.price %>
+                            </td>
+                            <td>
+                                <%= product.quantity %>
+                            </td>
+                            <td>
+                                <%if(product.isListed){%>
+                                    <a href="/admin/unlistProduct?id=<%= product._id%>" class="btn btn-warning btn-sm"
+                                        onclick="return confirmAction(event,'unlist','<%= product._id%>')">Unlist</a>
+                                    <%}else{%>
+                                        <a href="/admin/listProduct?id=<%= product._id%>" class="btn btn-info btn-sm"
+                                            onclick="return confirmAction(event,'list','<%= product._id%>')">List</a>
+                                        <%}%>
+                            </td>
+                            <td>
+                                <a href="/admin/editProduct?id=<%= product._id%>" class="btn btn-dark btn-sm">Edit</a>
+                            </td>
+                            <td>
+                                <button class="btn btn-dark btn-sm delete-btn"
+                                    data-id="<%= product._id %>">Delete</button>
+                            </td>
+                        </tr>
+                        <%})%>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <div class="container mt-3 pagination-container">
+            <nav aria-label="Page Navigation">
+                <ul class="pagination pagination-custom justify-content-center mb-20">
+                    <% for(let i=1; i <=totalPages; i++) { %>
+                        <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>">
+                                <%= i %>
+                            </a>
+                        </li>
+                        <% } %>
+                </ul>
+            </nav>
+        </div>
     </div>
-
-
-
-    <div class="container mt-3 pagination-container">
-        <nav aria-label="Page Navigation">
-            <ul class="pagination pagination-custom justify-content-center mb-20">
-                <% for(let i=1; i <=totalPages; i++) { %>
-                    <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
-                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-                    </li>
-                <% } %>
-            </ul>
-        </nav>
-    </div>
-    
-
-
-
-    </div>
-    
-
-    
-
-
-
-
-
 
 
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
 
         const searchInput = document.getElementById('searchInput');
@@ -138,7 +135,7 @@
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
             clearBtn.style.display = 'none';
-            window.location.href = '/admin/product'; // Reload full list
+            window.location.href = '/admin/product'; 
         });
 
         // Initialize clear button on page load
@@ -149,12 +146,8 @@
 
 
 
-
-
-
-
         function confirmAction(event, action, id) {
-            event.preventDefault(); // Prevent the default <a> click
+            event.preventDefault();
 
             const actionText = action === 'list' ? 'List' : 'Unlist';
             const buttonColor = action === 'list' ? '#3085d6' : '#d33';
@@ -172,39 +165,32 @@
                     fetch(`/admin/${action}Product?id=${id}`, {
                         method: 'GET'
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to ' + action);
-                        }
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to ' + action);
+                            }
                             return response.json();
-                    })
-                    .then(data => {
-                        Swal.fire(
-                            `${actionText}ed!`,
-                            `User has been ${actionText.toLowerCase()}ed successfully.`,
-                            'success'
-                        ).then(() => {
-                            location.reload(); // Refresh the page to show updated status
+                        })
+                        .then(data => {
+                            Swal.fire(
+                                `${actionText}ed!`,
+                                `User has been ${actionText.toLowerCase()}ed successfully.`,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire(
+                                'Error!',
+                                'Something went wrong.',
+                                'error'
+                            );
                         });
-                    })
-                    .catch(error => {
-                        Swal.fire(
-                            'Error!',
-                            'Something went wrong.',
-                            'error'
-                        );
-                    });
                 }
             });
-            return false; // Prevent default behavior
+            return false; 
         }
-
-
-
-
-
-
-
 
 
 
@@ -223,25 +209,25 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         fetch(`/admin/deleteProduct/${categoryId}`, {
-                            method: 'DELETE', // use DELETE if route is delete
+                            method: 'DELETE', 
                             headers: {
                                 'Content-Type': 'application/json'
                             }
                         })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire('Deleted!', data.message, 'success').then(() => {
-                                    location.reload(); // refresh page to show updated data
-                                });
-                            } else {
-                                Swal.fire('Oops!', data.message || 'Something went wrong.', 'error');
-                            }
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            Swal.fire('Error', 'Could not delete category.', 'error');
-                        });
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Deleted!', data.message, 'success').then(() => {
+                                        location.reload(); 
+                                    });
+                                } else {
+                                    Swal.fire('Oops!', data.message || 'Something went wrong.', 'error');
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                Swal.fire('Error', 'Could not delete category.', 'error');
+                            });
                     }
                 });
             });
@@ -253,4 +239,4 @@
 
 
     </script>
-<%-include("../../views/partials/admin/footer")%>
+    <%-include("../../views/partials/admin/footer")%>

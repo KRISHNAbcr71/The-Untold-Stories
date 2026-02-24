@@ -1,6 +1,5 @@
 const User = require("../../models/userSchema");
 const Address = require("../../models/addressSchema");
-const mongoose = require("mongoose");
 
 const getAddressPage = async (req, res) => {
   try {
@@ -18,9 +17,7 @@ const addAddress = async (req, res) => {
   try {
     const userId = req.session.user;
     const userData = await User.findById(userId);
-
     const source = req.query.source || "profile";
-
     res.render("add-address", { user: userData, source });
   } catch (error) {
     console.error("[Error in loading add address page]", error);
@@ -129,7 +126,7 @@ const getEditAddressPage = async (req, res) => {
       userId,
       "address._id": addressId,
     });
-    const source = req.query.source || "profile"; // default to profile
+    const source = req.query.source || "profile";
 
     if (!userAddresses) return res.redirect("/pageNotFound");
 
@@ -152,7 +149,6 @@ const getEditAddressPage = async (req, res) => {
 
 const editAddress = async (req, res) => {
   try {
-    const data = req.body;
     const { addressId } = req.params;
 
     const userId = req.session.user;

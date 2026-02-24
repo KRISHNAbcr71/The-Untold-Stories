@@ -13,7 +13,6 @@
 
         <div class="col-md-9 wallet-content-area">
             <div class="container">
-                <!-- <h2 style="font-family: 'Playfair Display', serif; font-style: italic; color: #1e2a2d;" class="mb-4">My Wallet</h2> -->
                 <h2 class="text-center mb-5 fw-light" style="font-family: 'Cinzel', serif; letter-spacing: 4px;">My Wallet</h2>
 
                 <div class="wallet-card text-center">
@@ -46,7 +45,7 @@
                                             <td><%= transaction.description %></td>
                                             <td><%= new Date(transaction.createdAt).toLocaleDateString() %></td>
                                             <td>
-                                                <span class="badge bg-<%= transaction.status === 'completed' ? 'success' : 'warning' %>">
+                                                <span class="badge bg-<%= transaction.status === 'completed' ? 'success' : 'danger' %>">
                                                     <%= transaction.status %>
                                                 </span>
                                             </td>
@@ -172,8 +171,6 @@
                                 data-amount="500">₹500</button>
                             <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
                                 data-amount="1000">₹1,000</button>
-                            <!-- <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
-                                data-amount="half">50%</button> -->
                             <button type="button" class="btn btn-outline-secondary btn-sm quick-amount"
                                 data-amount="full">All</button>
                         </div>
@@ -221,9 +218,6 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 
