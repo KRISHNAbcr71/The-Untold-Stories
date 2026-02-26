@@ -261,15 +261,22 @@ body {
   border-top: 1px solid var(--border-light);
   padding-top: 1.5rem;
 }
+.targets-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;            
+  margin-bottom: 16px;
+}
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-dark);
   margin-bottom: 1rem;
+  white-space: nowrap; 
 }
 
 .section-title i {
@@ -557,4 +564,8 @@ body {
 
 .targets-container::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+#productSearchBox {
+  display: none;
 }

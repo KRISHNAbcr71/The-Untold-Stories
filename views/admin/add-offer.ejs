@@ -109,9 +109,14 @@
 
                 <!-- Select Targets Section -->
                 <div class="targets-section">
-                    <div class="section-title">
-                        <i class="bi bi-check2-square"></i>
-                        <span>Select Targets</span>
+                    <div class="targets-header">
+                        <div class="section-title">
+                            <i class="bi bi-check2-square"></i>
+                            <span>Select Targets</span>
+                            <div id="productSearchBox">
+                                <input type="text" id="productSearch" class="form-control target-search mb-3" placeholder="Search products...">
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Products Container -->
@@ -214,19 +219,28 @@
     const appliesToRadios = document.querySelectorAll('input[name="appliesTo"]');
     const productTargets = document.getElementById('productTargets');
     const categoryTargets = document.getElementById('categoryTargets');
+    const productSearchBox = document.getElementById('productSearchBox');
 
     appliesToRadios.forEach(radio => {
         radio.addEventListener('change', () => {
             if (radio.value === 'product' && radio.checked) {
                 productTargets.classList.remove('d-none');
                 categoryTargets.classList.add('d-none');
+                productSearchBox.style.display = 'block'; 
             }
             if (radio.value === 'category' && radio.checked) {
                 categoryTargets.classList.remove('d-none');
                 productTargets.classList.add('d-none');
+                productSearchBox.style.display = 'none';
             }
         });
     });
+
+    // On page load (default is product)
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('radioProduct').checked = true;
+    productSearchBox.style.display = 'block';
+  });
 
     // Set default start date as today
     window.onload = () => {
@@ -337,6 +351,35 @@
             });
         }
     }
+
+
+
+    // search products
+    const searchInput = document.getElementById("productSearch");
+const productGrid = document.querySelector("#productTargets .targets-grid");
+
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+
+  const res = await fetch(`/admin/search-offer-products?search=${query}`);
+  const data = await res.json();
+
+  if (!data.success) return;
+
+  productGrid.innerHTML = "";
+
+  data.products.forEach(product => {
+    productGrid.innerHTML += `
+      <div class="target-item">
+        <input class="form-check-input" type="checkbox" 
+          name="targetIds[]" value="${product._id}" id="product_${product._id}">
+        <label class="form-check-label" for="product_${product._id}">
+          <i class="bi bi-box"></i> ${product.productName}
+        </label>
+      </div>
+    `;
+  });
+});
 </script>
 
 

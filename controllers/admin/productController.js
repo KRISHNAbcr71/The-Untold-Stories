@@ -100,11 +100,9 @@ const addProduct = async (req, res) => {
 
     const productExists = await Product.findOne({ productName: product_name });
     if (productExists) {
-      return res
-        .status(400)
-        .json({
-          message: "Product already exists, please try with another name.",
-        });
+      return res.status(400).json({
+        message: "Product already exists, please try with another name.",
+      });
     }
 
     const categoryData = await Category.findOne({ name: category });
@@ -205,12 +203,10 @@ const editProduct = async (req, res) => {
     });
 
     if (duplicateProduct) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Product with the same name already exists.",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Product with the same name already exists.",
+      });
     }
 
     let updatedImages = [...existingProduct.productImage];
@@ -247,7 +243,6 @@ const editProduct = async (req, res) => {
   }
 };
 
-
 const deleteSingleImage = async (req, res) => {
   try {
     const { imageName, productId } = req.params;
@@ -270,15 +265,15 @@ const deleteSingleImage = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const filename = path.basename(decodedImageName); 
+    const filename = path.basename(decodedImageName);
     const imagePath = path.join(
-      __dirname, 
+      __dirname,
       "..",
-      "..", 
+      "..",
       "public",
       "uploads",
       "productImages",
-      filename, 
+      filename,
     );
 
     if (fs.existsSync(imagePath)) {
@@ -324,6 +319,29 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const searchOfferProducts = async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    const products = await Product.find({
+      isDeleted: false,
+      productName: { $regex: search, $options: "i" },
+    })
+      .select("_id productName")
+      .sort({ createdAt: -1 })
+      .lean();
+    return res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.error("Error searching offer products:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to search products",
+    });
+  }
+};
+
 module.exports = {
   productInfo,
   loadAddProduct,
@@ -335,4 +353,5 @@ module.exports = {
   deleteSingleImage,
   deleteProduct,
   deleteProduct,
+  searchOfferProducts,
 };

@@ -63,7 +63,7 @@ router.get("/editProduct", adminAuth, productController.getEditProduct);
 router.post("/editProduct/:id",adminAuth,upload,productController.editProduct);
 router.delete("/deleteImage/:productId/:imageName",adminAuth,productController.deleteSingleImage,);
 router.delete("/deleteProduct/:id", adminAuth, productController.deleteProduct);
-
+router.get("/search-offer-products",adminAuth,productController.searchOfferProducts)
 
 
 
