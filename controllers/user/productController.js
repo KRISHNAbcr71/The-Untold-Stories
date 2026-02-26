@@ -4,7 +4,7 @@ const User = require("../../models/userSchema");
 const Wishlist = require("../../models/wishlistSchema");
 const Category = require("../../models/categorySchema");
 const Order = require("../../models/orderSchema");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 const { Types } = mongoose;
 
 // Controller to render the home page
@@ -24,6 +24,7 @@ const loadHomepage = async (req, res) => {
       isListed: true,
       isDeleted: false,
     });
+
     let productData = await Product.find({
       isListed: true,
       isDeleted: false,
@@ -80,9 +81,79 @@ const loadHomepage = async (req, res) => {
 
     const userData = userId ? await User.findById(userId) : null;
 
+    const now = new Date();
+    const activeOffers = await Offer.find({
+      isDeleted: false,
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+    });
+
+    const productOfferMap = new Map();
+    const categoryOfferMap = new Map();
+
+    activeOffers.forEach((offer) => {
+      if (offer.appliesTo === "product") {
+        offer.targetIds.forEach((id) => {
+          productOfferMap.set(id.toString(), offer.discountValue);
+        });
+      } else if (offer.appliesTo === "category") {
+        offer.targetIds.forEach((id) => {
+          categoryOfferMap.set(id.toString(), offer.discountValue);
+        });
+      }
+    });
+
+    // Apply offers to new arrivals
+    const productsWithOffers = productData.map((product) => {
+      const productDiscount = productOfferMap.get(product._id.toString()) || 0;
+
+      const categoryDiscount =
+        categoryOfferMap.get(product.category._id.toString()) || 0;
+
+      //Pick the higher discount
+      const discountValue = Math.max(productDiscount, categoryDiscount);
+
+      const discountedPrice =
+        discountValue > 0
+          ? Math.round(product.price - (product.price * discountValue) / 100)
+          : product.price;
+
+      return {
+        ...product.toObject(),
+        discountValue,
+        discountedPrice,
+      };
+    });
+
+    // apply offers to bestselling products
+    bestSellingProducts = bestSellingProducts.map((item) => {
+      const productDiscount =
+        productOfferMap.get(item.product._id.toString()) || 0;
+      const categoryDiscount =
+        categoryOfferMap.get(item.category._id.toString()) || 0;
+      const discountValue = Math.max(productDiscount, categoryDiscount);
+
+      const discountedPrice =
+        discountValue > 0
+          ? Math.round(
+              item.product.price - (item.product.price * discountValue) / 100,
+            )
+          : item.product.price;
+
+      return {
+        ...item,
+        product: {
+          ...item.product,
+          discountValue,
+          discountedPrice,
+        },
+      };
+    });
+
     res.status(200).render("home", {
       user: userData,
-      products: productData,
+      products: productsWithOffers,
       bestSellingProducts,
       wishlistIds,
     });
@@ -225,9 +296,15 @@ const loadShoppingPage = async (req, res) => {
       //Pick the higher discount
       const discountValue = Math.max(productDiscount, categoryDiscount);
 
+      const discountedPrice =
+        discountValue > 0
+          ? Math.round(product.price - (product.price * discountValue) / 100)
+          : product.price;
+
       return {
         ...product,
         discountValue,
+        discountedPrice,
       };
     });
 
